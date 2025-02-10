@@ -10,8 +10,8 @@ function App() {
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
       </Route>
+      <Route path="/login" element={<LoginPage />} />
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
