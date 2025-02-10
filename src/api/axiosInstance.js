@@ -1,9 +1,9 @@
-import axios from 'axios';
-import store from '../app/redux/store';
-import { setAccessToken } from '../app/redux/loginSlice';
-import { API_SERVER_HOST } from '../config/apiConfig';
+import axios from "axios";
+import store from "./redux/store";
+import { setAccessToken } from "./redux/loginSlice";
+import { API_URL } from "../config/apiConfig";
 const axiosInstance = axios.create({
-  baseURL: `${API_SERVER_HOST}/api/admin`,
+  baseURL: API_URL,
   // 쿠키 허용
   withCredentials: true,
 });
@@ -11,7 +11,7 @@ const axiosInstance = axios.create({
 const refreshJWT = async () => {
   const res = await axiosInstance.get(`/member/refresh`);
 
-  console.log('----------------------');
+  console.log("----------------------");
   console.log(res.data);
 
   return res.data;
@@ -20,7 +20,7 @@ const refreshJWT = async () => {
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = store.getState().loginSlice.accessToken;
-    console.log('axiosInstance.interceptors.request.use. token', token);
+    console.log("axiosInstance.interceptors.request.use. token", token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -28,7 +28,7 @@ axiosInstance.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  },
+  }
 );
 
 axiosInstance.interceptors.response.use(
@@ -37,13 +37,13 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     // const navigate = useNavigate();
-    console.log('interceptor error: ', error);
+    console.log("interceptor error: ", error);
     if (
       error.response.data &&
-      error.response.data.error === 'ERROR_ACCESS_TOKEN'
+      error.response.data.error === "ERROR_ACCESS_TOKEN"
     ) {
       const result = await refreshJWT();
-      console.log('refreshJWT RESULT', result);
+      console.log("refreshJWT RESULT", result);
 
       const accessToken = result.newAccessToken;
 
@@ -52,7 +52,7 @@ axiosInstance.interceptors.response.use(
       return axiosInstance(error.config); // 재요청
     }
     return Promise.reject(error);
-  },
+  }
 );
 
 export default axiosInstance;

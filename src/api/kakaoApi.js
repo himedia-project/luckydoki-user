@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { API_SERVER_HOST, FRONT_USER_HOST } from "../config/apiConfig";
+import { API_URL, FRONT_USER_HOST } from "../config/apiConfig";
 
 const rest_api_key = process.env.REACT_APP_KAKAO_REST_API_KEY;
 const client_secret = process.env.REACT_APP_KAKAO_CLIENT_SECRET;
@@ -34,7 +34,7 @@ export const getKakaoLoginLink = () => {
 export const getAccessToken = async (authCode) => {
   try {
     const res = await axios.get(
-      `${API_SERVER_HOST}/api/member/kakao/token?code=${authCode}`
+      `${API_URL}/api/member/kakao/token?code=${authCode}`
     );
     console.log("getAccessToken res: ", res);
     return res.data;
@@ -51,7 +51,7 @@ export const getMemberWithAccessToken = async (accessToken) => {
   };
   try {
     const res = await axios.get(
-      `${API_SERVER_HOST}/api/member/kakao?accessToken=${accessToken}`,
+      `${API_URL}/api/member/kakao?accessToken=${accessToken}`,
       headers
     );
     console.log("getMemberWithAccessToken res: ", res);
