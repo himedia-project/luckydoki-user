@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import MainLayout from "./layouts/MainLayout";
+import KakaoRedirectPage from "./components/auth/KakaoRedirectPage";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
       </Route>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/member/kakao" element={<KakaoRedirectPage />} />
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

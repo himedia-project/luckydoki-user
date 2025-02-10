@@ -1,0 +1,148 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.divider {
+  display: flex;
+  color: #d9d9d9;
+  border: 1px solid #d9d9d9;
+  align-items: center;
+  justify-content: center;
+  margin: 30px 0;
+  width: 370px;
+}
+
+.kakaoButton {
+  width: 370px;
+  height: 45px;
+  padding: 12px;
+  margin-bottom: 20px;
+  background-color: #fee500;
+  color: #000;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 39px;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.kakaoButton:hover {
+  background-color: #f4dc00;
+}
+
+.googleButton {
+  width: 370px;
+  height: 45px;
+  padding: 12px;
+  background-color: #ffffff;
+  color: #7a7a7a;
+  border: 1px solid #d1d5db;
+  display: flex;
+  gap: 39px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.googleButton:hover {
+  background-color: #f9f9f9;
+}
+
+.emailButton {
+  width: 370px;
+  padding: 12px;
+  background-color: #00de90;
+  color: #333333;
+  gap: 39px;
+  border: none;
+  cursor: pointer;
+}
+
+.emailButton:hover {
+  background-color: #00cc7a;
+}
+
+.emailForm {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.emailForm.active {
+  display: flex;
+  width: 350px;
+}
+
+.inputField {
+  width: 350px;
+  height: 23.66px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #666666;
+}
+
+.inputField:focus {
+  border: 1px solid #00de90;
+  outline: none;
+  box-shadow: none;
+}
+
+.loginSubmitButton {
+  width: 370px;
+  height: 45px;
+  padding: 12px;
+  background-color: #00de90;
+  color: #333333;
+  border: none;
+  cursor: pointer;
+}
+
+.loginSubmitButton:hover {
+  background-color: #00cc7a;
+}
+
+.closeButton {
+  width: 370px;
+  height: 45px;
+  padding: 12px;
+  margin-top: 30px;
+  background-color: #999999;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  background-color: #7a7a7a;
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 68px;
+  margin-top: 30px;
+}
+
+.links a {
+  color: #333333;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0px;
+  text-decoration: none;
+  line-height: 19.09px;
+}
