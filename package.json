@@ -15,7 +15,8 @@
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.5",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "sweetalert2": "^11.16.0"
   },
   "scripts": {
     "start": "cross-env PORT=3000 react-scripts start",

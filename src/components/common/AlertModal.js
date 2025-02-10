@@ -22,16 +22,14 @@ const AlertModal = ({
       onClose={onClose}
       PaperProps={{
         sx: {
-          borderRadius: 2,
           boxShadow: "0 4px 20px rgba(255, 183, 242, 0.25)",
         },
       }}
     >
       <DialogTitle
         sx={{
-          bgcolor: isSuccess ? "#FFB7F2" : "#FFE0F7",
+          bgcolor: isSuccess ? "#00de90" : "#00de90",
           color: "#2A0934",
-          fontWeight: "bold",
         }}
       >
         {title}
@@ -43,11 +41,10 @@ const AlertModal = ({
         <Button
           onClick={onConfirm || onClose}
           sx={{
-            bgcolor: "#FFB7F2",
+            bgcolor: "#00de90",
             color: "#2A0934",
-            fontWeight: "bold",
             "&:hover": {
-              bgcolor: "#FF9BE8",
+              bgcolor: "#22df90",
             },
           }}
         >
