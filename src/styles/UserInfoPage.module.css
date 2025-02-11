@@ -1,0 +1,66 @@
+.container {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+label {
+  color: #333;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #666;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: white;
+  color: #333;
+  outline: none;
+}
+
+.input:focus {
+  border: 1px solid #00de90;
+}
+
+.disabled {
+  background-color: #999;
+  color: white;
+}
+
+.saveButton {
+  height: 45px;
+  background-color: #00de90;
+  border: none;
+  font-weight: 500;
+  color: #333;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 20px 0;
+  transition: all 0.3s;
+}
+
+.saveButton:hover {
+  background-color: #00c87d;
+}
+
+.deleteButton {
+  color: #dc143c;
+  text-decoration: underline;
+  border: none;
+  background: none;
+  cursor: pointer;
+}

@@ -32,7 +32,7 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <Link to="/mypage/heart">
+              <Link to="/wishlist">
                 <img src="/heart.png" />
               </Link>
             </li>

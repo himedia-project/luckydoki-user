@@ -1,0 +1,41 @@
+.menu_container {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.menu_container a {
+  display: block;
+  color: #666;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+.active {
+  color: #00de90 !important;
+  font-weight: bold;
+}
+
+.menu_container h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+
+.bar {
+  width: 240px;
+  height: 1px;
+  background: #d9d9d9;
+}
+
+.li_box {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}

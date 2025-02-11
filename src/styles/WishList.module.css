@@ -1,0 +1,43 @@
+.wish_container {
+  width: 970px;
+}
+
+.wish_container button {
+  width: 60px;
+}
+
+.wish_container h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+
+.tab_container {
+  display: flex;
+  justify-content: start;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.tab {
+  background-color: transparent;
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  font-weight: 700;
+}
+
+.activeTab {
+  background-color: #00de90;
+  padding: 15px;
+  border-radius: 4px;
+  border: none;
+  color: #333;
+  font-weight: 700;
+}
+
+.wish_container p {
+  text-align: center;
+  padding: 140px 0;
+  color: #666;
+}

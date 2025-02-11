@@ -1,0 +1,14 @@
+.order_container {
+  width: 970px;
+}
+
+.order_container h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+
+.order_container p {
+  text-align: center;
+  padding: 140px 0;
+  color: #666;
+}
