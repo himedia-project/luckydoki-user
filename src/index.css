@@ -28,7 +28,7 @@ body {
   font-family: "Pretendard-Regular";
   background-color: #ffffff !important;
   color: #333;
-  /* min-height: 100vh; */
+  min-height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch; /* iOS 스크롤 최적화 */
 }
