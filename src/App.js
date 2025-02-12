@@ -17,6 +17,7 @@ import ReviewAddPage from "./pages/addpage/ReviewAddPage";
 import ProductAddPage from "./pages/addpage/ProductAddPage";
 import CommunityAddPage from "./pages/addpage/CommunityAddPage";
 import SellerAddPage from "./pages/addpage/SellerAddPage";
+import ShopPage from "./pages/ShopPage";
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/message" />
-        <Route path="/shop" />
+        <Route path="/shop" element={<ShopPage />} />
         <Route path="/community" />
 
         <Route path="/review_add" element={<ReviewAddPage />} />

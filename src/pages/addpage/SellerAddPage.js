@@ -17,10 +17,10 @@ export default function SellerAddPage() {
     <div>
       <h2>셀러 신청</h2>
       <div
-        className={style["profile-container"]}
+        className={style.profile_container}
         onClick={() => document.getElementById("fileInput").click()}
       >
-        <img src={image} alt="" className={style["profile-image"]} />
+        <img src={image} alt="" className={style.profile_image} />
         <div className={style.overlay}>수정</div>
         <input
           id="fileInput"
