@@ -6,23 +6,18 @@ import axiosInstance from "../api/axiosInstance";
 import { useDispatch } from "react-redux";
 import { login, setAccessToken } from "../api/redux/loginSlice";
 import Cookies from "js-cookie";
-import Swal from "sweetalert2";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showEmailForm, setShowEmailForm] = useState(false);
-  const [loginForm, setLoginForm] = useState({
-    email: "",
-    password: "",
-  });
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setLoginForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setLoginForm((prev) => ({ ...prev, [name]: value }));
+    setErrorMessage(""); // 입력 시 에러 메시지 초기화
   };
 
   const handleKakaoLogin = () => {
@@ -37,18 +32,15 @@ const LoginPage = () => {
   const handleLogin = async () => {
     try {
       const response = await axiosInstance.post("/api/member/login", loginForm);
-      const { accessToken, refreshToken } = response.data;
+      const { accessToken, refreshToken, role } = response.data;
+
       Cookies.set("refresh_token", refreshToken, { expires: 7, secure: true });
       dispatch(setAccessToken(accessToken));
       dispatch(login(response.data));
-      Swal.fire("로그인 성공!", "환영합니다.", "success");
-      navigate("/");
+
+      navigate(role === "ADMIN" ? "/admin" : "/");
     } catch (error) {
-      Swal.fire(
-        "로그인 실패",
-        "이메일 또는 비밀번호가 올바르지 않습니다.",
-        "error"
-      );
+      setErrorMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
   };
 
@@ -99,6 +91,9 @@ const LoginPage = () => {
             onChange={handleChange}
             required
           />
+          {errorMessage && (
+            <p className={styles.errorMessage}>{errorMessage}</p>
+          )}
           <button className={styles.loginSubmitButton} onClick={handleLogin}>
             로그인
           </button>
