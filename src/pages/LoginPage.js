@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import styles from "../styles/LoginPage.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { getKakaoLoginLink } from "../api/kakaoApi";
-import axiosInstance from "../api/axiosInstance";
+import axios from "axios"; // ✅ 기본 axios 사용
 import { useDispatch } from "react-redux";
 import { login, setAccessToken } from "../api/redux/loginSlice";
 import Cookies from "js-cookie";
+import { API_URL } from "../config/apiConfig"; // ✅ API 경로 사용
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -31,14 +32,21 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axiosInstance.post("/api/member/login", loginForm);
-      const { accessToken, refreshToken, role } = response.data;
+      const response = await axios.post(
+        `${API_URL}/api/member/login`,
+        loginForm,
+        {
+          withCredentials: true, // ✅ 쿠키 포함 요청
+        }
+      );
+
+      const { accessToken, refreshToken, roles } = response.data;
 
       Cookies.set("refresh_token", refreshToken, { expires: 7, secure: true });
       dispatch(setAccessToken(accessToken));
       dispatch(login(response.data));
-
-      navigate(role === "ADMIN" ? "/admin" : "/");
+      const isAdmin = roles.includes("ADMIN");
+      navigate(isAdmin ? "/admin" : "/");
     } catch (error) {
       setErrorMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
@@ -100,7 +108,7 @@ const LoginPage = () => {
           <div className={styles.links}>
             <Link to="/find-email">이메일 찾기</Link>
             <Link to="/find-password">비밀번호 찾기</Link>
-            <Link to="/register">이메일 가입</Link>
+            <Link to="/join">이메일 가입</Link>
           </div>
           <button
             className={styles.closeButton}
