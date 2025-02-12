@@ -100,7 +100,7 @@ const LoginPage = () => {
             required
           />
           <button className={styles.loginSubmitButton} onClick={handleLogin}>
-            LOGIN
+            로그인
           </button>
           <div className={styles.links}>
             <Link to="/find-email">이메일 찾기</Link>
