@@ -17,7 +17,7 @@ import ReviewAddPage from "./pages/addpage/ReviewAddPage";
 import ProductAddPage from "./pages/addpage/ProductAddPage";
 import CommunityAddPage from "./pages/addpage/CommunityAddPage";
 import SellerAddPage from "./pages/addpage/SellerAddPage";
-import RegisterPage from "./pages/RegitsterPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   return (
@@ -36,7 +36,7 @@ function App() {
 
       <Route path="/login" element={<LoginPage />} />
       <Route path="/member/kakao" element={<KakaoRedirectPage />} />
-      <Route path="/join" element={<RegisterPage />}/>
+      <Route path="/join" element={<RegisterPage />} />
 
       <Route element={<MyPageLayout />}>
         <Route path="/mypage" element={<MyPage />} />
