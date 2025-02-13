@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import style from "../../styles/ProductAddPage.module.css";
-import axiosInstance from "../../api/axiosInstance";
+import {
+  getMainCategories,
+  getSubCategories,
+  getChildCategories,
+} from "../../api/categoryApi";
+import { createProduct } from "../../api/registerApi";
 
 export default function ProductAddPage() {
   const [formData, setFormData] = useState({
@@ -28,8 +33,7 @@ export default function ProductAddPage() {
   };
 
   useEffect(() => {
-    axiosInstance
-      .get("/api/category")
+    getMainCategories()
       .then((response) => setMainCategories(response.data))
       .catch((error) => console.error("메인 카테고리 가져오기 실패:", error));
   }, []);
@@ -48,8 +52,7 @@ export default function ProductAddPage() {
         childCategory: "",
       }));
 
-      axiosInstance
-        .get(`/api/category/${value}/sub/list`)
+      getSubCategories(value)
         .then((response) => setSubCategories(response.data))
         .catch((error) => console.error("서브 카테고리 가져오기 실패:", error));
     }
@@ -62,8 +65,7 @@ export default function ProductAddPage() {
         childCategory: "",
       }));
 
-      axiosInstance
-        .get(`/api/category/${value}/child/list`)
+      getChildCategories(value)
         .then((response) => setChildCategories(response.data))
         .catch((error) => console.error("자식 카테고리 가져오기 실패:", error));
     }
@@ -138,7 +140,6 @@ export default function ProductAddPage() {
       price: parseInt(formData.price, 10),
       discountPrice: parseInt(formData.discountPrice, 10) || 0,
       description: formData.content,
-      shopId: 1,
       stockNumber: parseInt(formData.stock, 10),
       files: formData.imageFiles,
       uploadFileNames: formData.imageFiles.map((file) => file.name),
@@ -147,7 +148,7 @@ export default function ProductAddPage() {
     };
 
     try {
-      const response = await axiosInstance.post("/api/product", productData);
+      const response = await createProduct(productData);
       alert("상품이 성공적으로 등록되었습니다!");
       console.log("상품 등록 성공:", response.data);
 

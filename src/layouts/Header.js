@@ -1,16 +1,41 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import style from "../styles/Header.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutPost } from "../api/loginApi";
+import { logout } from "../api/redux/loginSlice";
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { nickName } = useSelector((state) => state.loginSlice);
+
+  const handleLogout = async () => {
+    try {
+      await logoutPost();
+      dispatch(logout());
+      alert("로그아웃 되었습니다.");
+      navigate("/");
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+      alert("로그아웃에 실패했습니다.");
+    }
+  };
+
   return (
     <div className={style.header}>
       <div className={style.inner}>
         <div className={style.header_top}>
           <ul className={style.login_nav}>
-            <li>
-              <Link to="/login">로그인</Link>
-            </li>
+            {nickName ? (
+              <li className={style.logout} onClick={handleLogout}>
+                로그아웃
+              </li>
+            ) : (
+              <li>
+                <Link to="/login">로그인</Link>
+              </li>
+            )}
             <li className={style.notice}>
               <img src="/notification.png" />
               <Link to="/notice">알림</Link>
