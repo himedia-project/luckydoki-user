@@ -5,9 +5,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import styles from "../../styles/ProductSwiper.module.css";
-import { API_URL } from "../../config/apiConfig"; // ✅ API URL 가져오기
-
-const DEFAULT_IMAGE = "/images/default_product.png";
+import ProductCard from "../card/ProductCard"; // ✅ 공용 컴포넌트
+import { API_URL } from "../../config/apiConfig";
 
 const ProductSwiper = ({ title, items }) => {
   if (!items || items.length === 0) {
@@ -32,21 +31,20 @@ const ProductSwiper = ({ title, items }) => {
       >
         {items.map((item) => (
           <SwiperSlide key={item.id}>
-            <div className={styles.productCard}>
-              <img
-                src={
-                  item.uploadFileNames?.length > 0
-                    ? `${API_URL}/api/image/view/${item.uploadFileNames[0]}`
-                    : DEFAULT_IMAGE
-                }
-                alt={item.name}
-                className={styles.productImage}
-              />
-              <p className={styles.productName}>{item.name}</p>
-              <p className={styles.productPrice}>
-                {item.price.toLocaleString()}원
-              </p>
-            </div>
+            <ProductCard
+              id={item.id}
+              name={item.name}
+              price={item.price}
+              discountRate={item.discount_rate} // ✅ 할인율 추가
+              imageUrl={
+                item.uploadFileNames?.length > 0
+                  ? `${API_URL}/api/image/view/${item.uploadFileNames[0]}`
+                  : null
+              }
+              isNew={item.is_new}
+              event={item.event}
+              best={item.best}
+            />
           </SwiperSlide>
         ))}
       </Swiper>
