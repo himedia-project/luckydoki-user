@@ -1,0 +1,94 @@
+/* ✅ 상품 카드 */
+.productCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.productCard:hover {
+  transform: translateY(-5px);
+}
+
+/* ✅ 이미지 컨테이너 */
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 180px;
+}
+
+/* ✅ 상품 이미지 */
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* ✅ 하트(찜) 버튼 */
+.likeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* ✅ 상품명 */
+.productName {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+/* ✅ 가격 & 할인율 */
+.productPrice {
+  font-size: 14px;
+  color: #333;
+}
+
+.discountRate {
+  font-size: 14px;
+  font-weight: bold;
+  color: red;
+  margin-right: 5px;
+}
+
+/* ✅ 태그 컨테이너 */
+.tagContainer {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+/* ✅ 태그 스타일 */
+.tagNew,
+.tagEvent,
+.tagBest {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.tagNew {
+  background-color: #f4f4f4;
+  color: #999999;
+}
+
+.tagEvent {
+  background-color: #f4f4f4;
+  color: #999999;
+}
+
+.tagBest {
+  background-color: #f4f4f4;
+  color: #999999;
+}
