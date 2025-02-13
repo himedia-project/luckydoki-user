@@ -3,6 +3,8 @@ import style from "../../styles/MyPage.module.css";
 import { Link } from "react-router-dom";
 import { getMyProfile } from "../../api/memberApi";
 import { getLikedShops, getLikedProducts } from "../../api/likesApi";
+import ProductCard from "../../components/card/ProductCard";
+import ShopCard from "../../components/card/ShopCard";
 
 export default function MyPage() {
   const [userInfo, setUserInfo] = useState({
@@ -41,6 +43,19 @@ export default function MyPage() {
         console.error("찜한 샵 조회 실패:", err);
       });
   }, []);
+
+  const handleUnlikeProduct = (id) => {
+    setLikedProducts((prevProducts) =>
+      prevProducts.filter((p) => p.productId !== id)
+    );
+  };
+
+  const handleUnlikeShop = (id) => {
+    setLikedShops((prevShops) =>
+      prevShops.filter((shop) => shop.shopId !== id)
+    );
+  };
+
   return (
     <div className={style.mypage_container}>
       {/* ---- 상단 유저 정보 ---- */}
@@ -84,13 +99,28 @@ export default function MyPage() {
       <div className={style.wishlist_container}>
         <div className={style.wish_header}>
           <h3>찜한 상품</h3>
-          <Link to="/wishlist">더보기</Link>
+          <Link to="/likeslist">더보기</Link>
         </div>
         <div className={style.wish_content}>
           {likedProducts && likedProducts.length > 0 ? (
-            likedProducts.map((product) => (
-              <p key={product.productId}>{product.name}</p>
-            ))
+            <div className={style.product_grid}>
+              {likedProducts.map((product) => (
+                <ProductCard
+                  key={product.productId}
+                  id={product.productId}
+                  name={product.productName}
+                  price={product.price}
+                  discountPrice={product.discountPrice}
+                  discountRate={product.discountRate}
+                  productImageUrl={product.productImageUrl}
+                  isNew={product.isNew === "Y"}
+                  event={product.event === "Y"}
+                  best={product.best === "Y"}
+                  likes={product.likes}
+                  onUnlike={handleUnlikeProduct}
+                />
+              ))}
+            </div>
           ) : (
             <p>찜한 상품이 없습니다.</p>
           )}
@@ -101,11 +131,22 @@ export default function MyPage() {
       <div className={style.wishlist_container}>
         <div className={style.wish_header}>
           <h3>찜한 샵</h3>
-          <Link to="/wishlist">더보기</Link>
+          <Link to="/likeslist">더보기</Link>
         </div>
         <div className={style.wish_content}>
           {likedShops && likedShops.length > 0 ? (
-            likedShops.map((shop) => <p key={shop.shopId}>{shop.shopName}</p>)
+            <div className={style.shop_grid}>
+              {likedShops.map((shop) => (
+                <ShopCard
+                  key={shop.shopId}
+                  shopId={shop.shopId}
+                  sellerNickname={shop.sellerNickname}
+                  shopImageUrl={shop.shopImageUrl}
+                  likes={shop.likes}
+                  onUnlike={handleUnlikeShop}
+                />
+              ))}
+            </div>
           ) : (
             <p>찜한 샵이 없습니다.</p>
           )}

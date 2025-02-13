@@ -58,7 +58,7 @@ export default function MyPageSideMenu() {
           </p>
           <p>
             <NavLink
-              to="/wishlist"
+              to="/likeslist"
               className={({ isActive }) => (isActive ? style.active : "")}
             >
               찜목록

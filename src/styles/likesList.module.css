@@ -2,10 +2,6 @@
   width: 970px;
 }
 
-.wish_container button {
-  width: 60px;
-}
-
 .wish_container h2 {
   font-size: 28px;
   margin-bottom: 25px;
@@ -20,6 +16,7 @@
 
 .tab {
   background-color: transparent;
+  width: 60px;
   padding: 15px;
   border: none;
   cursor: pointer;
@@ -29,6 +26,7 @@
 
 .activeTab {
   background-color: #00de90;
+  width: 60px;
   padding: 15px;
   border-radius: 4px;
   border: none;
@@ -36,8 +34,18 @@
   font-weight: 700;
 }
 
-.wish_container p {
-  text-align: center;
-  padding: 140px 0;
-  color: #666;
+.content_box {
+  width: 990px;
+}
+
+.product_grid {
+  gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.shop_container {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
 }

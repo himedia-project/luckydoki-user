@@ -117,7 +117,14 @@
   font-size: 14px;
 }
 
-.wish_content {
-  text-align: center;
-  padding: 24px 16px 36px;
+.product_grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.shop_grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
 }

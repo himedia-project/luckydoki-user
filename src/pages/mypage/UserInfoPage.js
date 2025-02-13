@@ -1,17 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import style from "../../styles/UserInfoPage.module.css";
 import axiosInstance from "../../api/axiosInstance";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { getMyProfile, updateMyProfile } from "../../api/memberApi";
 
 export default function UserInfo() {
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState({
-    nickname: "abcde",
-    email: "abcde@abcde.com",
-    phone: "010-xxxx-xxxx",
+    nickname: "",
+    email: "",
+    phone: "",
   });
+
+  useEffect(() => {
+    getMyProfile()
+      .then((response) => {
+        const { nickName, email, phone } = response.data;
+        setUserInfo({
+          nickname: nickName || "",
+          email: email || "",
+          phone: phone || "",
+        });
+      })
+      .catch((error) => {
+        console.error("내 정보 불러오기 실패:", error);
+      });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,17 +37,25 @@ export default function UserInfo() {
     }));
   };
 
+  // 회원정보 수정 핸들러러
   const handleSave = async () => {
     try {
-      const response = await axiosInstance.post("/api/user/update", userInfo);
-      alert("회원정보가 저장되었습니다!");
-      console.log("저장 성공:", response.data);
+      const updateData = {
+        nickName: userInfo.nickname,
+        phone: userInfo.phone,
+      };
+
+      const response = await updateMyProfile(updateData);
+      alert("회원정보가 수정되었습니다!");
+      console.log("수정 성공:", response.data);
+      navigate("/mypage");
     } catch (error) {
-      console.error("회원정보 저장 실패:", error);
-      alert("회원정보 저장 중 오류가 발생했습니다.");
+      console.error("회원정보 수정 실패:", error);
+      alert("회원정보 수정 중 오류가 발생했습니다.");
     }
   };
 
+  // 삭제 핸들러
   const handleDelete = async () => {
     Swal.fire({
       title: "정말 탈퇴하시겠습니까?",
@@ -50,7 +74,7 @@ export default function UserInfo() {
             data: { email: userInfo.email },
           });
           Swal.fire("탈퇴되었습니다.", "", "success").then(() => {
-            nav("/");
+            navigate("/");
           });
         } catch (error) {
           console.error("회원 탈퇴 실패:", error);
@@ -64,6 +88,7 @@ export default function UserInfo() {
     <div className={style.container}>
       <h2 className={style.title}>회원정보</h2>
 
+      {/* 닉네임 */}
       <div className={style.inputGroup}>
         <label>이름(닉네임)</label>
         <input
@@ -75,6 +100,7 @@ export default function UserInfo() {
         />
       </div>
 
+      {/* 이메일 (readOnly) */}
       <div className={style.inputGroup}>
         <label>이메일</label>
         <input
@@ -85,6 +111,7 @@ export default function UserInfo() {
         />
       </div>
 
+      {/* 휴대폰번호 */}
       <div className={style.inputGroup}>
         <label>휴대폰번호</label>
         <input
@@ -96,10 +123,12 @@ export default function UserInfo() {
         />
       </div>
 
+      {/* 회원정보 저장 버튼 */}
       <button onClick={handleSave} className={style.saveButton}>
         회원정보 저장
       </button>
 
+      {/* 회원탈퇴 버튼 */}
       <button onClick={handleDelete} className={style.deleteButton}>
         회원탈퇴
       </button>
