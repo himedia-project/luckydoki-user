@@ -96,7 +96,7 @@ const ProductCard = ({
         {discountRate > 0 && (
           <span className={styles.discountRate}>{discountRate}%</span>
         )}
-        {price.toLocaleString()}원
+        <span className={styles.price}>{price.toLocaleString()}원</span>
       </p>
       <p className={styles.discountPrice}>{discountPrice.toLocaleString()}원</p>
 

@@ -47,6 +47,8 @@
 
 /* ✅ 가격 & 할인율 */
 .productPrice {
+  display: flex;
+  align-items: center;
   font-size: 16px;
   color: #333;
   font-weight: 700;
@@ -59,8 +61,14 @@
   margin-right: 5px;
 }
 
+.price {
+  font-size: 12px;
+  color: #999;
+  text-decoration: line-through;
+}
+
 .discountPrice {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: #00de90;
   margin: 5px 0;

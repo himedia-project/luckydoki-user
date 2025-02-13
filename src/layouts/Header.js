@@ -43,7 +43,7 @@ const Header = () => {
       <div className={style.inner}>
         <div className={style.header_top}>
           <ul className={style.login_nav}>
-            {/* 로그아웃/로그인 토글 */}
+            {/* 로그인/로그아웃 */}
             {nickName ? (
               <li className={style.logout} onClick={handleLogout}>
                 로그아웃
