@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import style from "../styles/Header.module.css";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import { logoutPost } from "../api/loginApi";
 import { logout } from "../api/redux/loginSlice";
-import Swal from "sweetalert2";
+import style from "../styles/Header.module.css";
 
 const Header = () => {
   const dispatch = useDispatch();

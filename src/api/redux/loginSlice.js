@@ -1,17 +1,17 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initState = {
-  email: '',
+  email: "",
   roles: [],
-  accessToken: '',
+  accessToken: "",
 };
 
 const loginSlice = createSlice({
-  name: 'loginSlice',
+  name: "loginSlice",
   initialState: initState,
   reducers: {
     login: (state, action) => {
-      console.log('login: {}', action.payload);
+      console.log("login: {}", action.payload);
       const payload = action.payload; // email, roles, accessToken으로 구성
       return { ...payload };
     },
@@ -21,7 +21,7 @@ const loginSlice = createSlice({
       return { ...initState };
     },
     setAccessToken: (state, action) => {
-      console.log('setAccessToken: accessToken', action.payload);
+      console.log("setAccessToken: accessToken", action.payload);
       state.accessToken = action.payload;
     },
   },

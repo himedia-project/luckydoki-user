@@ -7,8 +7,8 @@ import Swal from "sweetalert2";
 export default function MyPageSideMenu({ userInfo }) {
   const navigate = useNavigate();
   const roles = useSelector((state) => state.loginSlice.roles);
+  const shopId = useSelector((state) => state.infoSlice.shopId);
   const role = roles[0];
-  const shopId = userInfo?.shopId;
 
   const handleShopClick = (e) => {
     e.preventDefault();

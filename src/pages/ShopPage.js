@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { likeShop } from "../api/likesApi";
-import { getSellerInfo, getShopProducts } from "../api/shopApi";
+import {
+  getCommunityPosts,
+  getSellerInfo,
+  getShopProducts,
+} from "../api/shopApi";
 import style from "../styles/ShopPage.module.css";
 
 import ImageLoader from "../components/card/ImageLoader";
 import useLikeToggle from "../hooks/useLikeToggle";
 import ProductCard from "../components/card/ProductCard";
 import { useSelector } from "react-redux";
+import CommunityCard from "../components/card/CommunityCard";
 
 export default function ShopPage() {
   const navigate = useNavigate();
@@ -42,13 +47,13 @@ export default function ShopPage() {
             console.error("상품 리스트 조회 실패:", error);
           });
       } else if (activeTab === "커뮤니티") {
-        // getCommunityPosts(shopId)
-        //   .then((response) => {
-        //     setData(response.data.communityList || []);
-        //   })
-        //   .catch((error) => {
-        //     console.error("커뮤니티 글 조회 실패:", error);
-        //   });
+        getCommunityPosts(shopId)
+          .then((response) => {
+            setData(response.data.communityList || []);
+          })
+          .catch((error) => {
+            console.error("커뮤니티 글 조회 실패:", error);
+          });
       }
     }
   }, [shopId, activeTab, setIsLiked]);
@@ -147,11 +152,15 @@ export default function ShopPage() {
           {data.length > 0 ? (
             <div className={style.community_grid}>
               {data.map((post) => (
-                <div key={post.id} className={style.community_post}>
-                  <h3>{post.title}</h3>
-                  <p>{post.content}</p>
-                  <span>{post.createdAt}</span>
-                </div>
+                <CommunityCard
+                  key={post.id}
+                  id={post.id}
+                  title={post.title}
+                  content={post.content}
+                  createdAt={post.createdAt}
+                  nickName={post.nickName}
+                  uploadFileNames={post.uploadFileNames}
+                />
               ))}
             </div>
           ) : (

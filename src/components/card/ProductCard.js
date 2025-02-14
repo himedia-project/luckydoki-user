@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../../styles/ProductCard.module.css"; // ✅ 스타일 파일 불러오기
+import styles from "../../styles/ProductCard.module.css";
 import { likeProduct } from "../../api/likesApi";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -87,13 +87,23 @@ const ProductCard = ({
       <p className={styles.productName}>{name}</p>
 
       {/* ✅ 할인율 & 가격 */}
-      <p className={styles.productPrice}>
-        {discountRate > 0 && (
-          <span className={styles.discountRate}>{discountRate}%</span>
-        )}
-        <span className={styles.price}>{price.toLocaleString()}원</span>
-      </p>
-      <p className={styles.discountPrice}>{discountPrice.toLocaleString()}원</p>
+      {discountRate > 0 ? (
+        <>
+          <p className={styles.productPrice}>
+            <span className={styles.discountRate}>{discountRate}%</span>
+            <span className={styles.price}>{price?.toLocaleString()}원</span>
+          </p>
+          <p className={styles.discountPrice}>
+            {discountPrice?.toLocaleString()}원
+          </p>
+        </>
+      ) : (
+        <p className={styles.productPrice}>
+          <p className={styles.discountPrice}>
+            {discountPrice?.toLocaleString()}원
+          </p>
+        </p>
+      )}
 
       {/* ✅ 태그 버튼 (조건부 렌더링) */}
       <div className={styles.tagContainer}>

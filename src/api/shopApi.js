@@ -9,3 +9,8 @@ export const getSellerInfo = async (shopId) => {
 export const getShopProducts = async (shopId) => {
   return await axiosInstance.get(`/shop/${shopId}/product/list`);
 };
+
+// 샵 커뮤니티 리스트 가져오기
+export const getCommunityPosts = async (shopId) => {
+  return await axiosInstance.get(`/shop/${shopId}/community/list`);
+};
