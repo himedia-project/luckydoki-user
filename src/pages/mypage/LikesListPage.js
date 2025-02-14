@@ -1,47 +1,18 @@
-import React, { useEffect, useState } from "react";
-import style from "../../styles/likesList.module.css";
-import { getLikedProducts, getLikedShops } from "../../api/likesApi";
+import React from "react";
 import ProductCard from "../../components/card/ProductCard";
 import ShopCard from "../../components/card/ShopCard";
+import { useLikedItemsTab } from "../../hooks/useLikedItemsTab";
+import style from "../../styles/likesList.module.css";
 
 export default function LikesListPage() {
-  const [selectedTab, setSelectedTab] = useState("product");
-  const [likedProducts, setLikedProducts] = useState([]);
-  const [likedShops, setLikedShops] = useState([]);
-
-  useEffect(() => {
-    if (selectedTab === "product") {
-      getLikedProducts()
-        .then((res) => {
-          setLikedProducts(res.data);
-        })
-        .catch((err) => {
-          console.error("찜한 상품 목록 조회 실패:", err);
-          setLikedProducts([]);
-        });
-    } else {
-      getLikedShops()
-        .then((res) => {
-          setLikedShops(res.data);
-        })
-        .catch((err) => {
-          console.error("찜한 샵 목록 조회 실패:", err);
-          setLikedShops([]);
-        });
-    }
-  }, [selectedTab]);
-
-  const handleUnlikeProduct = (id) => {
-    setLikedProducts((prevProducts) =>
-      prevProducts.filter((p) => p.productId !== id)
-    );
-  };
-
-  const handleUnlikeShop = (id) => {
-    setLikedShops((prevShops) =>
-      prevShops.filter((shop) => shop.shopId !== id)
-    );
-  };
+  const {
+    selectedTab,
+    setSelectedTab,
+    likedProducts,
+    likedShops,
+    handleUnlikeProduct,
+    handleUnlikeShop,
+  } = useLikedItemsTab();
 
   return (
     <div className={style.wish_container}>

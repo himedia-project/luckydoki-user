@@ -1,8 +1,35 @@
 import React from "react";
 import style from "../styles/MyPageSideMenu.module.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
-export default function MyPageSideMenu() {
+export default function MyPageSideMenu({ userInfo }) {
+  const navigate = useNavigate();
+  const roles = useSelector((state) => state.loginSlice.roles);
+  const role = roles[0];
+  const shopId = userInfo?.shopId;
+
+  const handleShopClick = (e) => {
+    e.preventDefault();
+    if (role === "USER") {
+      Swal.fire({
+        title: "셀러가 아니십니다.",
+        text: "신청 하시겠습니까?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "확인",
+        cancelButtonText: "취소",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/seller_add");
+        }
+      });
+    } else if (role === "SELLER") {
+      navigate(`/shop/${shopId}`);
+    }
+  };
+
   return (
     <div className={style.menu_container}>
       <div>
@@ -73,12 +100,13 @@ export default function MyPageSideMenu() {
             </NavLink>
           </p>
           <p>
-            <NavLink
-              to="/shop"
-              className={({ isActive }) => (isActive ? style.active : "")}
+            <a
+              href="/shop"
+              onClick={handleShopClick}
+              className={style.shopLink}
             >
               샵
-            </NavLink>
+            </a>
           </p>
         </div>
         <div className={style.bar}></div>

@@ -1,60 +1,14 @@
-import React, { useEffect, useState } from "react";
-import style from "../../styles/MyPage.module.css";
-import { Link } from "react-router-dom";
-import { getMyProfile } from "../../api/memberApi";
-import { getLikedShops, getLikedProducts } from "../../api/likesApi";
+import React from "react";
+import { Link, useOutletContext } from "react-router-dom";
 import ProductCard from "../../components/card/ProductCard";
 import ShopCard from "../../components/card/ShopCard";
+import { useLikedItems } from "../../hooks/useLikedItems";
+import style from "../../styles/MyPage.module.css";
 
 export default function MyPage() {
-  const [userInfo, setUserInfo] = useState({
-    nickname: "",
-    email: "",
-  });
-  const [likedShops, setLikedShops] = useState([]);
-  const [likedProducts, setLikedProducts] = useState([]);
-
-  useEffect(() => {
-    getMyProfile()
-      .then((response) => {
-        const { nickName, email } = response.data;
-        setUserInfo({
-          nickname: nickName,
-          email: email,
-        });
-      })
-      .catch((error) => {
-        console.error("내 정보 가져오기 실패:", error);
-      });
-
-    getLikedProducts()
-      .then((res) => {
-        setLikedProducts(res.data);
-      })
-      .catch((err) => {
-        console.error("찜한 상품 조회 실패:", err);
-      });
-
-    getLikedShops()
-      .then((res) => {
-        setLikedShops(res.data);
-      })
-      .catch((err) => {
-        console.error("찜한 샵 조회 실패:", err);
-      });
-  }, []);
-
-  const handleUnlikeProduct = (id) => {
-    setLikedProducts((prevProducts) =>
-      prevProducts.filter((p) => p.productId !== id)
-    );
-  };
-
-  const handleUnlikeShop = (id) => {
-    setLikedShops((prevShops) =>
-      prevShops.filter((shop) => shop.shopId !== id)
-    );
-  };
+  const { userInfo } = useOutletContext();
+  const { likedProducts, likedShops, handleUnlikeProduct, handleUnlikeShop } =
+    useLikedItems();
 
   return (
     <div className={style.mypage_container}>
@@ -62,7 +16,7 @@ export default function MyPage() {
       <div className={style.userinfo_container}>
         <div className={style.userinfo_top}>
           <div className={style.text_box}>
-            <p>{userInfo.nickname}</p>
+            <p>{userInfo?.nickName}</p>
             <span>님 반갑습니다</span>
           </div>
           <div className={style.black_bar}></div>
@@ -71,7 +25,7 @@ export default function MyPage() {
           <div className={style.user_data}>
             <img src="profile.png" />
             <div className={style.userinfo}>
-              <p>{userInfo.email}</p>
+              <p>{userInfo?.email}</p>
               <Link to="/userinfo">내 정보 변경</Link>
             </div>
           </div>

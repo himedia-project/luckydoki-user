@@ -37,7 +37,7 @@ export default function UserInfo() {
     }));
   };
 
-  // 회원정보 수정 핸들러러
+  // 회원정보 수정 핸들러
   const handleSave = async () => {
     try {
       const updateData = {

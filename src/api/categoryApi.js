@@ -1,21 +1,21 @@
 import axiosInstance from "./axiosInstance";
 
 // 메인 카테고리 목록 조회
-export const getMainCategories = () => {
-  return axiosInstance.get("/api/category");
+export const getMainCategories = async () => {
+  return await axiosInstance.get("/api/category");
 };
 
 // 서브 카테고리 목록 조회
-export const getSubCategories = (mainCategoryId) => {
-  return axiosInstance.get(`/api/category/${mainCategoryId}/sub/list`);
+export const getSubCategories = async (mainCategoryId) => {
+  return await axiosInstance.get(`/api/category/${mainCategoryId}/sub/list`);
 };
 
 // 자식 카테고리 목록 조회
-export const getChildCategories = (subCategoryId) => {
-  return axiosInstance.get(`/api/category/${subCategoryId}/child/list`);
+export const getChildCategories = async (subCategoryId) => {
+  return await axiosInstance.get(`/api/category/${subCategoryId}/child/list`);
 };
 
 // 카테고리별 상품 목록 조회
-export const getProductsByCategoryId = (categoryId) => {
-  return axiosInstance.get(`/api/category/${categoryId}/product/list`);
+export const getProductsByCategoryId = async (categoryId) => {
+  return await axiosInstance.get(`/api/category/${categoryId}/product/list`);
 };

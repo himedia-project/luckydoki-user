@@ -13,11 +13,13 @@
 }
 
 .shop_info img {
+  width: 100px;
+  height: 100px;
   border-radius: 9999px;
 }
 
 .shop_info p {
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
 }
 
@@ -35,8 +37,16 @@
   gap: 4px;
   background-color: #ef7014;
   border-radius: 4px;
+  border: none;
   cursor: pointer;
   color: white;
+}
+
+.liked {
+  background: none;
+  color: #333;
+  border: 1px solid #999;
+  font-size: 14px;
 }
 
 .wish_button p {
