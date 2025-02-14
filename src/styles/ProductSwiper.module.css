@@ -6,34 +6,67 @@
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
-  text-align: center;
+  text-align: left;
   color: #333;
 }
 
-.productImage {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 8px;
+/* ✅ Swiper 전체 너비 사용 (전역 스타일 적용) */
+:global(.swiper) {
+  width: 120%;
 }
 
-.productName {
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 8px;
-  color: #444;
+/* ✅ 각 슬라이드가 전체 너비를 활용하도록 설정 */
+:global(.swiper-slide) {
+  box-sizing: border-box;
+  width: auto; /* 기본 크기 설정 */
 }
 
-.productPrice {
-  color: #ff5722;
-  font-size: 14px;
-  font-weight: bold;
-  margin-top: 4px;
+/* ✅ Swiper 네비게이션 버튼 (양쪽 끝으로 배치 & 스타일 적용) */
+:global(.swiper-button-prev),
+:global(.swiper-button-next) {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: white; /* ✅ 흰색 배경 */
+  color: black; /* ✅ 검은색 화살표 */
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
 }
 
-/* 반응형 조정 */
+/* ✅ 왼쪽 화살표 위치 */
+:global(.swiper-button-prev) {
+  left: -20px;
+}
+
+/* ✅ 오른쪽 화살표 위치 */
+:global(.swiper-button-next) {
+  right: -20px;
+}
+
+/* ✅ 반응형 조정 */
 @media (max-width: 768px) {
   .productImage {
     height: 130px;
+  }
+
+  /* ✅ 작은 화면에서 버튼 크기 조정 */
+  :global(.swiper-button-prev),
+  :global(.swiper-button-next) {
+    width: 30px;
+    height: 30px;
+  }
+
+  :global(.swiper-button-prev) {
+    left: -10px;
+  }
+
+  :global(.swiper-button-next) {
+    right: -10px;
   }
 }

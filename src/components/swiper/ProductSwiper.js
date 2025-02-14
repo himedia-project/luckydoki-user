@@ -28,6 +28,11 @@ const ProductSwiper = ({ title, items }) => {
         navigation
         pagination={{ clickable: true }}
         modules={[Navigation, Pagination]}
+        breakpoints={{
+          1024: { slidesPerView: 4 }, // PC에서는 4개
+          768: { slidesPerView: 2 }, // 태블릿에서는 2개
+          480: { slidesPerView: 1 }, // 모바일에서는 1개
+        }}
       >
         {items.map((item) => (
           <SwiperSlide key={item.id}>
