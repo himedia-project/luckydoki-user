@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getSellerInfo } from "../api/shopApi";
-import { likeShop } from "../api/likesApi"; // 찜 API 추가
+import { useNavigate, useParams } from "react-router-dom";
+import { likeShop } from "../api/likesApi";
+import { getSellerInfo, getShopProducts } from "../api/shopApi";
 import style from "../styles/ShopPage.module.css";
-import Swal from "sweetalert2";
+
+import ImageLoader from "../components/card/ImageLoader";
+import useLikeToggle from "../hooks/useLikeToggle";
+import ProductCard from "../components/card/ProductCard";
+import { useSelector } from "react-redux";
 
 export default function ShopPage() {
+  const navigate = useNavigate();
   const { shopId } = useParams();
+  const userNickname = useSelector((state) => state.loginSlice.nickName);
   const [sellerInfo, setSellerInfo] = useState(null);
-  const [isLiked, setIsLiked] = useState(false);
+  const [data, setData] = useState([]);
+  const [isLiked, toggleLike, setIsLiked] = useLikeToggle(
+    false,
+    likeShop,
+    shopId
+  );
   const [activeTab, setActiveTab] = useState("판매상품");
 
   useEffect(() => {
@@ -21,40 +32,35 @@ export default function ShopPage() {
         .catch((error) => {
           console.error("Seller info 조회 실패:", error);
         });
-    }
-  }, [shopId]);
 
-  const toggleLike = async () => {
-    try {
-      const response = await likeShop(shopId);
-      if (response.data) {
-        const updatedLikeStatus = response.data.liked;
-        setIsLiked(updatedLikeStatus);
-
-        Swal.fire({
-          toast: true,
-          position: "top",
-          icon: updatedLikeStatus ? "success" : "info",
-          title: updatedLikeStatus
-            ? "찜목록에 추가되었습니다."
-            : "찜 목록에서 삭제되었습니다.",
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: false,
-        });
+      if (activeTab === "판매상품") {
+        getShopProducts(shopId)
+          .then((response) => {
+            setData(response.data.productList || []);
+          })
+          .catch((error) => {
+            console.error("상품 리스트 조회 실패:", error);
+          });
+      } else if (activeTab === "커뮤니티") {
+        // getCommunityPosts(shopId)
+        //   .then((response) => {
+        //     setData(response.data.communityList || []);
+        //   })
+        //   .catch((error) => {
+        //     console.error("커뮤니티 글 조회 실패:", error);
+        //   });
       }
-    } catch (error) {
-      console.error("찜 상태 변경 실패:", error);
-      Swal.fire({
-        toast: true,
-        position: "top",
-        title: "찜 상태 변경에 실패하였습니다.",
-        icon: "error",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: false,
-      });
     }
+  }, [shopId, activeTab, setIsLiked]);
+
+  const handleAddProduct = () => {
+    console.log("상품 추가 버튼 클릭됨");
+    navigate("/product_add");
+  };
+
+  const handleDeleteProduct = () => {
+    console.log("상품 삭제 버튼 클릭됨");
+    // TODO: 상품 삭제 로직 구현
   };
 
   return (
@@ -62,18 +68,35 @@ export default function ShopPage() {
       <div className={style.shop_top}>
         <div className={style.shop_info}>
           <div className={style.seller_info}>
-            <img src={sellerInfo?.image} alt="" />
+            <ImageLoader imagePath={sellerInfo?.image} alt="프로필 이미지" />
             <p>{sellerInfo?.nickName}</p>
           </div>
           <p>{sellerInfo?.introduction}</p>
-          <button
-            className={`${style.wish_button} ${isLiked ? style.liked : ""}`}
-            onClick={toggleLike}
-          >
-            {isLiked ? "✓ 찜한 샵" : "+ 찜"}
-          </button>
+
+          {userNickname === sellerInfo?.nickName ? (
+            <div className={style.owner_buttons}>
+              <button className={style.add_button} onClick={handleAddProduct}>
+                + 상품 추가
+              </button>
+              <button
+                className={style.delete_button}
+                onClick={handleDeleteProduct}
+              >
+                상품 삭제
+              </button>
+            </div>
+          ) : (
+            <button
+              className={`${style.wish_button} ${isLiked ? style.liked : ""}`}
+              onClick={toggleLike}
+            >
+              {isLiked ? "✓ 찜한 샵" : "+ 찜"}
+            </button>
+          )}
         </div>
       </div>
+
+      {/* 네비게이션 바 */}
       <div className={style.shop_nav}>
         <p
           className={`${style.nav_button} ${
@@ -92,6 +115,50 @@ export default function ShopPage() {
           판매상품
         </p>
       </div>
+
+      {/* 탭에 따라 데이터 출력 */}
+      {activeTab === "판매상품" ? (
+        <div className={style.product_list}>
+          {data.length > 0 ? (
+            <div className={style.product_grid}>
+              {data.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  discountPrice={product.discountPrice || product.price}
+                  discountRate={product.discountRate || 0}
+                  productImageUrl={product.uploadFileNames?.[0]}
+                  isNew={product.isNew === "Y"}
+                  event={product.event === "Y"}
+                  best={product.best === "Y"}
+                  likes={product.likes}
+                  onUnlike={() => console.log(`상품 ${product.id} 찜 해제`)}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className={style.no_products}>등록된 상품이 없습니다.</p>
+          )}
+        </div>
+      ) : (
+        <div className={style.community_list}>
+          {data.length > 0 ? (
+            <div className={style.community_grid}>
+              {data.map((post) => (
+                <div key={post.id} className={style.community_post}>
+                  <h3>{post.title}</h3>
+                  <p>{post.content}</p>
+                  <span>{post.createdAt}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className={style.no_community}>등록된 커뮤니티 글이 없습니다.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

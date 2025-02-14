@@ -40,6 +40,7 @@
   border: none;
   cursor: pointer;
   color: white;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .liked {
@@ -67,9 +68,50 @@
   height: 44px;
   cursor: pointer;
   border-bottom: 1px solid #d9d9d9;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .nav_button.active {
   font-weight: 700;
   border-bottom: 3px solid #333;
+}
+
+.product_grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.no_community,
+.no_products {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.owner_buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.add_button,
+.delete_button {
+  height: 37px;
+  border-radius: 4px;
+  border: none;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.add_button {
+  background-color: #00de90;
+  width: 245px;
+}
+
+.delete_button {
+  width: 108px;
+  border: 1px solid #999;
 }

@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import Swal from "sweetalert2";
-import { likeProduct, likeShop } from "../../api/likesApi";
-import styles from "../../styles/ShopCard.module.css";
 import { useNavigate } from "react-router-dom";
-
-const DEFAULT_SHOP_IMAGE = "/images/default_shop.png";
+import Swal from "sweetalert2";
+import { likeShop } from "../../api/likesApi";
+import styles from "../../styles/ShopCard.module.css";
+import ImageLoader from "./ImageLoader";
 
 const ShopCard = ({
   shopId,
@@ -15,7 +14,6 @@ const ShopCard = ({
 }) => {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(likes);
-  const imageSrc = shopImageUrl || DEFAULT_SHOP_IMAGE;
 
   const handleLike = async () => {
     try {
@@ -50,7 +48,7 @@ const ShopCard = ({
     }
   };
 
-  // 상세 페이지 handler
+  // 상세 페이지 이동
   const handleCardClick = () => {
     navigate(`/shop/${shopId}`);
   };
@@ -60,7 +58,11 @@ const ShopCard = ({
       {/* 샵 이미지 */}
       <div className={styles.imageContainer}>
         <div className={styles.dim}></div>
-        <img src={imageSrc} alt="샵 이미지" className={styles.shopImage} />
+        <ImageLoader
+          imagePath={shopImageUrl}
+          alt="샵 이미지"
+          className={styles.shopImage}
+        />
         <button
           className={styles.likeButton}
           onClick={(e) => {

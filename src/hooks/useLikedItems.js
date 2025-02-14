@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getLikedProducts, getLikedShops } from "../api/likesApi";
+import Swal from "sweetalert2";
 
 export function useLikedItems() {
   const [likedShops, setLikedShops] = useState([]);
@@ -27,12 +28,32 @@ export function useLikedItems() {
     setLikedProducts((prevProducts) =>
       prevProducts.filter((p) => p.productId !== id)
     );
+
+    Swal.fire({
+      toast: true,
+      position: "top",
+      icon: "info",
+      title: "찜 목록에서 삭제되었습니다.",
+      showConfirmButton: false,
+      timer: 1000,
+      timerProgressBar: false,
+    });
   };
 
   const handleUnlikeShop = (id) => {
     setLikedShops((prevShops) =>
       prevShops.filter((shop) => shop.shopId !== id)
     );
+
+    Swal.fire({
+      toast: true,
+      position: "top",
+      icon: "info",
+      title: "찜 목록에서 삭제되었습니다.",
+      showConfirmButton: false,
+      timer: 1000,
+      timerProgressBar: false,
+    });
   };
 
   return { likedProducts, likedShops, handleUnlikeProduct, handleUnlikeShop };

@@ -27,16 +27,16 @@ export default function ProductAddPage() {
   const [subCategories, setSubCategories] = useState([]);
   const [childCategories, setChildCategories] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
   useEffect(() => {
     getMainCategories()
       .then((response) => setMainCategories(response.data))
       .catch((error) => console.error("메인 카테고리 가져오기 실패:", error));
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleCategoryChange = (e) => {
     const { name, value } = e.target;
@@ -74,26 +74,24 @@ export default function ProductAddPage() {
   const handleTagAdd = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (formData.tagInput.trim() === "") {
-        return;
-      }
+      if (formData.tagInput.trim() === "") return;
       if (formData.tags.length >= 5) {
         alert("최대 5개의 태그만 추가할 수 있습니다.");
         return;
       }
-      setFormData({
-        ...formData,
-        tags: [...formData.tags, formData.tagInput.trim()],
+      setFormData((prev) => ({
+        ...prev,
+        tags: [...prev.tags, prev.tagInput.trim()],
         tagInput: "",
-      });
+      }));
     }
   };
 
   const handleTagRemove = (tagToRemove) => {
-    setFormData({
-      ...formData,
-      tags: formData.tags.filter((tag) => tag !== tagToRemove),
-    });
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
+    }));
   };
 
   const handleFileChange = (e) => {
@@ -103,19 +101,19 @@ export default function ProductAddPage() {
       return;
     }
     const newImages = files.map((file) => URL.createObjectURL(file));
-    setFormData({
-      ...formData,
-      images: [...formData.images, ...newImages],
-      imageFiles: [...formData.imageFiles, ...files],
-    });
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ...newImages],
+      imageFiles: [...prev.imageFiles, ...files],
+    }));
   };
 
   const removeImage = (index) => {
-    setFormData({
-      ...formData,
-      images: formData.images.filter((_, i) => i !== index),
-      imageFiles: formData.imageFiles.filter((_, i) => i !== index),
-    });
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+      imageFiles: prev.imageFiles.filter((_, i) => i !== index),
+    }));
   };
 
   const handleSubmit = async () => {
@@ -128,30 +126,40 @@ export default function ProductAddPage() {
       alert("모든 필수 정보를 입력해주세요.");
       return;
     }
-
     if (!formData.childCategory) {
       alert("자식 카테고리를 선택해주세요.");
       return;
     }
 
-    const productData = {
-      categoryId: formData.childCategory,
-      name: formData.title,
-      price: parseInt(formData.price, 10),
-      discountPrice: parseInt(formData.discountPrice, 10) || 0,
-      description: formData.content,
-      stockNumber: parseInt(formData.stock, 10),
-      files: formData.imageFiles,
-      uploadFileNames: formData.imageFiles.map((file) => file.name),
-      imagePathList: formData.images,
-      tagStrList: formData.tags,
-    };
+    const multipartFormData = new FormData();
+    multipartFormData.append(
+      "categoryId",
+      parseInt(formData.childCategory, 10)
+    );
+    multipartFormData.append("name", formData.title);
+    multipartFormData.append("price", parseInt(formData.price, 10));
+    multipartFormData.append(
+      "discountPrice",
+      parseInt(formData.discountPrice, 10) || 0
+    );
+    multipartFormData.append("description", formData.content);
+    multipartFormData.append("stockNumber", parseInt(formData.stock, 10));
+
+    formData.imageFiles.forEach((file) => {
+      multipartFormData.append("files", file);
+    });
+
+    formData.tags.forEach((tag) => {
+      multipartFormData.append("tagStrList", tag);
+    });
 
     try {
-      const response = await createProduct(productData);
+      const response = await createProduct(multipartFormData);
       alert("상품이 성공적으로 등록되었습니다!");
+
       console.log("상품 등록 성공:", response.data);
 
+      // 폼 리셋
       setFormData({
         title: "",
         content: "",
@@ -173,185 +181,189 @@ export default function ProductAddPage() {
   };
 
   return (
-    <>
-      <div className={style.product_container}>
-        <h2>상품 등록</h2>
+    <div className={style.product_container}>
+      <h2>상품 등록</h2>
 
-        <div>
-          <p>상품 이름</p>
-          <textarea
-            name="title"
-            placeholder="상품 이름을 입력하세요."
-            className={style.input_title}
-            value={formData.title}
-            onChange={(e) =>
-              setFormData({ ...formData, title: e.target.value })
-            }
-          />
-        </div>
+      {/* 상품 이름 */}
+      <div>
+        <p>상품 이름</p>
+        <textarea
+          name="title"
+          placeholder="상품 이름을 입력하세요."
+          className={style.input_title}
+          value={formData.title}
+          onChange={handleChange}
+        />
+      </div>
 
-        <div>
-          <p>카테고리</p>
-          <div className={style.category_selects}>
-            <select
-              name="mainCategory"
-              className={style.select}
-              value={formData.mainCategory}
-              onChange={handleCategoryChange}
-            >
-              <option value="">메인 카테고리</option>
-              {mainCategories.map((category) => (
-                <option key={category.categoryId} value={category.categoryId}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              name="subCategory"
-              className={style.select}
-              value={formData.subCategory}
-              onChange={handleCategoryChange}
-              disabled={!formData.mainCategory}
-            >
-              <option value="">서브 카테고리</option>
-              {subCategories.map((category) => (
-                <option key={category.categoryId} value={category.categoryId}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              name="childCategory"
-              className={style.select}
-              value={formData.childCategory}
-              onChange={handleCategoryChange}
-              disabled={!formData.subCategory}
-            >
-              <option value="">자식 카테고리</option>
-              {childCategories.map((category) => (
-                <option key={category.categoryId} value={category.categoryId}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className={style.price_section}>
-          <div className={style.input_box}>
-            <p>상품 가격</p>
-            <input
-              type="number"
-              name="price"
-              placeholder="가격을 입력해주세요."
-              className={style.input}
-              value={formData.price}
-              onChange={handleChange}
-            />
-          </div>
-          <div className={style.input_box}>
-            <p>할인 가격</p>
-            <input
-              type="number"
-              name="discountPrice"
-              placeholder="가격을 입력해주세요."
-              className={style.input}
-              value={formData.discountPrice}
-              onChange={handleChange}
-            />
-          </div>
-          <div className={style.input_box}>
-            <p>재고 수량</p>
-            <input
-              type="number"
-              name="stock"
-              placeholder="수량을 입력해주세요."
-              className={style.input}
-              value={formData.stock}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-
-        <div className={style.tag_section}>
-          <p>태그 (최대 5개)</p>
-          <input
-            type="text"
-            name="tagInput"
-            placeholder="태그를 입력해주세요."
-            className={style.input_tag}
-            value={formData.tagInput}
-            onChange={handleChange}
-            onKeyPress={handleTagAdd}
-          />
-          <div className={style.tag_list}>
-            {formData.tags.map((tag, index) => (
-              <span key={index} className={style.tag}>
-                {tag}
-                <button
-                  className={style.tag_remove}
-                  onClick={() => handleTagRemove(tag)}
-                >
-                  ✕
-                </button>
-              </span>
+      {/* 카테고리 */}
+      <div>
+        <p>카테고리</p>
+        <div className={style.category_selects}>
+          <select
+            name="mainCategory"
+            className={style.select}
+            value={formData.mainCategory}
+            onChange={handleCategoryChange}
+          >
+            <option value="">메인 카테고리</option>
+            {mainCategories.map((cat) => (
+              <option key={cat.categoryId} value={cat.categoryId}>
+                {cat.name}
+              </option>
             ))}
-          </div>
-        </div>
+          </select>
 
-        <div>
-          <p>상품 설명</p>
-          <textarea
-            name="content"
-            placeholder="내용을 입력하세요."
-            className={style.input_area}
-            value={formData.content}
+          <select
+            name="subCategory"
+            className={style.select}
+            value={formData.subCategory}
+            onChange={handleCategoryChange}
+            disabled={!formData.mainCategory}
+          >
+            <option value="">서브 카테고리</option>
+            {subCategories.map((cat) => (
+              <option key={cat.categoryId} value={cat.categoryId}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+
+          <select
+            name="childCategory"
+            className={style.select}
+            value={formData.childCategory}
+            onChange={handleCategoryChange}
+            disabled={!formData.subCategory}
+          >
+            <option value="">자식 카테고리</option>
+            {childCategories.map((cat) => (
+              <option key={cat.categoryId} value={cat.categoryId}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* 가격, 할인, 재고 */}
+      <div className={style.price_section}>
+        <div className={style.input_box}>
+          <p>상품 가격</p>
+          <input
+            type="number"
+            name="price"
+            placeholder="가격을 입력해주세요."
+            className={style.input}
+            value={formData.price}
             onChange={handleChange}
           />
         </div>
-
-        <div className={style.upload_container}>
-          <label htmlFor="fileUpload" className={style.upload_button}>
-            <img src="backup.png" alt="업로드" />
-            이미지 업로드
-          </label>
+        <div className={style.input_box}>
+          <p>할인 가격</p>
           <input
-            id="fileUpload"
-            type="file"
-            accept="image/*"
-            multiple
-            className={style.file_input}
-            onChange={handleFileChange}
+            type="number"
+            name="discountPrice"
+            placeholder="할인 가격을 입력해주세요."
+            className={style.input}
+            value={formData.discountPrice}
+            onChange={handleChange}
           />
-          <p>
-            사진은 최대 20MB 이하의 JPG, PNG, GIF 파일 5장까지 첨부 가능합니다.
-          </p>
         </div>
+        <div className={style.input_box}>
+          <p>재고 수량</p>
+          <input
+            type="number"
+            name="stock"
+            placeholder="수량을 입력해주세요."
+            className={style.input}
+            value={formData.stock}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
 
-        <div className={style.image_preview_container}>
-          {formData.images.map((imgSrc, index) => (
-            <div key={index} className={style.image_wrapper}>
-              <img
-                src={imgSrc}
-                alt={`uploaded-${index}`}
-                className={style.preview_img}
-              />
+      {/* 태그 */}
+      <div className={style.tag_section}>
+        <p>태그 (최대 5개)</p>
+        <input
+          type="text"
+          name="tagInput"
+          placeholder="태그를 입력하고 엔터를 누르세요."
+          className={style.input_tag}
+          value={formData.tagInput}
+          onChange={handleChange}
+          onKeyPress={handleTagAdd}
+        />
+        <div className={style.tag_list}>
+          {formData.tags.map((tag, index) => (
+            <span key={index} className={style.tag}>
+              #{tag}
               <button
-                onClick={() => removeImage(index)}
-                className={style.remove_button}
+                className={style.tag_remove}
+                onClick={() => handleTagRemove(tag)}
               >
                 ✕
               </button>
-            </div>
+            </span>
           ))}
         </div>
-
-        <button className={style.register_button} onClick={handleSubmit}>
-          등록하기
-        </button>
       </div>
-    </>
+
+      {/* 상품 설명 */}
+      <div>
+        <p>상품 설명</p>
+        <textarea
+          name="content"
+          placeholder="내용을 입력하세요."
+          className={style.input_area}
+          value={formData.content}
+          onChange={handleChange}
+        />
+      </div>
+
+      {/* 이미지 업로드 */}
+      <div className={style.upload_container}>
+        <label htmlFor="fileUpload" className={style.upload_button}>
+          <img src="backup.png" alt="업로드" />
+          이미지 업로드
+        </label>
+        <input
+          id="fileUpload"
+          type="file"
+          accept="image/*"
+          multiple
+          className={style.file_input}
+          onChange={handleFileChange}
+        />
+        <p>
+          사진은 최대 20MB 이하의 JPG, PNG, GIF 파일 5장까지 첨부 가능합니다.
+        </p>
+      </div>
+
+      {/* 이미지 미리보기 */}
+      <div className={style.image_preview_container}>
+        {formData.images.map((imgSrc, index) => (
+          <div key={index} className={style.image_wrapper}>
+            <img
+              src={imgSrc}
+              alt={`uploaded-${index}`}
+              className={style.preview_img}
+            />
+            <button
+              onClick={() => removeImage(index)}
+              className={style.remove_button}
+            >
+              ✕
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* 등록 버튼 */}
+      <button className={style.register_button} onClick={handleSubmit}>
+        등록하기
+      </button>
+    </div>
   );
 }

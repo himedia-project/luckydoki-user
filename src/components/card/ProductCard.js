@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "../../styles/ProductCard.module.css"; // ✅ 스타일 파일 불러오기
 import { likeProduct } from "../../api/likesApi";
 import Swal from "sweetalert2";
-import { getImageUrl } from "../../api/imageApi";
 import { useNavigate } from "react-router-dom";
-
-const DEFAULT_IMAGE = "/images/default_product.png";
+import ImageLoader from "./ImageLoader";
 
 const ProductCard = ({
   id,
@@ -22,13 +20,6 @@ const ProductCard = ({
 }) => {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(likes);
-  const [imageSrc, setImageSrc] = useState("");
-
-  useEffect(() => {
-    if (productImageUrl) {
-      getImageUrl(productImageUrl).then((imageUrl) => setImageSrc(imageUrl));
-    }
-  }, [productImageUrl]);
 
   const handleLike = async () => {
     try {
@@ -72,7 +63,11 @@ const ProductCard = ({
     <div className={styles.productCard} onClick={handleCardClick}>
       {/* ✅ 이미지 컨테이너 */}
       <div className={styles.imageContainer}>
-        <img src={imageSrc} alt={name} className={styles.productImage} />
+        <ImageLoader
+          imagePath={productImageUrl}
+          alt={name}
+          className={styles.productImage}
+        />
         {/* ✅ 하트(찜) 아이콘 */}
         <button
           className={styles.likeButton}

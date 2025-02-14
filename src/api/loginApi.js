@@ -16,6 +16,6 @@ import axiosInstance from "./axiosInstance";
 
 // 로그아웃
 export const logoutPost = async () => {
-  const response = await axiosInstance.post("api/member/logout");
+  const response = await axiosInstance.post("/member/logout");
   return response.data;
 };

@@ -3,7 +3,7 @@ import store from "./redux/store";
 import { setAccessToken } from "./redux/loginSlice";
 import { API_URL } from "../config/apiConfig";
 const axiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: `${API_URL}/api`,
   // 쿠키 허용
   withCredentials: true,
 });
