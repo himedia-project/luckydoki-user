@@ -20,6 +20,8 @@ import SellerAddPage from "./pages/addpage/SellerAddPage";
 import ShopPage from "./pages/ShopPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import CommunityPage from "./pages/community/CommunityPage";
+import CommunityDetailPage from "./pages/community/CommunityDetailPage";
 
 function App() {
   return (
@@ -28,7 +30,8 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/message" />
         <Route path="/shop/:shopId" element={<ShopPage />} />
-        <Route path="/community" />
+        <Route path="/community" element={<CommunityPage />} />
+        <Route path="/community/:postId" element={<CommunityDetailPage />} />
 
         <Route path="/review_add" element={<ReviewAddPage />} />
         <Route path="/product_add" element={<ProductAddPage />} />

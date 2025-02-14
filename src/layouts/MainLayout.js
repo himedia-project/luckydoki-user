@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
 import Header from "./Header";
 import style from "../styles/MainLayout.module.css";
+import TopButton from "../components/TopButton";
 
 const MainLayout = () => {
   return (
@@ -10,6 +11,7 @@ const MainLayout = () => {
       <Header />
       <main className={style.content_container}>
         <Outlet />
+        <TopButton />
       </main>
       <Footer />
     </>

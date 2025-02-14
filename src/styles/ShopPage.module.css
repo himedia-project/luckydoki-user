@@ -115,3 +115,19 @@
   width: 108px;
   border: 1px solid #999;
 }
+
+.community_list {
+  margin-top: 30px;
+}
+
+.community_grid_wrapper {
+  display: flex;
+  gap: 28px;
+}
+
+.community_grid_left,
+.community_grid_right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

@@ -150,18 +150,40 @@ export default function ShopPage() {
       ) : (
         <div className={style.community_list}>
           {data.length > 0 ? (
-            <div className={style.community_grid}>
-              {data.map((post) => (
-                <CommunityCard
-                  key={post.id}
-                  id={post.id}
-                  title={post.title}
-                  content={post.content}
-                  createdAt={post.createdAt}
-                  nickName={post.nickName}
-                  uploadFileNames={post.uploadFileNames}
-                />
-              ))}
+            <div className={style.community_grid_wrapper}>
+              <div className={style.community_grid_left}>
+                {data
+                  .filter((_, index) => index % 2 === 0)
+                  .map((post) => (
+                    <CommunityCard
+                      key={post.id}
+                      id={post.id}
+                      title={post.title}
+                      content={post.content}
+                      createdAt={post.createdAt}
+                      nickName={post.nickName}
+                      uploadFileNames={post.uploadFileNames}
+                      sellerImage={sellerInfo?.image}
+                    />
+                  ))}
+              </div>
+
+              <div className={style.community_grid_right}>
+                {data
+                  .filter((_, index) => index % 2 !== 0)
+                  .map((post) => (
+                    <CommunityCard
+                      key={post.id}
+                      id={post.id}
+                      title={post.title}
+                      content={post.content}
+                      createdAt={post.createdAt}
+                      nickName={post.nickName}
+                      uploadFileNames={post.uploadFileNames}
+                      sellerImage={sellerInfo?.image}
+                    />
+                  ))}
+              </div>
             </div>
           ) : (
             <p className={style.no_community}>등록된 커뮤니티 글이 없습니다.</p>
