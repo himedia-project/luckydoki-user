@@ -10,11 +10,17 @@ const CommunityCard = ({
   nickName,
   uploadFileNames,
   sellerImage,
+  productDTOs,
 }) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
     navigate(`/community/${id}`);
+  };
+
+  const handleProductClick = (productId, event) => {
+    event.stopPropagation();
+    navigate(`/product/${productId}`);
   };
 
   return (
@@ -29,6 +35,45 @@ const CommunityCard = ({
       {uploadFileNames?.length > 0 && (
         <div className={styles.imageContainer}>
           <ImageLoader imagePath={uploadFileNames[0]} alt="게시글 이미지" />
+        </div>
+      )}
+
+      {productDTOs?.length > 0 && (
+        <div className={styles.tagList}>
+          <p className={styles.tag}>태그된 작품 {productDTOs.length}개</p>
+          <div className={styles.cardList}>
+            {productDTOs.slice(0, 2).map((product) => (
+              <div
+                key={product.id}
+                className={styles.tagInfoBox}
+                onClick={(event) => handleProductClick(product.id, event)}
+              >
+                <div className={styles.productImageContainer}>
+                  <ImageLoader
+                    imagePath={product.uploadFileNames[0]}
+                    alt={product.name}
+                    className={styles.productImage}
+                  />
+                </div>
+                <div className={styles.InfoBox}>
+                  <p className={styles.title}>{product.name}</p>
+                  {product.discountRate > 0 && (
+                    <div className={styles.rateBox}>
+                      <b className={styles.rate}>{product.discountRate}%</b>
+                      <b className={styles.price}>
+                        {product.price?.toLocaleString()}
+                        <span className={styles.won}>원</span>
+                      </b>
+                    </div>
+                  )}
+                  <b className={styles.discountPrice}>
+                    {product.price?.toLocaleString()}
+                    <span className={styles.won}>원</span>
+                  </b>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

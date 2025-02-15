@@ -8,23 +8,43 @@ export default function MyPageSideMenu({ userInfo }) {
   const navigate = useNavigate();
   const roles = useSelector((state) => state.loginSlice.roles);
   const shopId = useSelector((state) => state.infoSlice.shopId);
+  const sellerUpgraded = userInfo?.sellerRequested;
   const role = roles[0];
 
   const handleShopClick = (e) => {
     e.preventDefault();
     if (role === "USER") {
-      Swal.fire({
-        title: "셀러가 아니십니다.",
-        text: "신청 하시겠습니까?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "확인",
-        cancelButtonText: "취소",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/seller_add");
-        }
-      });
+      if (!sellerUpgraded) {
+        Swal.fire({
+          title: "셀러가 아니십니다.",
+          text: "신청 하시겠습니까?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "확인",
+          cancelButtonText: "취소",
+          didOpen: () => {
+            const swalPopup = Swal.getPopup();
+            if (swalPopup) {
+              swalPopup.style.zIndex = "10000";
+            }
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/seller_add");
+          }
+        });
+      }
+      if (sellerUpgraded) {
+        Swal.fire({
+          title: "이미 신청하셨습니다.",
+          icon: "warning",
+          confirmButtonText: "확인",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/mypage");
+          }
+        });
+      }
     } else if (role === "SELLER") {
       navigate(`/shop/${shopId}`);
     }

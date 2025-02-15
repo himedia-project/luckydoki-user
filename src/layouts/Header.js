@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -10,6 +10,24 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { nickName } = useSelector((state) => state.loginSlice);
+  const [hideHeaderTop, setHideHeaderTop] = useState(false);
+  let lastScrollY = 0;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > lastScrollY) {
+        setHideHeaderTop(true);
+      } else {
+        setHideHeaderTop(false);
+      }
+      lastScrollY = window.scrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -41,7 +59,9 @@ const Header = () => {
   return (
     <div className={style.header}>
       <div className={style.inner}>
-        <div className={style.header_top}>
+        <div
+          className={`${style.header_top} ${hideHeaderTop ? style.hidden : ""}`}
+        >
           <ul className={style.login_nav}>
             {/* 로그인/로그아웃 */}
             {nickName ? (
@@ -56,13 +76,13 @@ const Header = () => {
 
             {/* 알림 */}
             <li className={style.notice}>
-              <img src="/notification.png" />
+              <img src="/notification.png" alt="알림" />
               <Link to="/notice">알림</Link>
             </li>
 
             {/* 메시지 */}
             <li className={style.message}>
-              <img src="/chat.png" />
+              <img src="/chat.png" alt="메시지" />
               <Link to="/message">메시지</Link>
             </li>
           </ul>
@@ -71,35 +91,35 @@ const Header = () => {
         <div className={style.header_middle}>
           {/* 로고 */}
           <Link to="/" className={style.logo}>
-            <img src="/logo.png" />
+            <img src="/logo.png" alt="로고" />
           </Link>
 
           <ul className={style.icon_container}>
             {/* 검색아이콘 */}
             <li>
               <Link to="/search">
-                <img src="/search.png" />
+                <img src="/search.png" alt="검색" />
               </Link>
             </li>
 
             {/* 하트아이콘 */}
             <li>
               <Link to="/likeslist" onClick={handleNeedLoginLink}>
-                <img src="/heart.png" />
+                <img src="/heart.png" alt="좋아요" />
               </Link>
             </li>
 
             {/* 마이페이지아이콘 */}
             <li>
               <Link to="/mypage" onClick={handleNeedLoginLink}>
-                <img src="/mypage.png" />
+                <img src="/mypage.png" alt="마이페이지" />
               </Link>
             </li>
 
             {/* 카트아이콘 */}
             <li>
               <Link to="/cart" onClick={handleNeedLoginLink}>
-                <img src="/cart.png" />
+                <img src="/cart.png" alt="장바구니" />
               </Link>
             </li>
           </ul>

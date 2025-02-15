@@ -152,37 +152,34 @@ export default function ShopPage() {
           {data.length > 0 ? (
             <div className={style.community_grid_wrapper}>
               <div className={style.community_grid_left}>
-                {data
-                  .filter((_, index) => index % 2 === 0)
-                  .map((post) => (
-                    <CommunityCard
-                      key={post.id}
-                      id={post.id}
-                      title={post.title}
-                      content={post.content}
-                      createdAt={post.createdAt}
-                      nickName={post.nickName}
-                      uploadFileNames={post.uploadFileNames}
-                      sellerImage={sellerInfo?.image}
-                    />
-                  ))}
+                {data.slice(0, Math.ceil(data.length / 2)).map((post) => (
+                  <CommunityCard
+                    key={post.id}
+                    id={post.id}
+                    title={post.title}
+                    content={post.content}
+                    createdAt={post.createdAt}
+                    nickName={post.nickName}
+                    uploadFileNames={post.uploadFileNames}
+                    sellerImage={sellerInfo?.image}
+                  />
+                ))}
               </div>
 
               <div className={style.community_grid_right}>
-                {data
-                  .filter((_, index) => index % 2 !== 0)
-                  .map((post) => (
-                    <CommunityCard
-                      key={post.id}
-                      id={post.id}
-                      title={post.title}
-                      content={post.content}
-                      createdAt={post.createdAt}
-                      nickName={post.nickName}
-                      uploadFileNames={post.uploadFileNames}
-                      sellerImage={sellerInfo?.image}
-                    />
-                  ))}
+                {data.slice(Math.ceil(data.length / 2)).map((post) => (
+                  <CommunityCard
+                    key={post.id}
+                    id={post.id}
+                    title={post.title}
+                    content={post.content}
+                    createdAt={post.createdAt}
+                    nickName={post.nickName}
+                    uploadFileNames={post.uploadFileNames}
+                    productDTOs={post.productDTOs}
+                    sellerImage={sellerInfo?.image}
+                  />
+                ))}
               </div>
             </div>
           ) : (

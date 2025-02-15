@@ -20,6 +20,12 @@ const useLikeToggle = (initialLikeState, likeApiCall, itemId) => {
           showConfirmButton: false,
           timer: 1000,
           timerProgressBar: false,
+          didOpen: () => {
+            const swalPopup = Swal.getPopup();
+            if (swalPopup) {
+              swalPopup.style.zIndex = "10000";
+            }
+          },
         });
       }
     } catch (error) {
@@ -32,6 +38,12 @@ const useLikeToggle = (initialLikeState, likeApiCall, itemId) => {
         showConfirmButton: false,
         timer: 1500,
         timerProgressBar: false,
+        didOpen: () => {
+          const swalPopup = Swal.getPopup();
+          if (swalPopup) {
+            swalPopup.style.zIndex = "10000";
+          }
+        },
       });
     }
   };

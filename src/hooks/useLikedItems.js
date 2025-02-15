@@ -37,6 +37,12 @@ export function useLikedItems() {
       showConfirmButton: false,
       timer: 1000,
       timerProgressBar: false,
+      didOpen: () => {
+        const swalPopup = Swal.getPopup();
+        if (swalPopup) {
+          swalPopup.style.zIndex = "10000";
+        }
+      },
     });
   };
 
@@ -53,6 +59,12 @@ export function useLikedItems() {
       showConfirmButton: false,
       timer: 1000,
       timerProgressBar: false,
+      didOpen: () => {
+        const swalPopup = Swal.getPopup();
+        if (swalPopup) {
+          swalPopup.style.zIndex = "10000";
+        }
+      },
     });
   };
 
