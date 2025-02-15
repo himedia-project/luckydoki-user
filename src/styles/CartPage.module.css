@@ -36,8 +36,18 @@
   margin-top: 30px;
 }
 
+/* 장바구니에 상품이 있을 때만 flex 적용 */
+.cart_content.has_items {
+  display: flex;
+  gap: 20px;
+}
+
 .empty_cart {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
 }
 
 .empty_cart img {
@@ -195,9 +205,4 @@
   border-radius: 4px;
   margin-top: 20px;
   cursor: pointer;
-}
-
-.cart_content {
-  display: flex;
-  gap: 20px;
 }

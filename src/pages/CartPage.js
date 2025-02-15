@@ -159,7 +159,11 @@ const CartPage = () => {
           <span>03 주문 완료</span>
         </div>
       </div>
-      <div className={style.cart_content}>
+      <div
+        className={`${style.cart_content} ${
+          cartItems.length > 0 ? style.has_items : ""
+        }`}
+      >
         <div className={style.cart_items}>
           <div className={style.cart_item_header}>
             <div className={style.select_all_wrapper}>
