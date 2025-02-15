@@ -3,7 +3,12 @@ import { getImageUrl } from "../../api/imageApi";
 
 const DEFAULT_IMAGE = "/images/default_profile.png";
 
-const ImageLoader = ({ imagePath, alt = "이미지", className = "" }) => {
+const ImageLoader = ({
+  imagePath,
+  alt = "이미지",
+  className = "",
+  onClick,
+}) => {
   const [imageSrc, setImageSrc] = useState(DEFAULT_IMAGE);
 
   useEffect(() => {
@@ -14,7 +19,9 @@ const ImageLoader = ({ imagePath, alt = "이미지", className = "" }) => {
     }
   }, [imagePath]);
 
-  return <img src={imageSrc} alt={alt} className={className} />;
+  return (
+    <img src={imageSrc} alt={alt} className={className} onClick={onClick} />
+  );
 };
 
 export default ImageLoader;
