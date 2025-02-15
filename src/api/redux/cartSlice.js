@@ -1,17 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initState = {
   cartItems: [],
+  totalPrice: 0,
+  totalDiscountPrice: 0,
 };
 
 const cartSlice = createSlice({
-  name: 'cartSlice',
+  name: "cartSlice",
   initialState: initState,
   reducers: {
     setCartItems: (state, action) => {
-      console.log('setCartItems: {}', action.payload);
-      const payload = action.payload; // cartItems로 구성
-      return { ...payload };
+      state.cartItems = action.payload;
+      state.totalPrice = action.payload.reduce(
+        (sum, item) => sum + item.price,
+        0
+      );
+      state.totalDiscountPrice = action.payload.reduce(
+        (sum, item) => sum + item.discountPrice,
+        0
+      );
     },
     clearCartItems: (state) => {
       return { ...initState };
@@ -19,5 +27,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { setCartItems, clearCartItems, addCartItem } = cartSlice.actions;
+export const { setCartItems, clearCartItems } = cartSlice.actions;
 export default cartSlice.reducer;
