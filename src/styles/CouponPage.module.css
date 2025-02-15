@@ -11,12 +11,6 @@
   margin-bottom: 25px;
 }
 
-.coupon_container p {
-  text-align: center;
-  padding: 140px 0;
-  color: #666;
-}
-
 .tab_container {
   display: flex;
   justify-content: start;
@@ -40,4 +34,10 @@
   border: none;
   color: #333;
   font-weight: 700;
+}
+
+.content_box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
