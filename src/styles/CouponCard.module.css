@@ -1,0 +1,30 @@
+.coupon_card {
+  width: 460px;
+  padding: 20px;
+  border: 1px solid #666;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.coupon_title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.discount_price {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+.minimum {
+  font-size: 16px;
+  color: #999;
+}
+
+.date {
+  font-size: 12px;
+  color: #0bc08a;
+}

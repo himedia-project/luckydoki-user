@@ -15,7 +15,7 @@ const Header = () => {
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
-  const [showHeaderTop, setShowHeaderTop] = useState(false);
+  const [showHeaderTop, setShowHeaderTop] = useState(true);
 
   const notifications = [
     { category: "이벤트", message: "[0000원 쿠폰] 도착", date: "2월 11일" },
@@ -51,8 +51,7 @@ const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowHeaderTop(window.scrollY <= 99);
-      console.log(window.scrollY);
+      setShowHeaderTop(window.scrollY === 0 || window.scrollY <= 99);
     };
 
     window.addEventListener("scroll", handleScroll);

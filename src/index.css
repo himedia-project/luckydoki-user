@@ -30,7 +30,7 @@ body {
   color: #333;
   min-height: 100vh;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* iOS 스크롤 최적화 */
+  -webkit-overflow-scrolling: touch;
 }
 
 * {
@@ -39,8 +39,4 @@ body {
   text-decoration: none;
   list-style: none;
   box-sizing: border-box;
-}
-
-button {
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
