@@ -5,22 +5,54 @@ import Swal from "sweetalert2";
 import { logoutPost } from "../api/loginApi";
 import { logout } from "../api/redux/loginSlice";
 import style from "../styles/Header.module.css";
+import NotificationDropdown from "../components/dropdown/NotificationDropdown";
+import MessageDropdown from "../components/dropdown/MessageDropdown";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { nickName } = useSelector((state) => state.loginSlice);
-  const [hideHeaderTop, setHideHeaderTop] = useState(false);
-  let lastScrollY = 0;
+
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showMessages, setShowMessages] = useState(false);
+  const [showHeaderTop, setShowHeaderTop] = useState(false);
+
+  const notifications = [
+    { category: "이벤트", message: "[0000원 쿠폰] 도착", date: "2월 11일" },
+    {
+      category: "이벤트",
+      message: "[할인 혜택] 10% 쿠폰 지급",
+      date: "2월 10일",
+    },
+    { category: "이벤트", message: "[0000원 쿠폰] 도착", date: "2월 11일" },
+    {
+      category: "이벤트",
+      message: "[할인 혜택] 10% 쿠폰 지급",
+      date: "2월 10일",
+    },
+    { category: "이벤트", message: "[0000원 쿠폰] 도착", date: "2월 11일" },
+    {
+      category: "이벤트",
+      message: "[할인 혜택] 10% 쿠폰 지급",
+      date: "2월 10일",
+    },
+    { category: "이벤트", message: "[0000원 쿠폰] 도착", date: "2월 11일" },
+    {
+      category: "이벤트",
+      message: "[할인 혜택] 10% 쿠폰 지급",
+      date: "2월 10일",
+    },
+  ];
+
+  const messages = [
+    { sender: "샵 이름", content: "대화내용", date: "2월 10일" },
+    { sender: "샵 이름", content: "대화내용", date: "2월 10일" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > lastScrollY) {
-        setHideHeaderTop(true);
-      } else {
-        setHideHeaderTop(false);
-      }
-      lastScrollY = window.scrollY;
+      setShowHeaderTop(window.scrollY <= 99);
+      console.log(window.scrollY);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -60,7 +92,7 @@ const Header = () => {
     <div className={style.header}>
       <div className={style.inner}>
         <div
-          className={`${style.header_top} ${hideHeaderTop ? style.hidden : ""}`}
+          className={`${style.header_top} ${showHeaderTop ? "" : style.hidden}`}
         >
           <ul className={style.login_nav}>
             {/* 로그인/로그아웃 */}
@@ -75,15 +107,27 @@ const Header = () => {
             )}
 
             {/* 알림 */}
-            <li className={style.notice}>
+            <li
+              className={style.notice}
+              onMouseEnter={() => setShowNotifications(true)}
+              onMouseLeave={() => setShowNotifications(false)}
+            >
               <img src="/notification.png" alt="알림" />
-              <Link to="/notice">알림</Link>
+              <Link>알림</Link>
+              {showNotifications && (
+                <NotificationDropdown notifications={notifications} />
+              )}
             </li>
 
             {/* 메시지 */}
-            <li className={style.message}>
+            <li
+              className={style.message}
+              onMouseEnter={() => setShowMessages(true)}
+              onMouseLeave={() => setShowMessages(false)}
+            >
               <img src="/chat.png" alt="메시지" />
-              <Link to="/message">메시지</Link>
+              <Link>메시지</Link>
+              {showMessages && <MessageDropdown messages={messages} />}
             </li>
           </ul>
         </div>

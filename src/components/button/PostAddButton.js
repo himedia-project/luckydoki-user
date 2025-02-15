@@ -1,5 +1,5 @@
 import React from "react";
-import style from "../styles/PostAddButton.module.css";
+import style from "../../styles/PostAddButton.module.css";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";

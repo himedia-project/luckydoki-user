@@ -21,6 +21,12 @@ const LoginPage = () => {
     setErrorMessage(""); // 입력 시 에러 메시지 초기화
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
+
   const handleKakaoLogin = () => {
     window.location.href = getKakaoLoginLink();
   };
@@ -88,6 +94,7 @@ const LoginPage = () => {
             value={loginForm.email}
             className={styles.inputField}
             onChange={handleChange}
+            onKeyDown={handleKeyPress}
             required
           />
           <input
@@ -97,6 +104,7 @@ const LoginPage = () => {
             value={loginForm.password}
             className={styles.inputField}
             onChange={handleChange}
+            onKeyDown={handleKeyPress}
             required
           />
           {errorMessage && (

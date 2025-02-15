@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { getMyProfile } from "../api/memberApi";
 import { setShopId } from "../api/redux/infoSlice";
-import TopButton from "../components/TopButton";
+import TopButton from "../components/button/TopButton";
 import style from "../styles/MainLayout.module.css";
 import Footer from "./Footer";
 import Header from "./Header";

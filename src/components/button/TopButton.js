@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import style from "../styles/TopButton.module.css";
+import style from "../../styles/TopButton.module.css";
 
 export default function TopButton() {
   const [isVisible, setIsVisible] = useState(false);
