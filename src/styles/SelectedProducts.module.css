@@ -8,16 +8,16 @@
 .product_box {
   display: flex;
   align-items: center;
-  width: 200px;
-  height: 80px;
+  width: 300px;
+  height: 120px;
   border-radius: 4px;
-  padding: 10px;
   position: relative;
   background: #f9f9f9;
 }
 
 .product_image {
-  width: 60px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   border-radius: 4px;
   margin-right: 10px;
@@ -33,6 +33,13 @@
   color: #333;
   font-weight: 400;
   margin-bottom: 4px;
+  max-width: 205px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
 
 .product_price {
@@ -41,10 +48,39 @@
 
 .remove_button {
   position: absolute;
-  top: 5px;
+  top: 3px;
   right: 10px;
   background: none;
   border: none;
   font-size: 16px;
   cursor: pointer;
+}
+
+.rateBox {
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.rateBox b {
+  font-size: 14px;
+}
+
+.rate {
+  color: #00de90;
+}
+
+.price {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.won {
+  font-size: 12px;
+}
+
+.won2 {
+  font-size: 14px;
 }

@@ -67,7 +67,7 @@ const CommunityCard = ({
                     </div>
                   )}
                   <b className={styles.discountPrice}>
-                    {product.price?.toLocaleString()}
+                    {product.discountPrice?.toLocaleString()}
                     <span className={styles.won}>원</span>
                   </b>
                 </div>

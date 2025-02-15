@@ -8,7 +8,7 @@ const ProductSelect = ({ products, onSelect, selectedProducts }) => {
     const productId = parseInt(e.target.value);
     if (!productId) return;
 
-    const selected = products.find((product) => product.id === productId);
+    const selected = products?.find((product) => product.id === productId);
     if (selected && !selectedProducts.some((p) => p.id === selected.id)) {
       onSelect(selected);
       setSelectedProduct("");

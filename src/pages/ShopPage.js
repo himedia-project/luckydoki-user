@@ -161,6 +161,7 @@ export default function ShopPage() {
                     createdAt={post.createdAt}
                     nickName={post.nickName}
                     uploadFileNames={post.uploadFileNames}
+                    productDTOs={post.productDTOs}
                     sellerImage={sellerInfo?.image}
                   />
                 ))}

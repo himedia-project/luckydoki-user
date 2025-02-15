@@ -68,13 +68,15 @@
 }
 
 .tagInfoBox {
+  height: 100px;
   display: flex;
   gap: 12px;
+  background-color: #f5f5f5;
 }
 
 .productImageContainer {
-  width: 76px;
-  height: 76px;
+  width: 100px;
+  height: 100px;
 }
 
 .productImage {
@@ -86,8 +88,8 @@
 .InfoBox {
   display: flex;
   flex-direction: column;
-  gap: 4px;
   justify-content: center;
+  gap: 4px;
 }
 
 .InfoBox {
@@ -103,6 +105,20 @@
 .rate,
 .discountPrice {
   color: #00de90;
+}
+
+.rate {
+  font-size: 12px;
+}
+
+.price {
+  font-size: 12px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.discountPrice {
+  font-size: 16px;
 }
 
 .won {
