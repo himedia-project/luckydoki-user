@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCartItemList } from "../api/cartApi";
-import { setCartItems } from "../api/redux/cartSlice";
+import {
+  getCartItemList,
+  deleteCartItem,
+  deleteAllCartItems,
+} from "../api/cartApi";
+import { setCartItems, clearCartItems } from "../api/redux/cartSlice";
 import style from "../styles/CartPage.module.css";
 import ImageLoader from "../components/card/ImageLoader";
+import Swal from "sweetalert2";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -40,6 +45,74 @@ const CartPage = () => {
         return [...prev, cartItemId];
       }
     });
+  };
+
+  const handleDeleteItem = async (cartItemId) => {
+    try {
+      await deleteCartItem(cartItemId);
+      const updatedData = await getCartItemList();
+      dispatch(setCartItems(updatedData));
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "success",
+        title: "상품이 삭제되었습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      console.error("상품 삭제 실패:", error);
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "error",
+        title: "상품 삭제 중 오류가 발생했습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedItems.length === 0) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "선택된 상품이 없습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
+    try {
+      await deleteAllCartItems(selectedItems);
+      const updatedData = await getCartItemList();
+      if (updatedData.length === 0) {
+        dispatch(clearCartItems());
+      } else {
+        dispatch(setCartItems(updatedData));
+      }
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "success",
+        title: "선택한 상품이 삭제되었습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      console.error("선택 상품 삭제 실패:", error);
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "error",
+        title: "상품 삭제 중 오류가 발생했습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
   };
 
   useEffect(() => {
@@ -89,12 +162,20 @@ const CartPage = () => {
       <div className={style.cart_content}>
         <div className={style.cart_items}>
           <div className={style.cart_item_header}>
-            <input
-              type="checkbox"
-              checked={isAllSelected}
-              onChange={handleSelectAll}
-            />
-            <span>전체선택</span>
+            <div className={style.select_all_wrapper}>
+              <input
+                type="checkbox"
+                checked={isAllSelected}
+                onChange={handleSelectAll}
+              />
+              <span>전체선택</span>
+            </div>
+            <button
+              className={style.delete_selected_btn}
+              onClick={handleDeleteSelected}
+            >
+              선택삭제
+            </button>
           </div>
           {cartItems.map((item) => (
             <div key={item.cartItemId} className={style.cart_item}>
@@ -128,7 +209,12 @@ const CartPage = () => {
                 <button>+</button>
                 <button>변경</button>
               </div>
-              <button className={style.delete_btn}>삭제</button>
+              <button
+                className={style.delete_btn}
+                onClick={() => handleDeleteItem(item.cartItemId)}
+              >
+                삭제
+              </button>
             </div>
           ))}
         </div>

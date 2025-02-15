@@ -33,11 +33,7 @@
 
 .cart_content {
   min-height: 400px;
-  border: 1px solid #eee;
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-top: 30px;
 }
 
 .empty_cart {
@@ -78,10 +74,30 @@
 
 .cart_item_header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.select_all_wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.delete_selected_btn {
+  padding: 6px 12px;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  color: #666;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.delete_selected_btn:hover {
+  background-color: #f5f5f5;
 }
 
 .cart_item {

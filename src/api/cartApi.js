@@ -21,13 +21,13 @@ export const deleteCartItem = async (cartItemId) => {
   return response.data;
 };
 
-// 장바구니 전체상품 삭제
-// http://localhost:8080/api/cart/all
+// 장바구니 상품 선택삭제
+// http://localhost:8080/api/cart/list
 // {
 //     "cartItemIdList": [6,7,8]
 // }
 export const deleteAllCartItems = async (cartItemIdList) => {
-  const response = await axiosInstance.delete("/cart/all", {
+  const response = await axiosInstance.delete("/cart/list", {
     data: { cartItemIdList },
   });
   return response.data;
