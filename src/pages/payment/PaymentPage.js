@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import style from "../../styles/PaymentPage.module.css";
 import ImageLoader from "../../components/card/ImageLoader";
@@ -111,6 +111,17 @@ const PaymentPage = () => {
     }
 
     try {
+      // 결제 프로세스 시작 전 모든 이벤트 리스너와 상태 초기화
+      window.onbeforeunload = null;
+      window.onunload = null;
+      window.removeEventListener("beforeunload", () => {});
+      window.removeEventListener("unload", () => {});
+
+      // 브라우저 history 초기화
+      if (window.history.replaceState) {
+        window.history.replaceState(null, "", window.location.href);
+      }
+
       // 주문 정보 생성
       const orderData = {
         couponId: selectedCoupon?.id,
@@ -123,13 +134,12 @@ const PaymentPage = () => {
       // 주문 생성
       await order(orderData);
 
-      // 주문 목록 조회하여 최신 주문 정보 가져오기
+      // 주문 목록 조회
       const orderListResponse = await getOrderList();
-      const latestOrder = orderListResponse.data[0]; // 가장 최근 주문
+      const latestOrder = orderListResponse.data[0];
 
       const tossPayments = await loadTossPayments(
-        // process.env.REACT_APP_TOSS_CLIENT_KEY
-        "test_ck_OyL0qZ4G1VO4mYmDbvnroWb2MQYg"
+        process.env.REACT_APP_TOSS_CLIENT_KEY
       );
 
       // 결제 준비

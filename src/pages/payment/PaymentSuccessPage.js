@@ -57,6 +57,20 @@ const PaymentSuccessPage = () => {
     confirmPayment();
   }, [searchParams, navigate]);
 
+  useEffect(() => {
+    // 결제 성공 페이지에서는 beforeunload 경고 방지
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   return (
     <div className={style.complete_container}>
       <div className={style.complete_content}>
