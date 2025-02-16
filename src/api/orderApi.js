@@ -11,11 +11,11 @@ export const getOrderList = async () => {
 //   "cartItems": [
 //       {
 //           "productId": 247,
-//           "count": 2
+//           "qty": 2
 //       },
 //       {
 //           "productId": 246,
-//           "count": 3
+//           "qty": 3
 //       }
 //   ]
 // }

@@ -131,7 +131,7 @@ const PaymentPage = () => {
         couponId: selectedCoupon?.id,
         cartItems: selectedProducts.map((item) => ({
           productId: item.productId,
-          count: item.qty,
+          qty: item.qty,
         })),
       };
 
