@@ -1,12 +1,18 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import style from "../../styles/PaymentPage.module.css";
 import ImageLoader from "../../components/card/ImageLoader";
 import { getCoupons } from "../../api/couponApi";
+import { loadTossPayments } from "@tosspayments/payment-sdk";
+import { paymentApi } from "../../api/paymentApi";
+import { order, getOrderList } from "../../api/orderApi";
 
 const PaymentPage = () => {
-  const cartState = useSelector((state) => state.cartSlice);
-  const { cartItems } = cartState || { cartItems: [] };
+  const location = useLocation();
+  const { selectedProducts, totalAmount } = location.state || {
+    selectedProducts: [],
+    totalAmount: 0,
+  };
 
   const [showCouponModal, setShowCouponModal] = useState(false);
   const [coupons, setCoupons] = useState([]);
@@ -17,13 +23,14 @@ const PaymentPage = () => {
     privacy: false,
     thirdParty: false,
   });
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   const calculateItemTotal = (item) => {
     return item.discountPrice * item.qty;
   };
 
   const calculateTotalAmount = () => {
-    return cartItems.reduce(
+    return selectedProducts.reduce(
       (total, item) => total + calculateItemTotal(item),
       0
     );
@@ -88,13 +95,80 @@ const PaymentPage = () => {
     });
   };
 
-  const handlePaymentClick = () => {
+  const handlePaymentMethodChange = (method) => {
+    setPaymentMethod(method);
+  };
+
+  const handlePaymentClick = async () => {
     if (!agreements.age || !agreements.privacy || !agreements.thirdParty) {
       alert("모든 필수 항목에 동의해주세요.");
       return;
     }
-    // 결제 로직 진행
-    // ... payment logic ...
+
+    if (!paymentMethod) {
+      alert("결제 방법을 선택해주세요.");
+      return;
+    }
+
+    try {
+      // 주문 정보 생성
+      const orderData = {
+        couponId: selectedCoupon?.id,
+        cartItems: selectedProducts.map((item) => ({
+          productId: item.productId,
+          count: item.qty,
+        })),
+      };
+
+      // 주문 생성
+      await order(orderData);
+
+      // 주문 목록 조회하여 최신 주문 정보 가져오기
+      const orderListResponse = await getOrderList();
+      const latestOrder = orderListResponse.data[0]; // 가장 최근 주문
+
+      const tossPayments = await loadTossPayments(
+        // process.env.REACT_APP_TOSS_CLIENT_KEY
+        "test_ck_OyL0qZ4G1VO4mYmDbvnroWb2MQYg"
+      );
+
+      // 결제 준비
+      await paymentApi.preparePayment({
+        orderId: latestOrder.orderCode,
+        amount: calculateFinalAmount(),
+      });
+
+      // 결제 금액 검증
+      await paymentApi.validatePayment(
+        latestOrder.orderCode,
+        calculateFinalAmount()
+      );
+
+      // 결제 요청
+      await tossPayments.requestPayment(
+        paymentMethod === "신용, 체크카드"
+          ? "CARD"
+          : paymentMethod === "계좌이체/무통장입금"
+          ? "VIRTUAL_ACCOUNT"
+          : "PHONE",
+        {
+          amount: calculateFinalAmount(),
+          orderId: latestOrder.orderCode,
+          orderName:
+            latestOrder.orderItems.length > 1
+              ? `${latestOrder.orderItems[0].productName} 외 ${
+                  latestOrder.orderItems.length - 1
+                }건`
+              : latestOrder.orderItems[0].productName,
+          customerName: latestOrder.email.split("@")[0],
+          successUrl: `${window.location.origin}/payment/success`,
+          failUrl: `${window.location.origin}/payment/fail`,
+        }
+      );
+    } catch (error) {
+      console.error("결제 요청 실패:", error);
+      alert("결제 요청이 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -116,7 +190,7 @@ const PaymentPage = () => {
                 쿠폰사용
               </button>
             </div>
-            {cartItems.map((item) => (
+            {selectedProducts.map((item) => (
               <div key={item.cartItemId} className={style.order_item}>
                 <div className={style.item_main_info}>
                   <ImageLoader
@@ -160,9 +234,30 @@ const PaymentPage = () => {
           <div className={style.payment_section}>
             <h3>결제 수단</h3>
             <div className={style.payment_methods}>
-              <button className={style.method_btn}>신용, 체크카드</button>
-              <button className={style.method_btn}>계좌이체/무통장입금</button>
-              <button className={style.method_btn}>휴대폰 결제</button>
+              <button
+                className={`${style.method_btn} ${
+                  paymentMethod === "신용, 체크카드" ? style.active : ""
+                }`}
+                onClick={() => handlePaymentMethodChange("신용, 체크카드")}
+              >
+                신용, 체크카드
+              </button>
+              <button
+                className={`${style.method_btn} ${
+                  paymentMethod === "계좌이체/무통장입금" ? style.active : ""
+                }`}
+                onClick={() => handlePaymentMethodChange("계좌이체/무통장입금")}
+              >
+                계좌이체/무통장입금
+              </button>
+              <button
+                className={`${style.method_btn} ${
+                  paymentMethod === "휴대폰 결제" ? style.active : ""
+                }`}
+                onClick={() => handlePaymentMethodChange("휴대폰 결제")}
+              >
+                휴대폰 결제
+              </button>
             </div>
           </div>
         </div>

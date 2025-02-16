@@ -153,6 +153,29 @@ const CartPage = () => {
   };
 
   const handleOrderClick = () => {
+    if (selectedItems.length === 0) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "주문할 상품을 선택해주세요.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
+    // 선택된 상품들만 필터링
+    const selectedProducts = cartItems.filter((item) =>
+      selectedItems.includes(item.cartItemId)
+    );
+
+    // 선택된 상품들의 총 금액 계산
+    const selectedTotalAmount = selectedProducts.reduce(
+      (total, item) => total + item.discountPrice * item.qty,
+      0
+    );
+
     Swal.fire({
       title: "결제진행하시겠습니까?",
       icon: "question",
@@ -163,7 +186,12 @@ const CartPage = () => {
       cancelButtonText: "취소",
     }).then((result) => {
       if (result.isConfirmed) {
-        navigate("/payment");
+        navigate("/payment", {
+          state: {
+            selectedProducts,
+            totalAmount: selectedTotalAmount, // 선택된 상품들의 총 금액만 전달
+          },
+        });
       }
     });
   };

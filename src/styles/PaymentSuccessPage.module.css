@@ -1,0 +1,49 @@
+.complete_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: white;
+}
+
+.complete_content {
+  text-align: center;
+  padding: 2rem;
+}
+
+.check_circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid #7ac043;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 2rem;
+}
+
+.check_icon {
+  color: #7ac043;
+  font-size: 60px;
+}
+
+.complete_title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 2rem;
+  font-weight: normal;
+}
+
+.confirm_button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 1rem 4rem;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.confirm_button:hover {
+  background-color: #444;
+}

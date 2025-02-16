@@ -145,10 +145,30 @@
   background: white;
   border-radius: 4px;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .method_btn:hover {
   border-color: #00de90;
+  background-color: #f8fff8;
+}
+
+.method_btn.active {
+  border: 2px solid #00de90;
+  background-color: #f0fff7;
+  color: #00de90;
+  font-weight: bold;
+  position: relative;
+}
+
+.method_btn.active::after {
+  content: "✓";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: #00de90;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .payment_summary {
