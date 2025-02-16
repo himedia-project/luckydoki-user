@@ -55,10 +55,16 @@
 
 .order_item {
   display: flex;
-  gap: 20px;
+  justify-content: space-between;
+  align-items: flex-start;
   padding: 15px 0;
   border-bottom: 1px solid #eee;
-  align-items: flex-start;
+}
+
+.item_main_info {
+  display: flex;
+  gap: 20px;
+  flex: 1;
 }
 
 .product_image {
@@ -179,6 +185,7 @@
   gap: 8px;
   margin-bottom: 15px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .agreement_items {
@@ -193,6 +200,14 @@
   gap: 8px;
   font-size: 14px;
   color: #666;
+  cursor: pointer;
+}
+
+.agreement_items input[type="checkbox"],
+.checkbox_label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }
 
 .payment_btn {
@@ -212,37 +227,37 @@
 }
 
 .coupon_section {
-  padding: 15px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  margin-top: 10px;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
 }
 
 .coupon_btn {
-  background-color: #f5f5f5;
+  background-color: #fff;
   border: 1px solid #ddd;
-  padding: 10px 20px;
-  border-radius: 6px;
+  padding: 8px 16px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .coupon_btn:hover {
-  background-color: #eee;
+  border-color: #00de90;
+  color: #00de90;
 }
 
 .selected_coupon {
-  margin-top: 10px;
-  padding: 15px;
-  background-color: #f8f8f8;
-  border-radius: 4px;
-  color: #333;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  font-size: 12px;
 }
 
-.selected_coupon .coupon_discount {
+.coupon_discount {
   color: #e31d1a;
   font-weight: bold;
 }
@@ -338,4 +353,27 @@
 
 .coupon_list {
   padding: 20px;
+}
+
+.section_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section_header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.selected_coupon_info {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

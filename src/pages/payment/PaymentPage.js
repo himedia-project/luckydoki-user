@@ -11,6 +11,12 @@ const PaymentPage = () => {
   const [showCouponModal, setShowCouponModal] = useState(false);
   const [coupons, setCoupons] = useState([]);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
+  const [agreements, setAgreements] = useState({
+    all: false,
+    age: false,
+    privacy: false,
+    thirdParty: false,
+  });
 
   const calculateItemTotal = (item) => {
     return item.discountPrice * item.qty;
@@ -54,6 +60,43 @@ const PaymentPage = () => {
     return calculateTotalAmount() - calculateDiscountAmount();
   };
 
+  const handleAllAgreements = (e) => {
+    const { checked } = e.target;
+    setAgreements({
+      all: checked,
+      age: checked,
+      privacy: checked,
+      thirdParty: checked,
+    });
+  };
+
+  const handleSingleAgreement = (e) => {
+    const { name, checked } = e.target;
+    const newAgreements = {
+      ...agreements,
+      [name]: checked,
+    };
+
+    // 모든 항목이 체크되었는지 확인
+    const allChecked = Object.keys(newAgreements)
+      .filter((key) => key !== "all")
+      .every((key) => newAgreements[key]);
+
+    setAgreements({
+      ...newAgreements,
+      all: allChecked,
+    });
+  };
+
+  const handlePaymentClick = () => {
+    if (!agreements.age || !agreements.privacy || !agreements.thirdParty) {
+      alert("모든 필수 항목에 동의해주세요.");
+      return;
+    }
+    // 결제 로직 진행
+    // ... payment logic ...
+  };
+
   return (
     <div className={style.payment_container}>
       <div className={style.payment_header}>
@@ -67,36 +110,51 @@ const PaymentPage = () => {
       <div className={style.payment_content}>
         <div className={style.payment_items}>
           <div className={style.payment_section}>
-            <h3>주문 상품 정보</h3>
+            <div className={style.section_header}>
+              <h3>주문 상품 정보</h3>
+              <button className={style.coupon_btn} onClick={handleCouponClick}>
+                쿠폰사용
+              </button>
+            </div>
             {cartItems.map((item) => (
               <div key={item.cartItemId} className={style.order_item}>
-                <ImageLoader
-                  imagePath={item.imageName}
-                  alt={item.productName}
-                  className={style.product_image}
-                />
-                <div className={style.product_info}>
-                  <h4>{item.productName}</h4>
-                  <div className={style.price_info}>
-                    <div className={style.unit_price}>
-                      <span className={style.price_label}>상품 단가</span>
-                      <span className={style.discount_price}>
-                        {item.discountPrice.toLocaleString()}원
-                      </span>
-                    </div>
-                    <div className={style.total_price}>
-                      <span className={style.price_label}>총 상품금액</span>
-                      <span className={style.discount_price}>
-                        {calculateItemTotal(item).toLocaleString()}원
-                      </span>
-                      <span className={style.quantity}>
-                        (수량: {item.qty}개)
-                      </span>
+                <div className={style.item_main_info}>
+                  <ImageLoader
+                    imagePath={item.imageName}
+                    alt={item.productName}
+                    className={style.product_image}
+                  />
+                  <div className={style.product_info}>
+                    <h4>{item.productName}</h4>
+                    <div className={style.price_info}>
+                      <div className={style.unit_price}>
+                        <span className={style.price_label}>상품 단가</span>
+                        <span className={style.discount_price}>
+                          {item.discountPrice.toLocaleString()}원
+                        </span>
+                      </div>
+                      <div className={style.total_price}>
+                        <span className={style.price_label}>총 상품금액</span>
+                        <span className={style.discount_price}>
+                          {calculateItemTotal(item).toLocaleString()}원
+                        </span>
+                        <span className={style.quantity}>
+                          (수량: {item.qty}개)
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
+            {selectedCoupon && (
+              <div className={style.selected_coupon_info}>
+                <span>{selectedCoupon.name}</span>
+                <span className={style.coupon_discount}>
+                  -{selectedCoupon.discountPrice.toLocaleString()}원
+                </span>
+              </div>
+            )}
           </div>
 
           <div className={style.payment_section}>
@@ -105,20 +163,6 @@ const PaymentPage = () => {
               <button className={style.method_btn}>신용, 체크카드</button>
               <button className={style.method_btn}>계좌이체/무통장입금</button>
               <button className={style.method_btn}>휴대폰 결제</button>
-            </div>
-          </div>
-
-          <div className={style.payment_section}>
-            <h3>쿠폰 적용</h3>
-            <div className={style.coupon_section}>
-              <button className={style.coupon_btn} onClick={handleCouponClick}>
-                쿠폰 선택하기
-              </button>
-              {selectedCoupon && (
-                <div className={style.selected_coupon}>
-                  선택된 쿠폰: {selectedCoupon.name}
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -139,25 +183,46 @@ const PaymentPage = () => {
           </div>
           <div className={style.agreement_section}>
             <label className={style.checkbox_label}>
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={agreements.all}
+                onChange={handleAllAgreements}
+              />
               <span>아래 내용을 모두 동의합니다.</span>
             </label>
             <div className={style.agreement_items}>
               <label>
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  name="age"
+                  checked={agreements.age}
+                  onChange={handleSingleAgreement}
+                />
                 <span>(필수) 만 14세 이상입니다.</span>
               </label>
               <label>
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  name="privacy"
+                  checked={agreements.privacy}
+                  onChange={handleSingleAgreement}
+                />
                 <span>(필수) 개인정보 수집/이용동의</span>
               </label>
               <label>
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  name="thirdParty"
+                  checked={agreements.thirdParty}
+                  onChange={handleSingleAgreement}
+                />
                 <span>(필수) 개인정보 제3자 위탁동의</span>
               </label>
             </div>
           </div>
-          <button className={style.payment_btn}>결제하기</button>
+          <button className={style.payment_btn} onClick={handlePaymentClick}>
+            결제하기
+          </button>
         </div>
       </div>
 
