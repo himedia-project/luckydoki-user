@@ -8,7 +8,7 @@ const ReviewCard = ({ review }) => {
     <div className={styles.reviewCard}>
       <div className={styles.user_info}>
         <ImageLoader
-          imagePath="review.shopImage" // shopImage 필요
+          imagePath={review.shopImage}
           alt=""
           className={styles.profile}
         />

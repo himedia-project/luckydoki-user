@@ -9,7 +9,6 @@ import { createPost } from "../../api/communityApi";
 
 export default function CommunityAddPage() {
   const navigate = useNavigate();
-  // ✅ roles가 "SELLER"인지 "USER"인지에 따라 상품 태그 UI 표시할지 결정
   const shopId = useSelector((state) => state.infoSlice?.shopId);
   const roles = useSelector((state) => state.loginSlice.roles[0]);
 
