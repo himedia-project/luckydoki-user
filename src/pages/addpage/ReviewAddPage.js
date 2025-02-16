@@ -14,7 +14,6 @@ export default function ReviewAddPage() {
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState(null);
 
-  // 파일 선택 핸들러
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
@@ -28,12 +27,10 @@ export default function ReviewAddPage() {
     }
   };
 
-  // 이미지 제거
   const removeImage = () => {
     setImageFile(null);
   };
 
-  // 리뷰 제출 핸들러
   const handleSubmit = async () => {
     if (!rating || !content.trim()) {
       alert("별점과 리뷰 내용을 입력해주세요.");
@@ -52,7 +49,7 @@ export default function ReviewAddPage() {
     try {
       await createReview(formData);
       alert("리뷰가 등록되었습니다!");
-      navigate(-1); // 이전 페이지로 이동
+      navigate(-1);
     } catch (error) {
       console.error("리뷰 등록 실패:", error);
       alert("리뷰 등록에 실패했습니다.");

@@ -10,7 +10,7 @@ export const upgradeToSeller = async (sellerData) => {
   return await axiosInstance.post("/member/upgrade-to-seller", sellerData);
 };
 
-// 리뷰 등록
+// 리뷰 등록하기
 export const createReview = async (formData) => {
   return await axiosInstance.post("/review", formData);
 };

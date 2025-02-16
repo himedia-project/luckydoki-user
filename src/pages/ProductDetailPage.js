@@ -18,8 +18,6 @@ export default function ProductDetail() {
   const [mainImage, setMainImage] = useState("");
   const [isLiked, setIsLiked] = useState(false);
 
-  console.log(isLiked);
-
   useEffect(() => {
     const fetchProduct = async () => {
       try {
