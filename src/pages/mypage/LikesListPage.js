@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import ProductCard from "../../components/card/ProductCard";
 import ShopCard from "../../components/card/ShopCard";
 import { useLikedItemsTab } from "../../hooks/useLikedItemsTab";
 import style from "../../styles/likesList.module.css";
 
 export default function LikesListPage() {
+  const location = useLocation();
   const {
     selectedTab,
     setSelectedTab,
@@ -13,6 +15,12 @@ export default function LikesListPage() {
     handleUnlikeProduct,
     handleUnlikeShop,
   } = useLikedItemsTab();
+
+  useEffect(() => {
+    if (location.state?.tab) {
+      setSelectedTab(location.state.tab);
+    }
+  }, [location.state]);
 
   return (
     <div className={style.wish_container}>

@@ -1,22 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProductInfo } from "../api/productApi";
 import ImageLoader from "../components/card/ImageLoader";
 import style from "../styles/ProductDetail.module.css";
 import { likeProduct } from "../api/likesApi";
+import { getOrderList } from "../api/orderApi";
 import Swal from "sweetalert2";
 import { addCartItem } from "../api/cartApi";
 import { getReviewByProduct } from "../api/reviewApi";
 import ReviewCard from "../components/card/ReviewCard";
+import { useSelector } from "react-redux";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
+  const email = useSelector((state) => state.loginSlice.email);
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState("");
   const [isLiked, setIsLiked] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const productInfoRef = useRef(null);
+  const reviewSectionRef = useRef(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -39,8 +45,19 @@ export default function ProductDetail() {
       }
     };
 
+    const fetchOrders = async () => {
+      if (!email) return;
+      try {
+        const response = await getOrderList();
+        setOrders(response.data);
+      } catch (error) {
+        console.error("주문 내역을 불러오는 데 실패했습니다.", error);
+      }
+    };
+
     fetchProduct();
     fetchReviews();
+    fetchOrders();
   }, [productId]);
 
   // 가격 계산
@@ -48,6 +65,19 @@ export default function ProductDetail() {
   const isDiscounted = product?.discountRate > 0;
 
   const handleLikeToggle = async () => {
+    if (!email) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        title: "로그인이 필요합니다.",
+        icon: "warning",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: false,
+      });
+      return;
+    }
+
     try {
       const response = await likeProduct(productId);
       if (typeof response.data === "boolean") {
@@ -67,6 +97,11 @@ export default function ProductDetail() {
       }
     } catch (error) {
       console.error("찜 상태 변경 실패:", error);
+    }
+  };
+
+  const handleMoveReviewAdd = () => {
+    if (!email) {
       Swal.fire({
         toast: true,
         position: "top",
@@ -76,10 +111,26 @@ export default function ProductDetail() {
         timer: 1500,
         timerProgressBar: false,
       });
+      return;
     }
-  };
 
-  const handleMoveReviewAdd = () => {
+    const hasPurchased = orders.some((order) =>
+      order.orderItems.some((item) => item.productId === Number(productId))
+    );
+
+    if (!hasPurchased) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        title: "구매한 사용자만 리뷰를 작성할 수 있습니다.",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: false,
+      });
+      return;
+    }
+
     navigate("/review_add", {
       state: {
         productImage: product?.uploadFileNames[0],
@@ -90,6 +141,19 @@ export default function ProductDetail() {
   };
 
   const handleAddToCart = async () => {
+    if (!email) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        title: "로그인이 필요합니다.",
+        icon: "warning",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: false,
+      });
+      return;
+    }
+
     try {
       await addCartItem(productId, quantity);
 
@@ -118,6 +182,17 @@ export default function ProductDetail() {
     }
   };
 
+  // const handleScrollToSection = (ref) => {
+  //   if (ref.current) {
+  //     const elementPosition =
+  //       ref.current.getBoundingClientRect().top + window.scrollY;
+  //     window.scrollTo({
+  //       top: elementPosition - 110,
+  //       behavior: "smooth",
+  //     });
+  //   }
+  // };
+
   return (
     <div className={style.container}>
       {/* 왼쪽 섹션 */}
@@ -145,18 +220,29 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        <div className={style.buttonBox}>
-          <button className={style.productButton}>상품정보</button>
-          <button className={style.productButton}>상품리뷰</button>
-        </div>
+        {/* 사이드바 */}
+        {/* <div className={style.sidebar}>
+          <button
+            className={style.sidebarButton}
+            onClick={() => handleScrollToSection(productInfoRef)}
+          >
+            상품정보
+          </button>
+          <button
+            className={style.sidebarButton}
+            onClick={() => handleScrollToSection(reviewSectionRef)}
+          >
+            상품리뷰
+          </button>
+        </div> */}
 
         {/* 상품 정보 */}
-        <div className={style.productDescription}>
+        <div className={style.productDescription} ref={productInfoRef}>
           <p>{product?.description}</p>
         </div>
 
         {/* 리뷰 */}
-        <div className={style.reviewSection}>
+        <div className={style.reviewSection} ref={reviewSectionRef}>
           <div className={style.review_top}>
             <h3>상품 리뷰 ({reviews.length})</h3>
             <p
@@ -239,7 +325,7 @@ export default function ProductDetail() {
             <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>
               -
             </button>
-            <span>{quantity}</span>
+            <span className={style.total_quantity}>{quantity}</span>
             <button onClick={() => setQuantity(quantity + 1)}>+</button>
           </div>
         </div>

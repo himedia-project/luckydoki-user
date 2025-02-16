@@ -53,7 +53,9 @@ export default function MyPage() {
       <div className={style.wishlist_container}>
         <div className={style.wish_header}>
           <h3>찜한 상품</h3>
-          <Link to="/likeslist">더보기</Link>
+          <Link to="/likeslist" state={{ tab: "product" }}>
+            더보기
+          </Link>
         </div>
         <div className={style.wish_content}>
           {likedProducts && likedProducts.length > 0 ? (
@@ -85,7 +87,9 @@ export default function MyPage() {
       <div className={style.wishlist_container}>
         <div className={style.wish_header}>
           <h3>찜한 샵</h3>
-          <Link to="/likeslist">더보기</Link>
+          <Link to="/likeslist" state={{ tab: "shop" }}>
+            더보기
+          </Link>
         </div>
         <div className={style.wish_content}>
           {likedShops && likedShops.length > 0 ? (
