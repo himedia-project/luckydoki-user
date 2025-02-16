@@ -4,3 +4,9 @@ import axiosInstance from "./axiosInstance";
 export const getOrders = async () => {
   return await axiosInstance.get("/order/hist/list");
 };
+
+// 주문하기
+
+export const order = async (orderInfo) => {
+  return await axiosInstance.post("/order/order", orderInfo);
+};

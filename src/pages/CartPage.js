@@ -10,6 +10,7 @@ import { setCartItems, clearCartItems } from "../api/redux/cartSlice";
 import style from "../styles/CartPage.module.css";
 import ImageLoader from "../components/card/ImageLoader";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const CartPage = () => {
     totalDiscountPrice: 0,
   };
   const [selectedItems, setSelectedItems] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSelectedItems([]);
@@ -150,6 +152,22 @@ const CartPage = () => {
     );
   };
 
+  const handleOrderClick = () => {
+    Swal.fire({
+      title: "결제진행하시겠습니까?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#00de90",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "확인",
+      cancelButtonText: "취소",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/payment");
+      }
+    });
+  };
+
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
@@ -278,7 +296,9 @@ const CartPage = () => {
             <span>총 결제금액</span>
             <span>{calculateTotalAmount().toLocaleString()}원</span>
           </div>
-          <button className={style.order_btn}>주문하기</button>
+          <button className={style.order_btn} onClick={handleOrderClick}>
+            주문하기
+          </button>
         </div>
       </div>
     </div>
