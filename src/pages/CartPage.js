@@ -4,6 +4,7 @@ import {
   getCartItemList,
   deleteCartItem,
   deleteAllCartItems,
+  changeCartItemQty,
 } from "../api/cartApi";
 import { setCartItems, clearCartItems } from "../api/redux/cartSlice";
 import style from "../styles/CartPage.module.css";
@@ -115,6 +116,40 @@ const CartPage = () => {
     }
   };
 
+  const handleQuantityChange = async (cartItemId, currentQty, change) => {
+    const newQty = currentQty + change;
+    if (newQty < 1) return;
+
+    try {
+      await changeCartItemQty(cartItemId, newQty);
+      const updatedData = await getCartItemList();
+      dispatch(setCartItems(updatedData));
+    } catch (error) {
+      console.error("수량 변경 실패:", error);
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "error",
+        title: "수량 변경 중 오류가 발생했습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  };
+
+  // 개별 상품의 총 할인가격 계산 함수 추가
+  const calculateItemTotal = (item) => {
+    return item.discountPrice * item.qty;
+  };
+
+  // 전체 상품의 총 금액 계산 함수 추가
+  const calculateTotalAmount = () => {
+    return cartItems.reduce(
+      (total, item) => total + calculateItemTotal(item),
+      0
+    );
+  };
+
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
@@ -197,10 +232,10 @@ const CartPage = () => {
                 <h3>{item.productName}</h3>
                 <div className={style.price_info}>
                   <span className={style.discount_price}>
-                    {item.discountPrice.toLocaleString()}원
+                    {calculateItemTotal(item).toLocaleString()}원
                   </span>
                   <span className={style.original_price}>
-                    {item.price.toLocaleString()}원
+                    {(item.price * item.qty).toLocaleString()}원
                   </span>
                   <span className={style.discount_rate}>
                     {item.discountRate}%
@@ -208,10 +243,21 @@ const CartPage = () => {
                 </div>
               </div>
               <div className={style.quantity_control}>
-                <button>-</button>
-                <span>1</span>
-                <button>+</button>
-                <button>변경</button>
+                <button
+                  onClick={() =>
+                    handleQuantityChange(item.cartItemId, item.qty, -1)
+                  }
+                >
+                  -
+                </button>
+                <span>{item.qty}</span>
+                <button
+                  onClick={() =>
+                    handleQuantityChange(item.cartItemId, item.qty, 1)
+                  }
+                >
+                  +
+                </button>
               </div>
               <button
                 className={style.delete_btn}
@@ -226,11 +272,11 @@ const CartPage = () => {
           <h3>주문 예상 금액</h3>
           <div className={style.summary_row}>
             <span>상품금액</span>
-            <span>{totalDiscountPrice.toLocaleString()}원</span>
+            <span>{calculateTotalAmount().toLocaleString()}원</span>
           </div>
           <div className={style.total}>
             <span>총 결제금액</span>
-            <span>{totalDiscountPrice.toLocaleString()}원</span>
+            <span>{calculateTotalAmount().toLocaleString()}원</span>
           </div>
           <button className={style.order_btn}>주문하기</button>
         </div>
