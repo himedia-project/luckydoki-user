@@ -221,7 +221,7 @@ const CartPage = () => {
         </div>
         <div className={style.cart_content}>
           <div className={style.empty_cart}>
-            <img src="/cart-icon.svg" alt="빈 장바구니" />
+            <img src="/cart_icon.png" alt="빈 장바구니" />
             <p>장바구니에 담긴 상품이 없습니다.</p>
             <button className={style.shopping_btn}>쇼핑 구경하기</button>
           </div>
