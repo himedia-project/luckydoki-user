@@ -144,12 +144,11 @@ const CartPage = () => {
     return item.discountPrice * item.qty;
   };
 
-  // 전체 상품의 총 금액 계산 함수 추가
+  // 전체 상품의 총 금액 계산 함수 수정
   const calculateTotalAmount = () => {
-    return cartItems.reduce(
-      (total, item) => total + calculateItemTotal(item),
-      0
-    );
+    return cartItems
+      .filter((item) => selectedItems.includes(item.cartItemId))
+      .reduce((total, item) => total + calculateItemTotal(item), 0);
   };
 
   const handleOrderClick = () => {
@@ -221,7 +220,7 @@ const CartPage = () => {
         </div>
         <div className={style.cart_content}>
           <div className={style.empty_cart}>
-            <img src="/cart-icon.svg" alt="빈 장바구니" />
+            <img src="/cart_icon.png" alt="빈 장바구니" />
             <p>장바구니에 담긴 상품이 없습니다.</p>
             <button className={style.shopping_btn}>쇼핑 구경하기</button>
           </div>
