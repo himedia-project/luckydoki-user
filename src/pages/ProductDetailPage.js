@@ -5,14 +5,20 @@ import ImageLoader from "../components/card/ImageLoader";
 import style from "../styles/ProductDetail.module.css";
 import { likeProduct } from "../api/likesApi";
 import Swal from "sweetalert2";
+import { addCartItem } from "../api/cartApi";
+import { getReviewByProduct } from "../api/reviewApi";
+import ReviewCard from "../components/card/ReviewCard";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState("");
   const [isLiked, setIsLiked] = useState(false);
+
+  console.log(isLiked);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -26,7 +32,17 @@ export default function ProductDetail() {
       }
     };
 
+    const fetchReviews = async () => {
+      try {
+        const response = await getReviewByProduct(productId);
+        setReviews(response.data || []);
+      } catch (error) {
+        console.error("리뷰를 불러오는 데 실패했습니다.", error);
+      }
+    };
+
     fetchProduct();
+    fetchReviews();
   }, [productId]);
 
   // 가격 계산
@@ -66,7 +82,13 @@ export default function ProductDetail() {
   };
 
   const handleMoveReviewAdd = () => {
-    navigate("/review_add");
+    navigate("/review_add", {
+      state: {
+        productImage: product?.uploadFileNames[0],
+        productName: product?.name,
+        productId: product?.id,
+      },
+    });
   };
 
   const handleAddToCart = async () => {
@@ -138,7 +160,7 @@ export default function ProductDetail() {
         {/* 리뷰 */}
         <div className={style.reviewSection}>
           <div className={style.review_top}>
-            <h3>상품 리뷰 (0)</h3>
+            <h3>상품 리뷰 ({reviews.length})</h3>
             <p
               className={style.review_add_button}
               onClick={handleMoveReviewAdd}
@@ -146,7 +168,16 @@ export default function ProductDetail() {
               리뷰 작성
             </p>
           </div>
-          <p>등록된 리뷰가 없습니다.</p>
+
+          {reviews.length > 0 ? (
+            <div className={style.reviewList}>
+              {reviews.map((review) => (
+                <ReviewCard key={review.id} review={review} />
+              ))}
+            </div>
+          ) : (
+            <p>등록된 리뷰가 없습니다.</p>
+          )}
         </div>
 
         {/* 태그 */}

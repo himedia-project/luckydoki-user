@@ -41,7 +41,7 @@ const LikeButton = ({ initialLikeState, itemId, isShop, className }) => {
 
   return (
     <img
-      src={isLiked ? "/heart_filled.png" : "/heart.png"}
+      src={isLiked ? "/fillHeart.png" : "/heart.png"}
       alt="찜 아이콘"
       className={`${className} ${isLiked ? "liked" : ""}`}
       onClick={handleLikeToggle}

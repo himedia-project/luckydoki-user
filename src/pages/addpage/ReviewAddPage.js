@@ -1,84 +1,75 @@
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import style from "../../styles/ReviewAddPage.module.css";
 import StarRating from "../../components/StarRating";
-import axiosInstance from "../../api/axiosInstance";
+import { createReview } from "../../api/registerApi";
+import ImageLoader from "../../components/card/ImageLoader";
 
 export default function ReviewAddPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { productImage, productName, productId } = location.state || {};
+
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState("");
-  const [images, setImages] = useState([]);
-  const [imageFiles, setImageFiles] = useState([]);
+  const [imageFile, setImageFile] = useState(null);
 
+  // 파일 선택 핸들러
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
+    const file = e.target.files[0];
 
-    if (images.length + files.length > 5) {
-      alert("최대 5개의 이미지만 업로드할 수 있습니다.");
-      return;
+    if (file) {
+      const fileSize = file.size / 1024 / 1024;
+      if (fileSize > 20) {
+        alert("최대 20MB 이하의 이미지만 업로드할 수 있습니다.");
+        return;
+      }
+      setImageFile(file);
     }
-
-    const newImages = files.map((file) => URL.createObjectURL(file));
-    setImages((prev) => [...prev, ...newImages]);
-    setImageFiles((prev) => [...prev, ...files]);
   };
 
-  const removeImage = (index) => {
-    setImages(images.filter((_, i) => i !== index));
-    setImageFiles(imageFiles.filter((_, i) => i !== index));
+  // 이미지 제거
+  const removeImage = () => {
+    setImageFile(null);
   };
 
+  // 리뷰 제출 핸들러
   const handleSubmit = async () => {
-    if (!rating || !content) {
+    if (!rating || !content.trim()) {
       alert("별점과 리뷰 내용을 입력해주세요.");
       return;
     }
 
-    // 이미지를 Base64로 변환
-    const imageBase64 = await Promise.all(
-      imageFiles.map((file) => convertToBase64(file))
-    );
+    const formData = new FormData();
+    formData.append("rating", rating);
+    formData.append("content", content);
+    formData.append("productId", productId);
 
-    const reviewData = {
-      rating,
-      email: "user@example.com",
-      productId: 123,
-      content,
-      image: imageBase64[0] || "",
-    };
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
 
     try {
-      const response = await axiosInstance.post("/api/review", reviewData);
-      console.log("리뷰 등록 성공:", response.data);
+      await createReview(formData);
       alert("리뷰가 등록되었습니다!");
-
-      // 폼 초기화
-      setRating(0);
-      setContent("");
-      setImages([]);
-      setImageFiles([]);
+      navigate(-1); // 이전 페이지로 이동
     } catch (error) {
       console.error("리뷰 등록 실패:", error);
       alert("리뷰 등록에 실패했습니다.");
     }
   };
 
-  // 파일을 Base64로 변환하는 함수
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
   return (
     <div className={style.review_container}>
       <h2>상품 리뷰 등록</h2>
       <div className={style.product_info}>
-        <img src="logo192.png" className={style.product_img} />
+        <ImageLoader
+          imagePath={productImage || "default-image.png"}
+          className={style.product_img}
+          alt="상품 이미지"
+        />
         <div className={style.info_box}>
-          <p>상품 제목</p>
+          <p>{productName || "상품명 없음"}</p>
           <StarRating setRating={setRating} />
         </div>
       </div>
@@ -96,39 +87,35 @@ export default function ReviewAddPage() {
 
       <div className={style.upload_container}>
         <label htmlFor="fileUpload" className={style.upload_button}>
-          <img src="backup.png" />
+          <img src="backup.png" alt="업로드 아이콘" />
           이미지 업로드
         </label>
         <input
           id="fileUpload"
           type="file"
           accept="image/*"
-          multiple
           className={style.file_input}
           onChange={handleFileChange}
         />
         <p>
-          사진은 최대 20MB 이하의 JPG, PNG, GIF 파일 5장까지 첨부 가능합니다.
+          사진은 최대 20MB 이하의 JPG, PNG, GIF 파일 1장까지 첨부 가능합니다.
         </p>
       </div>
 
-      <div className={style.image_preview_container}>
-        {images.map((imgSrc, index) => (
-          <div key={index} className={style.image_wrapper}>
+      {imageFile && (
+        <div className={style.image_preview_container}>
+          <div className={style.image_wrapper}>
             <img
-              src={imgSrc}
-              alt={`uploaded-${index}`}
+              src={URL.createObjectURL(imageFile)}
+              alt="업로드된 이미지"
               className={style.preview_img}
             />
-            <button
-              onClick={() => removeImage(index)}
-              className={style.remove_button}
-            >
+            <button onClick={removeImage} className={style.remove_button}>
               ✕
             </button>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
       <button className={style.register_button} onClick={handleSubmit}>
         등록하기

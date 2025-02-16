@@ -1,21 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { getImageUrl } from "../../api/imageApi";
+import React from "react";
 import styles from "../../styles/ReviewCard.module.css";
 import ReviewRating from "../ReviewRating";
+import ImageLoader from "./ImageLoader";
 
 const ReviewCard = ({ review }) => {
-  const [imageSrc, setImageSrc] = useState("");
-
-  useEffect(() => {
-    if (review.imageName) {
-      getImageUrl(review.imageName).then((imageUrl) => setImageSrc(imageUrl));
-    }
-  }, [review.imageName]);
-
   return (
     <div className={styles.reviewCard}>
       <div className={styles.user_info}>
-        <img src="profile.png" alt="" className={styles.profile} />
+        <ImageLoader
+          imagePath="review.shopImage"
+          alt=""
+          className={styles.profile}
+        />
         <div className={styles.info_box}>
           <p className={styles.nickname}>도성곤</p>
           <div className={styles.sub_info}>
@@ -26,10 +22,10 @@ const ReviewCard = ({ review }) => {
       </div>
 
       <div className={styles.content_container}>
-        {imageSrc && (
+        {review.imageName && (
           <div className={styles.imageContainer}>
-            <img
-              src={imageSrc}
+            <ImageLoader
+              imagePath={review.imageName}
               alt={review.productName}
               className={styles.productImage}
             />
