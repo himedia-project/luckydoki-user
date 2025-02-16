@@ -69,6 +69,35 @@ export default function ProductDetail() {
     navigate("/review_add");
   };
 
+  const handleAddToCart = async () => {
+    try {
+      await addCartItem(productId, quantity);
+
+      const result = await Swal.fire({
+        title: "장바구니에 추가되었습니다.",
+        text: "장바구니로 이동하시겠습니까?",
+        icon: "success",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "확인",
+        cancelButtonText: "아니요",
+      });
+
+      if (result.isConfirmed) {
+        navigate("/cart");
+      }
+    } catch (error) {
+      console.error("장바구니 추가 실패:", error);
+      Swal.fire({
+        title: "오류",
+        text: "장바구니 추가에 실패했습니다.",
+        icon: "error",
+        confirmButtonText: "확인",
+      });
+    }
+  };
+
   return (
     <div className={style.container}>
       {/* 왼쪽 섹션 */}
@@ -193,7 +222,9 @@ export default function ProductDetail() {
 
         {/* 버튼 */}
         <div className={style.buttonContainer}>
-          <button className={style.cartButton}>장바구니</button>
+          <button className={style.cartButton} onClick={handleAddToCart}>
+            장바구니
+          </button>
           <button className={style.buyButton}>구매하기</button>
         </div>
       </section>
