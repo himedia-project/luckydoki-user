@@ -1,0 +1,241 @@
+.container {
+  display: flex;
+  max-width: 1100px;
+  margin: 20px auto;
+  gap: 30px;
+}
+
+.leftSection {
+  flex: 1;
+}
+
+.rightSection {
+  flex: 1;
+}
+
+.imageContainer {
+  text-align: center;
+  border-bottom: 1px solid #333;
+  padding-bottom: 20px;
+}
+
+.mainImage {
+  width: 100%;
+  max-width: 620px;
+  height: 620px;
+  border-radius: 4px;
+}
+
+.thumbnailContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.thumbnail:hover {
+  border: 2px solid #007bff;
+}
+
+.activeThumbnail {
+  border: 2px solid #00de90;
+}
+
+.productButton {
+  width: 310px;
+  height: 50px;
+  display: block;
+  background: none;
+  border: none;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s;
+}
+.productButton:hover {
+  border-bottom: 1px solid #333;
+}
+
+.buttonBox {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.productDescription {
+  margin-top: 30px;
+  min-height: 200px;
+}
+
+.reviewSection {
+  margin-top: 30px;
+  min-height: 300px;
+  border-bottom: 1px solid #333;
+}
+
+.review_top {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #333;
+}
+
+.review_add_button {
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.review_add_button:hover {
+  color: #00de90;
+}
+
+.tagSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 50px 0;
+  border-bottom: 1px solid #333;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  border: 1px solid #d9d9d9;
+  color: #666;
+  padding: 10px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+}
+
+.shop_img {
+  width: 32px;
+  height: 32px;
+}
+
+.shopInfo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.productName {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 12px 0 20px;
+  max-width: 400px;
+}
+
+.title_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.heart_img {
+  width: 26px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.priceSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.discountBox {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+}
+
+.discountRate {
+  font-weight: 700;
+  color: #00de90;
+}
+
+.discountPrice {
+  font-size: 24px;
+  font-weight: 700;
+  color: #00de90;
+}
+
+.originalPrice {
+  font-size: 14px;
+  text-decoration: line-through;
+  color: #999;
+}
+
+.quantitySelector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #999;
+  border-radius: 4px;
+}
+
+.quantity_button_container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.quantitySelector button {
+  background: none;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.totalPrice {
+  display: flex;
+  justify-content: end;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cartButton {
+  flex: 1;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.buyButton {
+  flex: 1;
+  background: #ff6b00;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
