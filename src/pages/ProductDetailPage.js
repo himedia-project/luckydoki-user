@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProductInfo } from "../api/productApi";
-import ImageLoader from "../components/card/ImageLoader";
-import style from "../styles/ProductDetail.module.css";
-import { likeProduct } from "../api/likesApi";
-import { getOrderList } from "../api/orderApi";
 import Swal from "sweetalert2";
 import { addCartItem } from "../api/cartApi";
+import { getOrderList } from "../api/orderApi";
+import { getProductInfo } from "../api/productApi";
 import { getReviewByProduct } from "../api/reviewApi";
+import LikeButton from "../components/button/LikeButton";
+import ImageLoader from "../components/card/ImageLoader";
 import ReviewCard from "../components/card/ReviewCard";
-import { useSelector } from "react-redux";
+import style from "../styles/ProductDetail.module.css";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
@@ -19,7 +19,6 @@ export default function ProductDetail() {
   const [reviews, setReviews] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState("");
-  const [isLiked, setIsLiked] = useState(false);
   const [orders, setOrders] = useState([]);
   const productInfoRef = useRef(null);
   const reviewSectionRef = useRef(null);
@@ -30,7 +29,6 @@ export default function ProductDetail() {
         const response = await getProductInfo(productId);
         setProduct(response.data);
         setMainImage(response.data.uploadFileNames[0]);
-        setIsLiked(response.data.likes);
       } catch (error) {
         console.error("상품 정보를 불러오지 못했습니다.", error);
       }
@@ -63,42 +61,6 @@ export default function ProductDetail() {
   // 가격 계산
   const totalPrice = (product?.discountPrice * quantity).toLocaleString();
   const isDiscounted = product?.discountRate > 0;
-
-  const handleLikeToggle = async () => {
-    if (!email) {
-      Swal.fire({
-        toast: true,
-        position: "top",
-        title: "로그인이 필요합니다.",
-        icon: "warning",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: false,
-      });
-      return;
-    }
-
-    try {
-      const response = await likeProduct(productId);
-      if (typeof response.data === "boolean") {
-        setIsLiked(response.data);
-
-        Swal.fire({
-          toast: true,
-          position: "top",
-          icon: response.data ? "success" : "info",
-          title: response.data
-            ? "찜목록에 추가되었습니다."
-            : "찜 목록에서 삭제되었습니다.",
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: false,
-        });
-      }
-    } catch (error) {
-      console.error("찜 상태 변경 실패:", error);
-    }
-  };
 
   const handleMoveReviewAdd = () => {
     if (!email) {
@@ -291,11 +253,13 @@ export default function ProductDetail() {
         {/* 좋아요 */}
         <div className={style.title_container}>
           <h2 className={style.productName}>{product?.name}</h2>
-          <img
-            src={isLiked ? "/fillHeart.png" : "/heart.png"}
-            alt="찜 아이콘"
-            className={`${style.heart_img} ${isLiked ? style.liked : ""}`}
-            onClick={handleLikeToggle}
+          <LikeButton
+            initialLikeState={product?.likes}
+            itemId={productId}
+            isShop={false}
+            className={style.heart_img}
+            unlikedIcon="/heart.png"
+            likedIcon="/fillHeart.png"
           />
         </div>
 

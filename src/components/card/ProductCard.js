@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-import styles from "../../styles/ProductCard.module.css";
-import { likeProduct } from "../../api/likesApi";
-import Swal from "sweetalert2";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "../../styles/ProductCard.module.css";
+import LikeButton from "../button/LikeButton";
 import ImageLoader from "./ImageLoader";
 
 const ProductCard = ({
@@ -19,40 +18,6 @@ const ProductCard = ({
   onUnlike,
 }) => {
   const navigate = useNavigate();
-  const [isLiked, setIsLiked] = useState(likes);
-
-  const handleLike = async () => {
-    try {
-      await likeProduct(id);
-
-      if (isLiked) {
-        onUnlike(id);
-      } else {
-        Swal.fire({
-          toast: true,
-          position: "top",
-          icon: "success",
-          title: "찜목록에 추가되었습니다.",
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: false,
-        });
-      }
-
-      setIsLiked(!isLiked);
-    } catch (error) {
-      console.error("찜 추가/삭제 실패:", error);
-      Swal.fire({
-        toast: true,
-        position: "top",
-        icon: "error",
-        title: "찜 추가/삭제 중 오류가 발생했습니다.",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
-      });
-    }
-  };
 
   // 상세 페이지 이동 handler
   const handleCardClick = () => {
@@ -69,18 +34,17 @@ const ProductCard = ({
           className={styles.productImage}
         />
         {/* ✅ 하트(찜) 아이콘 */}
-        <button
+        <LikeButton
+          initialLikeState={likes}
+          itemId={id}
+          isShop={false}
           className={styles.likeButton}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleLike();
+          onLikeChange={(newState) => {
+            if (!newState && onUnlike) {
+              onUnlike(id);
+            }
           }}
-        >
-          <img
-            src={isLiked ? "/fillHeart.png" : "/backheart.png"}
-            alt="찜하기"
-          />
-        </button>
+        />
       </div>
 
       {/* ✅ 상품 이름 */}

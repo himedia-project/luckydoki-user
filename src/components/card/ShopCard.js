@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { likeShop } from "../../api/likesApi";
 import styles from "../../styles/ShopCard.module.css";
+import LikeButton from "../button/LikeButton";
 import ImageLoader from "./ImageLoader";
 
 const ShopCard = ({
@@ -13,42 +12,7 @@ const ShopCard = ({
   onUnlike,
 }) => {
   const navigate = useNavigate();
-  const [isLiked, setIsLiked] = useState(likes);
 
-  const handleLike = async () => {
-    try {
-      await likeShop(shopId);
-
-      if (isLiked) {
-        onUnlike(shopId);
-      } else {
-        Swal.fire({
-          toast: true,
-          position: "top",
-          icon: "success",
-          title: "찜목록에 추가되었습니다.",
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: false,
-        });
-      }
-
-      setIsLiked(!isLiked);
-    } catch (error) {
-      console.error("찜 추가/삭제 실패:", error);
-      Swal.fire({
-        toast: true,
-        position: "top",
-        icon: "error",
-        title: "찜 추가/삭제 중 오류가 발생했습니다.",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
-      });
-    }
-  };
-
-  // 상세 페이지 이동
   const handleCardClick = () => {
     navigate(`/shop/${shopId}`);
   };
@@ -63,18 +27,17 @@ const ShopCard = ({
           alt="샵 이미지"
           className={styles.shopImage}
         />
-        <button
+        <LikeButton
+          initialLikeState={likes}
+          itemId={shopId}
+          isShop={true}
           className={styles.likeButton}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleLike();
+          onLikeChange={(newState) => {
+            if (!newState && onUnlike) {
+              onUnlike(shopId);
+            }
           }}
-        >
-          <img
-            src={isLiked ? "/fillHeart.png" : "/backheart.png"}
-            alt="찜하기"
-          />
-        </button>
+        />
       </div>
 
       {/* 샵 이름 */}

@@ -139,7 +139,6 @@ export default function ShopPage() {
                   event={product.event === "Y"}
                   best={product.best === "Y"}
                   likes={product.likes}
-                  onUnlike={() => console.log(`상품 ${product.id} 찜 해제`)}
                 />
               ))}
             </div>
