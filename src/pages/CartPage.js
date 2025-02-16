@@ -144,12 +144,11 @@ const CartPage = () => {
     return item.discountPrice * item.qty;
   };
 
-  // 전체 상품의 총 금액 계산 함수 추가
+  // 전체 상품의 총 금액 계산 함수 수정
   const calculateTotalAmount = () => {
-    return cartItems.reduce(
-      (total, item) => total + calculateItemTotal(item),
-      0
-    );
+    return cartItems
+      .filter((item) => selectedItems.includes(item.cartItemId))
+      .reduce((total, item) => total + calculateItemTotal(item), 0);
   };
 
   const handleOrderClick = () => {

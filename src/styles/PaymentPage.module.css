@@ -397,3 +397,34 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.no_coupon_btn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.no_coupon_btn:hover {
+  border-color: #00de90;
+  background-color: #f0fff7;
+}
+
+.cancel_coupon_btn {
+  margin-left: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 16px;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.cancel_coupon_btn:hover {
+  color: #333;
+}

@@ -58,6 +58,10 @@ const PaymentPage = () => {
     setShowCouponModal(false);
   };
 
+  const handleCancelCoupon = () => {
+    setSelectedCoupon(null);
+  };
+
   const calculateDiscountAmount = () => {
     if (!selectedCoupon) return 0;
     return selectedCoupon.discountPrice;
@@ -237,6 +241,12 @@ const PaymentPage = () => {
                 <span className={style.coupon_discount}>
                   -{selectedCoupon.discountPrice.toLocaleString()}원
                 </span>
+                <button
+                  className={style.cancel_coupon_btn}
+                  onClick={handleCancelCoupon}
+                >
+                  ✕
+                </button>
               </div>
             )}
           </div>
@@ -344,6 +354,15 @@ const PaymentPage = () => {
               </button>
             </div>
             <div className={style.coupon_list}>
+              <button
+                className={style.no_coupon_btn}
+                onClick={() => {
+                  setSelectedCoupon(null);
+                  setShowCouponModal(false);
+                }}
+              >
+                쿠폰 사용 안함
+              </button>
               {coupons.map((coupon) => (
                 <div
                   key={coupon.id}
