@@ -1,0 +1,40 @@
+/* ✅ 페이지 전체 컨테이너 스타일 */
+.productListContainer {
+  max-width: 1280px;
+  margin: 80px auto;
+  padding: 74px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ✅ 제목 스타일 수정 */
+.pageTitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  display: block; /* ✅ 혹시 flex 내부에서 사라지는 경우 대비 */
+  visibility: visible;
+}
+
+/* ✅ 상품 리스트 레이아웃 */
+.productGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 반응형 */
+  gap: 20px;
+  justify-content: center;
+}
+
+/* ✅ 상품 없음 메시지 */
+.noProduct {
+  font-size: 18px;
+  color: #888;
+  text-align: center;
+  margin-top: 50px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+}

@@ -14,12 +14,14 @@ const ProductSwiper = ({ title, items }) => {
 
   // ✅ 항상 실행되도록 useEffect를 조건문 바깥으로 이동
   useEffect(() => {
-    if (swiperRef.current?.swiper) {
-      swiperRef.current.swiper.params.navigation.prevEl = prevRef.current;
-      swiperRef.current.swiper.params.navigation.nextEl = nextRef.current;
-      swiperRef.current.swiper.navigation.init();
-      swiperRef.current.swiper.navigation.update();
-    }
+    setTimeout(() => {
+      if (swiperRef.current?.swiper) {
+        swiperRef.current.swiper.params.navigation.prevEl = prevRef.current;
+        swiperRef.current.swiper.params.navigation.nextEl = nextRef.current;
+        swiperRef.current.swiper.navigation.init();
+        swiperRef.current.swiper.navigation.update();
+      }
+    }, 100);
   }, []);
 
   if (!items || items.length === 0) {
@@ -44,7 +46,7 @@ const ProductSwiper = ({ title, items }) => {
         ref={swiperRef}
         spaceBetween={10}
         slidesPerView={5}
-        loop={true}
+        loop={items.length > 5}
         navigation={{
           prevEl: prevRef.current,
           nextEl: nextRef.current,

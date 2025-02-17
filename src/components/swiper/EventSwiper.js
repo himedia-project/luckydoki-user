@@ -71,7 +71,7 @@ const EventSwiper = ({ events }) => {
         spaceBetween={20}
         centeredSlides={true}
         slidesPerView={"auto"}
-        loop={true}
+        loop={events.length > 3}
         navigation={{
           nextEl: ".custom-next",
           prevEl: ".custom-prev",
