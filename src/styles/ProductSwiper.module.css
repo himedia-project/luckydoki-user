@@ -1,27 +1,16 @@
 .section {
   margin-top: 40px;
+  position: relative;
+  overflow: visible; /* ✅ 버튼이 보이도록 변경 */
 }
 
-.sectionTitle {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  text-align: left;
-  color: #333;
-}
-
-/* ✅ Swiper 전체 너비 사용 (전역 스타일 적용) */
+/* ✅ Swiper 전체 너비 사용 */
 :global(.swiper) {
-  width: 120%;
+  width: 100%;
+  overflow: hidden; /* ✅ Swiper 내부 버튼 보이도록 변경 */
 }
 
-/* ✅ 각 슬라이드가 전체 너비를 활용하도록 설정 */
-:global(.swiper-slide) {
-  box-sizing: border-box;
-  width: auto; /* 기본 크기 설정 */
-}
-
-/* ✅ Swiper 네비게이션 버튼 (양쪽 끝으로 배치 & 스타일 적용) */
+/* ✅ Swiper 네비게이션 버튼 */
 :global(.swiper-button-prev),
 :global(.swiper-button-next) {
   position: absolute;
@@ -29,44 +18,87 @@
   transform: translateY(-50%);
   width: 40px;
   height: 40px;
-  background-color: white; /* ✅ 흰색 배경 */
-  color: black; /* ✅ 검은색 화살표 */
+  background-color: white;
+  color: black;
   border-radius: 50%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+  z-index: 15; /* ✅ Swiper보다 위에 표시 */
+}
+/* ✅ 네비게이션 버튼 */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: white; /* 반투명 배경 */
+  color: black;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+/* ✅ 왼쪽 버튼 */
+.prevButton {
+  left: -60px;
 }
 
-/* ✅ 왼쪽 화살표 위치 */
-:global(.swiper-button-prev) {
-  left: -20px;
+/* ✅ 오른쪽 버튼 */
+.nextButton {
+  right: -60px;
 }
 
-/* ✅ 오른쪽 화살표 위치 */
-:global(.swiper-button-next) {
-  right: -20px;
+/* ✅ Swiper 페이지네이션 스타일 */
+:global(.swiper-pagination) {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px; /* 점 간격 조정 */
+}
+
+/* ✅ 기본 점 스타일 */
+:global(.swiper-pagination-bullet) {
+  width: 10px;
+  height: 10px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+  opacity: 1 !important; /* ✅ Swiper 기본 스타일 덮어쓰기 */
+}
+
+/* ✅ 활성화된 점 스타일 */
+:global(.swiper-pagination-bullet-active) {
+  background-color: white;
+  width: 12px; /* ✅ 활성화된 점 크기 증가 */
+  height: 12px;
 }
 
 /* ✅ 반응형 조정 */
-@media (max-width: 768px) {
-  .productImage {
-    height: 130px;
+@media (max-width: 1024px) {
+  :global(.swiper-button-prev) {
+    left: -30px;
   }
 
-  /* ✅ 작은 화면에서 버튼 크기 조정 */
+  :global(.swiper-button-next) {
+    right: -30px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* ✅ 버튼 크기 조정 */
   :global(.swiper-button-prev),
   :global(.swiper-button-next) {
     width: 30px;
     height: 30px;
-  }
-
-  :global(.swiper-button-prev) {
-    left: -10px;
-  }
-
-  :global(.swiper-button-next) {
-    right: -10px;
   }
 }

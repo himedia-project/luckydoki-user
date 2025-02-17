@@ -2,31 +2,38 @@
 .productCard {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 10px;
-  border-radius: 8px;
-  background-color: #fff;
+  cursor: pointer;
+  align-items: flex-start;
+  width: 243px;
+  height: 370px; /* ✅ 상품 카드 높이 고정 */
+  -webkit-line-clamp: 1; /* ✅ 최대 2줄까지 표시 */
+  -webkit-box-orient: vertical;
+  justify-content: space-between; /* ✅ 내부 요소 정렬 */
 }
 
-.productCard:hover {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
+/* .productCard:hover {
+  transform: translateY(-5px);
+} */
 
 /* ✅ 이미지 컨테이너 */
 .imageContainer {
   position: relative;
   width: 243px;
-  height: 243px;
-  z-index: 5;
+  height: 243px; /* ✅ 고정된 높이 유지 */
+  overflow: hidden;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  flex-shrink: 0; /* ✅ 줄어들지 않도록 설정 */
+  margin-top: 10px;
 }
 
-/* ✅ 상품 이미지 */
 .productImage {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 4px;
 }
 
 /* ✅ 하트(찜) 버튼 */
@@ -44,7 +51,15 @@
 .productName {
   font-size: 14px;
   font-weight: bold;
-  margin: 10px 0 5px;
+  margin-top: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 최대 2줄 */
+  -webkit-box-orient: vertical;
+  letter-spacing: -0.9px;
+  line-height: 16.71px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 33px; /* 2줄일 때 높이 유지 */
 }
 
 /* ✅ 가격 & 할인율 */
@@ -70,6 +85,11 @@
 }
 
 .discountPrice {
+  font-size: 18px;
+  font-weight: 700;
+  color: #00de90;
+}
+.productPrice {
   font-size: 18px;
   font-weight: 700;
   color: #00de90;

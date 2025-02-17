@@ -25,7 +25,6 @@ const EventSwiper = ({ events }) => {
           const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, img.width, img.height);
 
-          // 중앙 부분 색상 추출
           const pixelData = ctx.getImageData(
             img.width / 2,
             img.height / 2,
@@ -67,34 +66,74 @@ const EventSwiper = ({ events }) => {
   }
 
   return (
-    <Swiper
-      spaceBetween={20}
-      centeredSlides={true}
-      slidesPerView={"auto"}
-      loop={true}
-      navigation
-      pagination={{ type: "fraction" }}
-      modules={[Navigation, Pagination]}
-      className={styles.eventSwiper}
-    >
-      {events.map((event) => (
-        <SwiperSlide key={event.id} className={styles.eventSlide}>
-          <div className={styles.imageWrapper}>
-            <img
-              src={event.image}
-              alt={event.title}
-              className={styles.eventImage}
-            />
-            <div
-              className={styles.imageTitle}
-              style={{ color: textColors[event.id] || "white" }} // 색상 적용
-            >
-              {event.title}
+    <div className={styles.swiperContainer}>
+      <Swiper
+        spaceBetween={20}
+        centeredSlides={true}
+        slidesPerView={"auto"}
+        loop={true}
+        navigation={{
+          nextEl: ".custom-next",
+          prevEl: ".custom-prev",
+        }}
+        pagination={{ type: "fraction" }}
+        modules={[Navigation, Pagination]}
+        className={styles.eventSwiper}
+      >
+        {events.map((event) => (
+          <SwiperSlide key={event.id} className={styles.eventSlide}>
+            <div className={styles.imageWrapper}>
+              <img
+                src={event.image}
+                alt={event.title}
+                className={styles.eventImage}
+              />
+              <div
+                className={styles.imageTitle}
+                style={{ color: textColors[event.id] || "white" }}
+              >
+                {event.title}
+              </div>
             </div>
-          </div>
-        </SwiperSlide>
-      ))}
-    </Swiper>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+
+      {/* ✅ 커스텀 네비게이션 버튼 (이미지와 겹치도록 배치) */}
+      <button
+        className={`custom-prev ${styles.navButton} ${styles.prevButton}`}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="black"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <button
+        className={`custom-next ${styles.navButton} ${styles.nextButton}`}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="black"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
   );
 };
 
