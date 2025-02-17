@@ -199,6 +199,10 @@ const CartPage = () => {
     });
   };
 
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
@@ -226,7 +230,12 @@ const CartPage = () => {
           <div className={style.empty_cart}>
             <img src="/cart_icon.png" alt="빈 장바구니" />
             <p>장바구니에 담긴 상품이 없습니다.</p>
-            <button className={style.shopping_btn}>쇼핑 구경하기</button>
+            <button
+              className={style.shopping_btn}
+              onClick={() => navigate("/popular")}
+            >
+              쇼핑 구경하기
+            </button>
           </div>
         </div>
       </div>
@@ -274,23 +283,28 @@ const CartPage = () => {
                 onChange={() => handleSelectItem(item.cartItemId)}
                 className={style.one_select_box}
               />
-              <ImageLoader
-                imagePath={item.imageName}
-                alt={item.productName}
-                className={style.product_image}
-              />
-              <div className={style.product_info}>
-                <h3>{item.productName}</h3>
-                <div className={style.price_info}>
-                  <span className={style.discount_price}>
-                    {calculateItemTotal(item).toLocaleString()}원
-                  </span>
-                  <span className={style.original_price}>
-                    {(item.price * item.qty).toLocaleString()}원
-                  </span>
-                  <span className={style.discount_rate}>
-                    {item.discountRate}%
-                  </span>
+              <div
+                onClick={() => handleProductClick(item.productId)}
+                style={{ cursor: "pointer" }}
+              >
+                <ImageLoader
+                  imagePath={item.imageName}
+                  alt={item.productName}
+                  className={style.product_image}
+                />
+                <div className={style.product_info}>
+                  <h3>{item.productName}</h3>
+                  <div className={style.price_info}>
+                    <span className={style.discount_price}>
+                      {calculateItemTotal(item).toLocaleString()}원
+                    </span>
+                    <span className={style.original_price}>
+                      {(item.price * item.qty).toLocaleString()}원
+                    </span>
+                    <span className={style.discount_rate}>
+                      {item.discountRate}%
+                    </span>
+                  </div>
                 </div>
               </div>
               <div className={style.quantity_control}>
