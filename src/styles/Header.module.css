@@ -125,3 +125,58 @@
   display: flex;
   gap: 30px;
 }
+
+/* ✅ 네비게이션 스타일 */
+.category_nav li {
+  position: relative;
+  transition: color 0.2s ease-in-out;
+}
+
+/* ✅ 활성화된 카테고리만 스타일 적용 */
+.category_nav li.active,
+.category_nav li:hover {
+  color: #333;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+  text-decoration-color: #666;
+}
+
+/* ✅ 드롭다운이 활성화된 상태일 때도 카테고리 스타일 유지 */
+.header_bottom:hover .category_nav li.active {
+  color: #333;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+  text-decoration-color: #666;
+}
+
+/* ✅ 드롭다운 내부에 있어도 호버 상태 유지 */
+.header_bottom:hover .category_dropdown,
+.category_dropdown:hover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* ✅ 드롭다운 메뉴 스타일 */
+.category_dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  border-top: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ 드롭다운이 활성화된 상태 */
+.category_dropdown.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}

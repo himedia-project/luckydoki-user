@@ -1,3 +1,20 @@
 .community_container {
   position: relative;
 }
+
+.community_container h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.community_grid_wrapper {
+  display: flex;
+  gap: 28px;
+}
+
+.community_grid_left,
+.community_grid_right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

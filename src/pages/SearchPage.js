@@ -15,7 +15,6 @@ export default function SearchPage() {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // 만약 URL에 쿼리 파라미터가 없다면(=초기 상태), 상태들을 초기화
   useEffect(() => {
     if (!searchParams.get("searchKeyword")) {
       setKeyword("");

@@ -23,7 +23,11 @@ const CartPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setSelectedItems([]);
+    setSelectedItems((prevSelected) =>
+      prevSelected.filter((id) =>
+        cartItems.some((item) => item.cartItemId === id)
+      )
+    );
   }, [cartItems]);
 
   const isAllSelected =
@@ -251,6 +255,7 @@ const CartPage = () => {
                 type="checkbox"
                 checked={isAllSelected}
                 onChange={handleSelectAll}
+                className={style.all_select_box}
               />
               <span>전체선택</span>
             </div>
@@ -267,6 +272,7 @@ const CartPage = () => {
                 type="checkbox"
                 checked={selectedItems.includes(item.cartItemId)}
                 onChange={() => handleSelectItem(item.cartItemId)}
+                className={style.one_select_box}
               />
               <ImageLoader
                 imagePath={item.imageName}

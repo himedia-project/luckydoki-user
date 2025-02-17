@@ -1,53 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { logoutPost } from "../api/loginApi";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { logout } from "../api/redux/loginSlice";
 import style from "../styles/Header.module.css";
 import NotificationDropdown from "../components/dropdown/NotificationDropdown";
 import MessageDropdown from "../components/dropdown/MessageDropdown";
+import { getMainCategories } from "../api/categoryApi";
+import CategoryNav from "../components/CategoryNav";
 
 const Header = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { nickName } = useSelector((state) => state.loginSlice);
-
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showHeaderTop, setShowHeaderTop] = useState(true);
+  const [mainCategories, setMainCategories] = useState([]);
+  const [activeCategory, setActiveCategory] = useState(null);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
-  const notifications = [
-    { category: "이벤트", message: "[0000원 쿠폰] 도착", date: "2월 11일" },
-    {
-      category: "이벤트",
-      message: "[할인 혜택] 10% 쿠폰 지급",
-      date: "2월 10일",
-    },
-    { category: "이벤트", message: "[0000원 쿠폰] 도착", date: "2월 11일" },
-    {
-      category: "이벤트",
-      message: "[할인 혜택] 10% 쿠폰 지급",
-      date: "2월 10일",
-    },
-    { category: "이벤트", message: "[0000원 쿠폰] 도착", date: "2월 11일" },
-    {
-      category: "이벤트",
-      message: "[할인 혜택] 10% 쿠폰 지급",
-      date: "2월 10일",
-    },
-    { category: "이벤트", message: "[0000원 쿠폰] 도착", date: "2월 11일" },
-    {
-      category: "이벤트",
-      message: "[할인 혜택] 10% 쿠폰 지급",
-      date: "2월 10일",
-    },
-  ];
-
-  const messages = [
-    { sender: "샵 이름", content: "대화내용", date: "2월 10일" },
-    { sender: "샵 이름", content: "대화내용", date: "2월 10일" },
-  ];
+  useEffect(() => {
+    const fetchMainCategories = async () => {
+      try {
+        const response = await getMainCategories();
+        setMainCategories(response.data);
+      } catch (error) {
+        console.error("메인 카테고리 불러오기 실패:", error);
+      }
+    };
+    fetchMainCategories();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,31 +40,38 @@ const Header = () => {
     };
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await logoutPost();
-      dispatch(logout());
-      alert("로그아웃 되었습니다.");
-      navigate("/");
-    } catch (error) {
-      console.error("로그아웃 실패:", error);
-      alert("로그아웃에 실패했습니다.");
-    }
+  const handleMouseEnter = (categoryId) => {
+    setActiveCategory(categoryId);
+    setIsDropdownVisible(true);
   };
 
-  const handleNeedLoginLink = (e) => {
-    if (!nickName) {
-      e.preventDefault();
-      Swal.fire({
-        toast: true,
-        position: "top",
-        title: "로그인이 필요합니다.",
-        icon: "warning",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: false,
-      });
+  const handleMouseLeave = (event) => {
+    const relatedTarget = event.relatedTarget;
+
+    // ✅ relatedTarget이 존재하지 않는 경우 (빠르게 마우스 이동 시)
+    if (!relatedTarget) {
+      setIsDropdownVisible(false);
+      setActiveCategory(null);
+      return;
     }
+
+    if (!(relatedTarget instanceof Element)) {
+      setIsDropdownVisible(false);
+      setActiveCategory(null);
+      return;
+    }
+
+    // ✅ 드롭다운 내부로 이동한 경우 상태 유지
+    if (
+      relatedTarget.closest(`.${style.category_dropdown}`) ||
+      relatedTarget.closest(`.${style.category_nav}`)
+    ) {
+      return;
+    }
+
+    // ✅ 드롭다운 영역을 벗어난 경우 닫기
+    setIsDropdownVisible(false);
+    setActiveCategory(null);
   };
 
   return (
@@ -94,9 +81,8 @@ const Header = () => {
           className={`${style.header_top} ${showHeaderTop ? "" : style.hidden}`}
         >
           <ul className={style.login_nav}>
-            {/* 로그인/로그아웃 */}
             {nickName ? (
-              <li className={style.logout} onClick={handleLogout}>
+              <li className={style.logout} onClick={logout}>
                 로그아웃
               </li>
             ) : (
@@ -104,8 +90,6 @@ const Header = () => {
                 <Link to="/login">로그인</Link>
               </li>
             )}
-
-            {/* 알림 */}
             <li
               className={style.notice}
               onMouseEnter={() => setShowNotifications(true)}
@@ -113,12 +97,8 @@ const Header = () => {
             >
               <img src="/notification.png" alt="알림" />
               <Link>알림</Link>
-              {showNotifications && (
-                <NotificationDropdown notifications={notifications} />
-              )}
+              {showNotifications && <NotificationDropdown notifications={[]} />}
             </li>
-
-            {/* 메시지 */}
             <li
               className={style.message}
               onMouseEnter={() => setShowMessages(true)}
@@ -126,54 +106,52 @@ const Header = () => {
             >
               <img src="/chat.png" alt="메시지" />
               <Link>메시지</Link>
-              {showMessages && <MessageDropdown messages={messages} />}
+              {showMessages && <MessageDropdown messages={[]} />}
             </li>
           </ul>
         </div>
 
         <div className={style.header_middle}>
-          {/* 로고 */}
           <Link to="/" className={style.logo}>
             <img src="/logo.png" alt="로고" />
           </Link>
-
           <ul className={style.icon_container}>
-            {/* 검색아이콘 */}
             <li>
               <Link to="/search">
                 <img src="/search.png" alt="검색" />
               </Link>
             </li>
-
-            {/* 하트아이콘 */}
             <li>
-              <Link to="/likeslist" onClick={handleNeedLoginLink}>
+              <Link to="/likeslist">
                 <img src="/heart.png" alt="좋아요" />
               </Link>
             </li>
-
-            {/* 마이페이지아이콘 */}
             <li>
-              <Link to="/mypage" onClick={handleNeedLoginLink}>
+              <Link to="/mypage">
                 <img src="/mypage.png" alt="마이페이지" />
               </Link>
             </li>
-
-            {/* 카트아이콘 */}
             <li>
-              <Link to="/cart" onClick={handleNeedLoginLink}>
+              <Link to="/cart">
                 <img src="/cart.png" alt="장바구니" />
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* 카테고리 nav */}
-        <div className={style.header_bottom}>
+        <div className={style.header_bottom} onMouseLeave={handleMouseLeave}>
           <ul className={style.category_nav}>
-            <li>패션/주얼리</li>
-            <li>반려동물</li>
-            <li>케이스문구</li>
+            {mainCategories.map((category) => (
+              <li
+                key={category.categoryId}
+                className={
+                  category.categoryId === activeCategory ? style.active : ""
+                }
+                onMouseEnter={() => handleMouseEnter(category.categoryId)}
+              >
+                {category.name}
+              </li>
+            ))}
           </ul>
 
           <li className={style.bar}></li>
@@ -189,6 +167,22 @@ const Header = () => {
               <Link to="/community">커뮤니티</Link>
             </li>
           </ul>
+        </div>
+
+        {/* 서브 카테고리 네비게이션 */}
+        <div
+          className={`${style.category_dropdown} ${
+            isDropdownVisible ? style.visible : ""
+          }`}
+          onMouseEnter={() => setIsDropdownVisible(true)}
+          onMouseLeave={handleMouseLeave}
+        >
+          {activeCategory && (
+            <CategoryNav
+              activeCategory={activeCategory}
+              isDropdownVisible={isDropdownVisible}
+            />
+          )}
         </div>
       </div>
     </div>

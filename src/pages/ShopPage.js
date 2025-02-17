@@ -13,6 +13,7 @@ import useLikeToggle from "../hooks/useLikeToggle";
 import ProductCard from "../components/card/ProductCard";
 import { useSelector } from "react-redux";
 import CommunityCard from "../components/card/CommunityCard";
+import MessageButton from "../components/button/MessageButton";
 
 export default function ShopPage() {
   const navigate = useNavigate();
@@ -100,6 +101,13 @@ export default function ShopPage() {
           )}
         </div>
       </div>
+
+      {/* 메시지 버튼 */}
+      <MessageButton
+        shopId={sellerInfo?.id}
+        shopImage={sellerInfo?.image}
+        shopName={sellerInfo?.nickName}
+      />
 
       {/* 네비게이션 바 */}
       <div className={style.shop_nav}>

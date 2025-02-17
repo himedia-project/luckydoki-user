@@ -5,6 +5,7 @@ import style from "../styles/MyPageLayout.module.css";
 import Footer from "./Footer";
 import Header from "./Header";
 import MyPageSideMenu from "./MyPageSideMenu";
+import TopButton from "../components/button/TopButton";
 
 export default function MyPageLayout() {
   const [userInfo, setUserInfo] = useState(null);
@@ -28,6 +29,7 @@ export default function MyPageLayout() {
       <main className={style.inner}>
         <MyPageSideMenu userInfo={userInfo} />
         <Outlet context={{ userInfo }} className={style.content} />
+        <TopButton />
       </main>
       <Footer />
     </>

@@ -1,32 +1,36 @@
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import KakaoRedirectPage from "./components/auth/KakaoRedirectPage";
+import MainLayout from "./layouts/MainLayout";
+import MyPageLayout from "./layouts/MyPageLayout";
+import CommunityAddPage from "./pages/addpage/CommunityAddPage";
+import ProductAddPage from "./pages/addpage/ProductAddPage";
+import ReviewAddPage from "./pages/addpage/ReviewAddPage";
+import SellerAddPage from "./pages/addpage/SellerAddPage";
+import CartPage from "./pages/CartPage";
+import CommunityDetailPage from "./pages/community/CommunityDetailPage";
+import CommunityPage from "./pages/community/CommunityPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import MainLayout from "./layouts/MainLayout";
-import KakaoRedirectPage from "./components/auth/KakaoRedirectPage";
-import MyPageLayout from "./layouts/MyPageLayout";
-import MyPage from "./pages/mypage/MyPage";
-import OrderPage from "./pages/mypage/OrderPage";
-import NoticePage from "./pages/mypage/NoticePage";
-import MyReviewPage from "./pages/mypage/MyReviewPage";
-import LikesListPage from "./pages/mypage/LikesListPage";
 import CouponPage from "./pages/mypage/CouponPage";
+import LikesListPage from "./pages/mypage/LikesListPage";
+import MyPage from "./pages/mypage/MyPage";
+import MyReviewPage from "./pages/mypage/MyReviewPage";
+import NoticePage from "./pages/mypage/NoticePage";
+import OrderPage from "./pages/mypage/OrderPage";
 import UserInfoPage from "./pages/mypage/UserInfoPage";
-import ReviewAddPage from "./pages/addpage/ReviewAddPage";
-import ProductAddPage from "./pages/addpage/ProductAddPage";
-import CommunityAddPage from "./pages/addpage/CommunityAddPage";
-import SellerAddPage from "./pages/addpage/SellerAddPage";
-import ShopPage from "./pages/ShopPage";
-import RegisterPage from "./pages/RegisterPage";
-import ProductDetailPage from "./pages/ProductDetailPage";
-import CommunityPage from "./pages/community/CommunityPage";
-import CommunityDetailPage from "./pages/community/CommunityDetailPage";
-import CartPage from "./pages/CartPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import PaymentFailPage from "./pages/payment/PaymentFailPage";
 import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentSuccessPage from "./pages/payment/PaymentSuccessPage";
-import PaymentFailPage from "./pages/payment/PaymentFailPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
+import RegisterPage from "./pages/RegisterPage";
 import SearchPage from "./pages/SearchPage";
+import CategoryLayout from "./layouts/CategoryLayout";
+import CategoryListPage from "./pages/CategoryListPage";
+import PopularPage from "./pages/product/PopularPage";
+import NewPage from "./pages/product/NewPage";
+import ShopPage from "./pages/ShopPage";
 
 function App() {
   return (
@@ -36,7 +40,7 @@ function App() {
         <Route path="/message" />
         <Route path="/shop/:shopId" element={<ShopPage />} />
         <Route path="/community" element={<CommunityPage />} />
-        <Route path="/community/:postId" element={<CommunityDetailPage />} />
+        <Route path="/community/:id" element={<CommunityDetailPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentSuccessPage />} />
@@ -63,6 +67,12 @@ function App() {
         <Route path="/coupon" element={<CouponPage />} />
         <Route path="/userinfo" element={<UserInfoPage />} />
       </Route>
+      <Route path="/category/:categoryId" element={<CategoryLayout />}>
+        <Route index element={<CategoryListPage />} />
+      </Route>
+      <Route path="/popular" element={<PopularPage />} />
+      <Route path="/new" element={<NewPage />} />
+
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

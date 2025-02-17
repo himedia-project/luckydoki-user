@@ -2,6 +2,7 @@ import React from "react";
 import styles from "../../styles/CommunityCard.module.css";
 import ImageLoader from "../card/ImageLoader";
 import { useNavigate } from "react-router-dom";
+import TaggedProducts from "./TaggedProducts";
 
 const CommunityCard = ({
   id,
@@ -15,7 +16,17 @@ const CommunityCard = ({
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate(`/community/${id}`);
+    navigate(`/community/${id}`, {
+      state: {
+        id,
+        content,
+        createdAt,
+        nickName,
+        uploadFileNames,
+        sellerImage,
+        productDTOs,
+      },
+    });
   };
 
   const handleProductClick = (productId, event) => {
@@ -44,42 +55,11 @@ const CommunityCard = ({
       )}
 
       {productDTOs?.length > 0 && (
-        <div className={styles.tagList}>
-          <p className={styles.tag}>태그된 작품 {productDTOs.length}개</p>
-          <div className={styles.cardList}>
-            {productDTOs.slice(0, 2).map((product) => (
-              <div
-                key={product.id}
-                className={styles.tagInfoBox}
-                onClick={(event) => handleProductClick(product.id, event)}
-              >
-                <div className={styles.productImageContainer}>
-                  <ImageLoader
-                    imagePath={product.uploadFileNames[0]}
-                    alt={product.name}
-                    className={styles.productImage}
-                  />
-                </div>
-                <div className={styles.InfoBox}>
-                  <p className={styles.title}>{product.name}</p>
-                  {product.discountRate > 0 && (
-                    <div className={styles.rateBox}>
-                      <b className={styles.rate}>{product.discountRate}%</b>
-                      <b className={styles.price}>
-                        {product.price?.toLocaleString()}
-                        <span className={styles.won}>원</span>
-                      </b>
-                    </div>
-                  )}
-                  <b className={styles.discountPrice}>
-                    {product.discountPrice?.toLocaleString()}
-                    <span className={styles.won}>원</span>
-                  </b>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <TaggedProducts
+          productDTOs={productDTOs}
+          handleProductClick={handleProductClick}
+          limit={2}
+        />
       )}
 
       <div className={styles.cardContent}>

@@ -1,0 +1,89 @@
+/* 전체 네비게이션 드롭다운 스타일 */
+.category_wrapper {
+  position: absolute;
+  top: 100%; /* 헤더 바로 아래 위치 */
+  left: 0;
+  width: 100%;
+  background: white;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px; /* 🔹 좌우 여백 조정 */
+}
+
+/* 드롭다운이 활성화되었을 때 */
+.category_wrapper.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 드롭다운 내부 스타일 */
+.dropdown {
+  display: flex;
+  justify-content: flex-start; /* 🔹 왼쪽 정렬 */
+  gap: 50px; /* 🔹 카테고리 간격 조정 */
+  min-height: 316px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* 서브 카테고리 스타일 */
+.sub_categories {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  gap: 40px;
+}
+
+/* 서브 카테고리 개별 아이템 */
+.sub_item {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px 0;
+  border-right: 1px solid #ddd;
+  padding-right: 30px; /* 🔹 우측 간격 추가 */
+  min-width: 160px;
+  text-align: left;
+}
+
+/* 마지막 서브 카테고리는 border 제거 */
+.sub_item:last-child {
+  border-right: none;
+}
+
+/* 자식 카테고리 리스트 */
+.child_categories {
+  list-style: none;
+  padding: 10px 0 0 0;
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6; /* 🔹 줄 간격 조정 */
+}
+
+/* 자식 카테고리 개별 아이템 */
+.child_item {
+  padding: 6px 0;
+  text-align: left;
+}
+
+/* 링크 스타일 */
+.child_item a {
+  text-decoration: none;
+  color: #666;
+  transition: color 0.2s ease-in-out;
+  font-weight: normal;
+}
+
+/* 링크 호버 시 */
+.child_item a:hover {
+  color: #00de90;
+  font-weight: bold;
+  text-decoration: underline;
+}

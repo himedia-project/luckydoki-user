@@ -53,27 +53,23 @@ const ProductCard = ({
       {/* ✅ 할인율 & 가격 */}
       {discountRate > 0 ? (
         <>
-          <p className={styles.productPrice}>
+          <div className={styles.productPrice}>
             <span className={styles.discountRate}>{discountRate}%</span>
             <span className={styles.price}>{price?.toLocaleString()}원</span>
-          </p>
+          </div>
           <p className={styles.discountPrice}>
             {discountPrice?.toLocaleString()}원
           </p>
         </>
       ) : (
-        <p className={styles.productPrice}>
-          <p className={styles.discountPrice}>
-            {discountPrice?.toLocaleString()}원
-          </p>
-        </p>
+        <p className={styles.productPrice}>{price?.toLocaleString()}원</p>
       )}
 
       {/* ✅ 태그 버튼 (조건부 렌더링) */}
       <div className={styles.tagContainer}>
-        {isNew && <span className={styles.tagNew}>new</span>}
-        {event && <span className={styles.tagEvent}>event</span>}
-        {best && <span className={styles.tagBest}>best</span>}
+        {Boolean(isNew) && <span className={styles.tagNew}>new</span>}
+        {Boolean(event) && <span className={styles.tagEvent}>event</span>}
+        {Boolean(best) && <span className={styles.tagBest}>best</span>}
       </div>
     </div>
   );
