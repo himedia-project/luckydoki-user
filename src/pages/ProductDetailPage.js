@@ -157,7 +157,7 @@ export default function ProductDetail() {
   // };
 
   const handleMoveShop = () => {
-    navigate(`/shop/${product.shopId}`);
+    navigate(`/shop/${product?.shopId}`);
   };
 
   return (
@@ -313,9 +313,9 @@ export default function ProductDetail() {
         </div>
       </section>
       <MessageButton
-        shopId={product.shopId}
-        shopImage={product.shopImage}
-        shopName={product.shopName}
+        shopId={product?.shopId}
+        shopImage={product?.shopImage}
+        shopName={product?.shopName}
       />
     </div>
   );

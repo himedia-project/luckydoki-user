@@ -15,7 +15,17 @@ const CommunityCard = ({
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate(`/community/${id}`);
+    navigate(`/community/${id}`, {
+      state: {
+        id,
+        content,
+        createdAt,
+        nickName,
+        uploadFileNames,
+        sellerImage,
+        productDTOs,
+      },
+    });
   };
 
   const handleProductClick = (productId, event) => {
