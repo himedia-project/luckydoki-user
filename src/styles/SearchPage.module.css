@@ -1,0 +1,98 @@
+/* pages/SearchPage.module.css */
+.container {
+  position: relative;
+  width: 1280px;
+}
+
+.inputBox {
+  position: sticky;
+  z-index: 1000;
+  top: 100px;
+  width: 1280px;
+  height: 100px;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+  width: 630px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 15px 20px;
+  box-sizing: border-box;
+  border-radius: 9999px;
+  border: 1px solid #d9d9d9;
+  outline: none;
+}
+
+.beforeSearch {
+  margin-top: 20px;
+}
+
+.afterSearch {
+  margin-top: 20px;
+}
+
+.tabContainer {
+  margin-bottom: 20px;
+  display: flex;
+  position: relative;
+}
+
+.tabContainer button {
+  display: block;
+  width: 50%;
+  height: 50px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid #d9d9d9;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px;
+  cursor: pointer;
+  color: #333;
+}
+
+.activeTab {
+  font-weight: 700;
+}
+
+.tabIndicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  height: 2px;
+  background-color: #333;
+  transition: left 0.3s ease;
+}
+
+.productList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.communityList {
+  display: flex;
+}
+
+.communityGridWrapper {
+  display: flex;
+  gap: 16px;
+}
+
+.communityGridLeft,
+.communityGridRight {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.communityGridRight {
+}

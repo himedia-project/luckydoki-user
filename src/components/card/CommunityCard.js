@@ -23,13 +23,18 @@ const CommunityCard = ({
     navigate(`/product/${productId}`);
   };
 
+  const formatDate = (dateTime) => {
+    const date = new Date(dateTime);
+    return `${date.getFullYear()}. ${date.getMonth() + 1}. ${date.getDate()}`;
+  };
+
   return (
     <div className={styles.communityCard} onClick={handleCardClick}>
       <div className={styles.header}>
         <ImageLoader imagePath={sellerImage} className={styles.sellerImage} />
         <div className={styles.userInfo_box}>
           <span className={styles.author}>{nickName}</span>
-          <span className={styles.date}>{createdAt}</span>
+          <span className={styles.date}>{formatDate(createdAt)}</span>
         </div>
       </div>
       {uploadFileNames?.length > 0 && (
