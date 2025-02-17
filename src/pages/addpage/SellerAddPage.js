@@ -52,7 +52,9 @@ export default function SellerAddPage() {
       console.error("셀러 신청 실패:", error);
       Swal.fire({
         title: "실패",
-        text: "셀러 신청에 실패하였습니다. 다시 시도해주세요.",
+        text:
+          error.response.data.errMsg ||
+          "셀러 신청에 실패하였습니다. 다시 시도해주세요.",
         icon: "error",
       });
     }
