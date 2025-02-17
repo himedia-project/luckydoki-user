@@ -26,6 +26,8 @@ import CartPage from "./pages/CartPage";
 import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentSuccessPage from "./pages/payment/PaymentSuccessPage";
 import PaymentFailPage from "./pages/payment/PaymentFailPage";
+import SearchPage from "./pages/SearchPage";
+
 function App() {
   return (
     <Routes>
@@ -39,12 +41,13 @@ function App() {
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentSuccessPage />} />
         <Route path="/payment/fail" element={<PaymentFailPage />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/product/:productId" element={<ProductDetailPage />} />
 
         <Route path="/review_add" element={<ReviewAddPage />} />
         <Route path="/product_add" element={<ProductAddPage />} />
         <Route path="/community_add" element={<CommunityAddPage />} />
         <Route path="/seller_add" element={<SellerAddPage />} />
-        <Route path="/product/:productId" element={<ProductDetailPage />} />
       </Route>
 
       <Route path="/login" element={<LoginPage />} />

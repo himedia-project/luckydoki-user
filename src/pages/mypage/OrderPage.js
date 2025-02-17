@@ -50,7 +50,7 @@ export default function OrderPage() {
         setOrders((prevOrders) =>
           prevOrders.map((order) =>
             order.orderId === orderId
-              ? { ...order, orderStatus: "CANCELLED" }
+              ? { ...order, orderStatus: "CANCEL" }
               : order
           )
         );
@@ -110,8 +110,7 @@ export default function OrderPage() {
                   </div>
                 </div>
                 <div className={style.buttonContainer}>
-                  {order.orderStatus === "CANCEL" ||
-                  order.orderStatus === "CANCELLED" ? (
+                  {order.orderStatus === "CANCEL" ? (
                     <button className={style.disabledButton} disabled>
                       취소 완료
                     </button>
