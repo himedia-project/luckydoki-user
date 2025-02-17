@@ -110,7 +110,8 @@ export default function OrderPage() {
                   </div>
                 </div>
                 <div className={style.buttonContainer}>
-                  {order.orderStatus === "CANCEL" ? (
+                  {order.orderStatus === "CANCEL" ||
+                  order.orderStatus === "CANCELLED" ? (
                     <button className={style.disabledButton} disabled>
                       취소 완료
                     </button>

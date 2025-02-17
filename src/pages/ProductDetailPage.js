@@ -155,6 +155,10 @@ export default function ProductDetail() {
   //   }
   // };
 
+  const handleMoveShop = () => {
+    navigate(`/shop/${product.shopId}`);
+  };
+
   return (
     <div className={style.container}>
       {/* 왼쪽 섹션 */}
@@ -241,7 +245,7 @@ export default function ProductDetail() {
 
       {/* 오른쪽 섹션 */}
       <section className={style.rightSection}>
-        <div className={style.shopInfo}>
+        <div className={style.shopInfo} onClick={handleMoveShop}>
           <ImageLoader
             imagePath={product?.shopImage}
             alt="샵 이미지"
