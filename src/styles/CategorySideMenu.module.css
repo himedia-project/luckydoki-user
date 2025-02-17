@@ -1,0 +1,113 @@
+/* 🔹 사이드 메뉴 컨테이너 */
+.sideMenu {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* 🔹 리스트 스타일 */
+.sideMenu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 🔹 각 카테고리 항목 스타일 */
+.sideMenu li {
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column; /* 🔹 각 항목은 세로 정렬되지만 내부 요소는 가로로 */
+}
+
+/* 🔹 메인 카테고리 링크 스타일 */
+.sideMenu a {
+  text-decoration: none;
+  color: #333;
+  font-size: 17px;
+  font-weight: 500;
+  padding: 10px 12px;
+  border-radius: 5px;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap; /* 🔹 줄바꿈 방지 */
+}
+
+/* 🔹 호버 및 활성화 스타일 */
+.sideMenu a:hover,
+.sideMenu .active {
+  background: #00de90;
+  color: white;
+}
+
+/* 🔹 서브 카테고리 컨테이너 */
+.subCategory {
+  font-size: 14px;
+  font-weight: 500;
+  padding-left: 15px;
+  color: #444;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px; /* 🔹 버튼과 텍스트 사이 여백 추가 */
+}
+
+/* 🔹 서브 카테고리 리스트 (하위 카테고리 목록) */
+.childCategoryList {
+  list-style: none;
+  padding-left: 18px;
+  border-left: 2px solid #ddd;
+  margin-top: 5px;
+  transition: max-height 0.3s ease-in-out;
+}
+
+/* 🔹 자식 카테고리 항목 */
+.childCategoryItem {
+  display: flex;
+  align-items: center;
+}
+
+.childCategoryItem a {
+  font-size: 14px;
+  color: #555;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap; /* 🔹 글자가 자동 줄바꿈되지 않도록 */
+}
+
+/* 🔹 자식 카테고리 호버 효과 */
+.childCategoryItem a:hover {
+  background: #ffebd2;
+  color: #00de90;
+}
+
+/* 🔹 토글 버튼 (화살표) */
+.toggleButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  transition: transform 0.3s;
+  min-width: 20px; /* 🔹 크기 고정하여 버튼이 줄바꿈되지 않도록 */
+}
+
+/* 🔹 토글 활성화 시 (화살표 회전 효과) */
+.expanded .toggleButton {
+  transform: rotate(90deg);
+}
+
+/* 🔹 로딩 상태 스타일 */
+.loading {
+  font-size: 12px;
+  color: #888;
+  padding: 5px 10px;
+}
+
+/* 🔹 자식 카테고리가 없을 경우 */
+.noChildCategory {
+  font-size: 12px;
+  color: #bbb;
+  padding: 5px 10px;
+  font-style: italic;
+}

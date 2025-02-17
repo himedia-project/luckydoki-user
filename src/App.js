@@ -26,6 +26,10 @@ import PaymentSuccessPage from "./pages/payment/PaymentSuccessPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import RegisterPage from "./pages/RegisterPage";
 import SearchPage from "./pages/SearchPage";
+import CategoryLayout from "./layouts/CategoryLayout";
+import CategoryListPage from "./pages/CategoryListPage";
+import PopularPage from "./pages/product/PopularPage";
+import NewPage from "./pages/product/NewPage";
 import ShopPage from "./pages/ShopPage";
 
 function App() {
@@ -63,6 +67,12 @@ function App() {
         <Route path="/coupon" element={<CouponPage />} />
         <Route path="/userinfo" element={<UserInfoPage />} />
       </Route>
+      <Route path="/category/:categoryId" element={<CategoryLayout />}>
+        <Route index element={<CategoryListPage />} />
+      </Route>
+      <Route path="/popular" element={<PopularPage />} />
+      <Route path="/new" element={<NewPage />} />
+
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

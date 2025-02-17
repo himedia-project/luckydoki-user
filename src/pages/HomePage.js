@@ -57,10 +57,8 @@ const HomePage = () => {
 
   return (
     <div className={styles.container}>
-      {/* ✅ 진행 중인 이벤트 Swiper */}
       <EventSwiper events={events} />
 
-      {/* ✅ 상품 리스트 Swiper */}
       <ProductSwiper title="이 상품을 찾으시나요?" items={randomProducts} />
       <ProductSwiper title="신규 상품" items={newProducts} />
       <ProductSwiper title="베스트 상품" items={bestProducts} />

@@ -20,12 +20,23 @@
   width: 40%; /* ✅ 양쪽 슬라이드는 작게 설정 */
 }
 
+.swiper-slide-prev .eventImage,
+.swiper-slide-next .eventImage {
+  filter: brightness(0.6) blur(5px);
+  transition: filter 0.3s ease-in-out;
+}
+
+/* ✅ 중앙 슬라이드는 선명하게 */
+.swiper-slide-active .eventImage {
+  filter: brightness(1) blur(0px);
+}
 /* 이미지 스타일 */
 .eventImage {
   width: 100%;
   height: 100%;
   object-fit: cover; /* ✅ 여전히 컨테이너를 꽉 채움 */
   border-radius: 10px;
+  will-change: filter;
 }
 
 /* 페이지네이션 숫자 스타일 */
@@ -41,6 +52,7 @@
   padding: 8px 15px;
   border-radius: 20px;
 }
+
 .imageWrapper {
   position: relative;
   width: 100%;
@@ -91,6 +103,52 @@
   .swiper-slide-next {
     width: 60%;
   }
+}
+.swiperContainer {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+.eventSwiper {
+  width: 100%;
+  height: 100%;
+}
+
+/* ✅ 중앙이 아닌 슬라이드 흐리게 표시 */
+.swiper-slide:not(.swiper-slide-active) .eventImage {
+  filter: brightness(0.6) blur(3px);
+  transition: filter 0.3s ease-in-out;
+}
+
+/* ✅ 네비게이션 버튼 */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  background-color: white; /* 반투명 배경 */
+  color: black;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+/* ✅ 왼쪽 버튼 */
+.prevButton {
+  left: -15px;
+}
+
+/* ✅ 오른쪽 버튼 */
+.nextButton {
+  right: -15px;
 }
 
 @media (max-width: 480px) {
