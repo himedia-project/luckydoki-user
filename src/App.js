@@ -35,6 +35,7 @@ import CategoryLayout from "./layouts/CategoryLayout";
 import CategoryListPage from "./pages/CategoryListPage";
 import PopularPage from "./pages/product/PopularPage";
 import NewPage from "./pages/product/NewPage";
+import ShopPage from "./pages/ShopPage";
 
 function App() {
   return (
