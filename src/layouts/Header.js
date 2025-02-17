@@ -16,6 +16,7 @@ const Header = () => {
   const [mainCategories, setMainCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const { cartItems } = useSelector((state) => state.cartSlice);
 
   useEffect(() => {
     const fetchMainCategories = async () => {
@@ -131,9 +132,12 @@ const Header = () => {
                 <img src="/mypage.png" alt="마이페이지" />
               </Link>
             </li>
-            <li>
+            <li className={style.cart_icon}>
               <Link to="/cart">
                 <img src="/cart.png" alt="장바구니" />
+                {cartItems.length > 0 && (
+                  <span className={style.cart_count}>{cartItems.length}</span>
+                )}
               </Link>
             </li>
           </ul>
