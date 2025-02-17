@@ -1,0 +1,12 @@
+.productListContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.noProduct {
+  font-size: 18px;
+  color: #666;
+  text-align: center;
+  width: 100%;
+}
