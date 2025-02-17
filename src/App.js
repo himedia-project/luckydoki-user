@@ -40,7 +40,7 @@ function App() {
         <Route path="/message" />
         <Route path="/shop/:shopId" element={<ShopPage />} />
         <Route path="/community" element={<CommunityPage />} />
-        <Route path="/community/:postId" element={<CommunityDetailPage />} />
+        <Route path="/community/:id" element={<CommunityDetailPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentSuccessPage />} />

@@ -1,0 +1,117 @@
+.tagList {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.taggedProductsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 626px;
+  padding: 12px 16px;
+}
+
+.cardList {
+  display: flex;
+  gap: 8px;
+}
+
+.title {
+  max-width: 205px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+.tagInfoBox {
+  min-width: 293px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.productImageContainer {
+  width: 100px;
+  height: 100px;
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.infoBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px;
+}
+
+.InfoBox {
+  font-size: 14px;
+}
+
+.rateBox {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.rate,
+.discountPrice {
+  color: #00de90;
+}
+
+.rate {
+  font-size: 12px;
+}
+
+.price {
+  font-size: 12px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.discountPrice {
+  font-size: 16px;
+}
+
+.won {
+  font-size: 12px;
+}
+
+.navButton {
+  position: absolute;
+  top: 530px;
+  width: 34px;
+  height: 34px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+.prevButton {
+  left: 290px;
+}
+
+.nextButton {
+  right: 290px;
+}
