@@ -22,6 +22,7 @@ const MainLayout = () => {
         console.error("내 정보 가져오기 실패:", error);
       });
   }, []);
+
   return (
     <>
       <Header />

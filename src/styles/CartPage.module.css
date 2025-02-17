@@ -137,17 +137,19 @@
 .price_info {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
 .discount_price {
   font-weight: bold;
   font-size: 18px;
+  min-width: 85px;
 }
 
 .original_price {
   text-decoration: line-through;
   color: #999;
+  min-width: 85px;
+  margin-left: 8px;
 }
 
 .discount_rate {
@@ -205,4 +207,15 @@
   border-radius: 4px;
   margin-top: 20px;
   cursor: pointer;
+}
+
+.all_select_box,
+.one_select_box {
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  accent-color: #00de90;
+}
+
+.one_select_box {
 }

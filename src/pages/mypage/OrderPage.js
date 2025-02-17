@@ -34,7 +34,6 @@ export default function OrderPage() {
         cancelButtonColor: "#3085d6",
         confirmButtonText: "네",
         cancelButtonText: "아니요",
-        // reverseButtons: true,
       });
 
       if (result.isConfirmed) {
@@ -80,61 +79,79 @@ export default function OrderPage() {
     <div className={style.container}>
       <h2 className={style.title}>주문 내역</h2>
       {orders.length > 0 ? (
-        orders.map((order) => (
-          <div key={order.orderId} className={style.orderGroup}>
-            <h3 className={style.orderCode}>
-              {new Date(order.orderDate)
-                .toLocaleDateString("ko-KR")
-                .replaceAll(" ", " ")
-                .replace("년", "")
-                .replace("월", "")
-                .replace("일", "")
-                .replace(/\.$/, "")
-                .trim()}{" "}
-              주문
-            </h3>
+        <div className={style.orderGroupContainer}>
+          {orders.map((order) => (
+            <div key={order.orderId} className={style.orderGroup}>
+              {/* 주문 그룹 헤더: 날짜와 취소 버튼 */}
+              <div className={style.orderGroupHeader}>
+                <div className={style.orderHeader}>
+                  <h3 className={style.orderCode}>
+                    {new Date(order.orderDate)
+                      .toLocaleDateString("ko-KR")
+                      .replaceAll(" ", " ")
+                      .replace("년", "")
+                      .replace("월", "")
+                      .replace("일", "")
+                      .replace(/\.$/, "")
+                      .trim()}{" "}
+                    주문
+                  </h3>
 
-            {order.orderItems.map((item) => (
-              <div key={item.productId} className={style.orderItem}>
-                <div className={style.productInfo}>
-                  <ImageLoader
-                    imagePath={item.image}
-                    alt={item.productName}
-                    className={style.productImage}
-                  />
-                  <div className={style.details}>
-                    <p className={style.productName}>{item.productName}</p>
-                    <p>
-                      {item.count}개 / {item.orderPrice.toLocaleString()}원
-                    </p>
-                  </div>
-                </div>
-                <div className={style.buttonContainer}>
                   {order.orderStatus === "CANCEL" ? (
                     <button className={style.disabledButton} disabled>
                       취소 완료
                     </button>
                   ) : (
-                    <>
-                      <button
-                        className={style.cancelButton}
-                        onClick={() => handleCancelOrder(order.orderId)}
-                      >
-                        주문 취소
-                      </button>
-                      <button
-                        className={style.reviewButton}
-                        onClick={() => handleWriteReview(item)}
-                      >
-                        리뷰 작성
-                      </button>
-                    </>
+                    <button
+                      className={style.cancelButton}
+                      onClick={() => handleCancelOrder(order.orderId)}
+                    >
+                      주문 취소
+                    </button>
                   )}
                 </div>
+                <div className={style.orderTotalPrice}>
+                  {/* <p>{order.totalPrice.toLocaleString()}원</p> */}
+                </div>
               </div>
-            ))}
-          </div>
-        ))
+
+              {/* 주문 아이템 리스트 */}
+              {order.orderItems.map((item) => (
+                <div key={item.productId} className={style.orderItem}>
+                  <div className={style.productInfo}>
+                    <ImageLoader
+                      imagePath={item.image}
+                      alt={item.productName}
+                      className={style.productImage}
+                    />
+                    <div className={style.details}>
+                      <p className={style.productName}>{item.productName}</p>
+                      <p>
+                        {item.count}개 / {item.discountPrice.toLocaleString()}원
+                      </p>
+                    </div>
+                  </div>
+                  <div className={style.buttonContainer}>
+                    <button
+                      className={
+                        order.orderStatus === "CANCEL"
+                          ? style.disabledButton
+                          : style.reviewButton
+                      }
+                      onClick={() =>
+                        order.orderStatus !== "CANCEL" &&
+                        handleWriteReview(item)
+                      }
+                      disabled={order.orderStatus === "CANCEL"}
+                    >
+                      리뷰 작성
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       ) : (
         <p className={style.noOrders}>주문 내역이 없습니다.</p>
       )}
