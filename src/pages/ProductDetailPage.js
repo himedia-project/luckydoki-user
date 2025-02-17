@@ -10,6 +10,7 @@ import LikeButton from "../components/button/LikeButton";
 import ImageLoader from "../components/card/ImageLoader";
 import ReviewCard from "../components/card/ReviewCard";
 import style from "../styles/ProductDetail.module.css";
+import MessageButton from "../components/button/MessageButton";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
@@ -311,6 +312,11 @@ export default function ProductDetail() {
           <button className={style.buyButton}>구매하기</button>
         </div>
       </section>
+      <MessageButton
+        shopId={product.shopId}
+        shopImage={product.shopImage}
+        shopName={product.shopName}
+      />
     </div>
   );
 }

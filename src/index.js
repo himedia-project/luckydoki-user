@@ -4,20 +4,23 @@ import "./index.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "./api/redux/store";
+import store, { persistor } from "./api/redux/store";
 import ScrollToTop from "./components/button/ScrollToTop";
 import F5Blocker from "./components/button/F5Blocker";
+import { PersistGate } from "redux-persist/integration/react";
 
 // import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <ScrollToTop />
-      <F5Blocker />
-      <App />
-    </BrowserRouter>
+    <PersistGate loading={null} persistor={persistor}>
+      <BrowserRouter>
+        <ScrollToTop />
+        <F5Blocker />
+        <App />
+      </BrowserRouter>
+    </PersistGate>
   </Provider>
 );
 

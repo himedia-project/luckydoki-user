@@ -154,7 +154,7 @@
 }
 
 .method_btn.active {
-  border: 2px solid #00de90;
+  border: 1px solid #00de90;
   background-color: #f0fff7;
   color: #00de90;
   font-weight: bold;
