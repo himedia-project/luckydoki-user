@@ -3,9 +3,14 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { paymentApi } from "../../api/paymentApi";
 import confetti from "canvas-confetti";
 import style from "../../styles/PaymentSuccessPage.module.css";
+import { useDispatch } from "react-redux";
+
+import { setCartItems } from "../../api/redux/cartSlice";
+import { getCartItemList } from "../../api/cartApi";
 
 const PaymentSuccessPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const confirmComplete = useRef(false);
 
@@ -36,6 +41,10 @@ const PaymentSuccessPage = () => {
         confirmComplete.current = true;
         await paymentApi.confirmPayment(paymentKey, orderId, parseInt(amount));
 
+        // 장바구니 정보 새로 불러오기
+        const cartItems = await getCartItemList();
+        dispatch(setCartItems(cartItems));
+
         // 성공적으로 결제가 완료되면 추가 폭죽 효과
         confetti({
           particleCount: 100,
@@ -55,7 +64,7 @@ const PaymentSuccessPage = () => {
     };
 
     confirmPayment();
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, dispatch]);
 
   useEffect(() => {
     // 결제 성공 페이지에서는 beforeunload 경고 방지
