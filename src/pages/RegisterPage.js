@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import styles from "../styles/RegisterPage.module.css";
-import axiosInstance from "../api/axiosInstance";
 import Swal from "sweetalert2";
+import { API_URL } from "../config/apiConfig";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const [signupForm, setSignupForm] = useState({
     email: "",
     password: "",
-    confirmPassword: "",
-    nickname: "",
-    phoneNumber: "",
+    nickName: "",
+    phone: "",
     verificationCode: "",
   });
   const [isVerified, setIsVerified] = useState(false);
@@ -20,7 +21,7 @@ const RegisterPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "phoneNumber") {
+    if (name === "phone") {
       let formattedValue = value.replace(/[^0-9]/g, "");
       if (formattedValue.length > 3 && formattedValue.length <= 7) {
         formattedValue = `${formattedValue.slice(0, 3)}-${formattedValue.slice(
@@ -47,9 +48,13 @@ const RegisterPage = () => {
 
   const handleSendVerificationCode = async () => {
     try {
-      await axiosInstance.post("/api/member/send-verification", {
-        phoneNumber: signupForm.phoneNumber,
-      });
+      await axios.post(
+        `${API_URL}/api/phone/send`,
+        {
+          phone: signupForm.phone,
+        },
+        { withCredentials: true }
+      );
       setShowVerification(true);
       Swal.fire(
         "인증번호 전송",
@@ -63,10 +68,14 @@ const RegisterPage = () => {
 
   const handleVerifyCode = async () => {
     try {
-      await axiosInstance.post("/api/member/verify-code", {
-        phoneNumber: signupForm.phoneNumber,
-        code: signupForm.verificationCode,
-      });
+      await axios.post(
+        `${API_URL}/api/phone/verify`,
+        {
+          phone: signupForm.phone,
+          code: signupForm.verificationCode,
+        },
+        { withCredentials: true }
+      );
       setIsVerified(true);
       Swal.fire("인증 성공", "전화번호 인증이 완료되었습니다.", "success");
     } catch (error) {
@@ -84,8 +93,15 @@ const RegisterPage = () => {
       return;
     }
     try {
-      await axiosInstance.post("/api/member/join", signupForm);
+      await axios.post(`${API_URL}/api/member/join`, {
+        email: signupForm.email,
+        nickName: signupForm.nickName,
+        password: signupForm.password,
+        phone: signupForm.phone,
+        verificationCode: signupForm.verificationCode,
+      });
       Swal.fire("회원가입 성공", "회원가입이 완료되었습니다.", "success");
+      window.history.back();
     } catch (error) {
       Swal.fire("오류", "회원가입에 실패했습니다.", "error");
     }
@@ -134,9 +150,9 @@ const RegisterPage = () => {
         <label className={styles.label}>닉네임 {REQUIRED_TEXT}</label>
         <input
           type="text"
-          name="nickname"
+          name="nickName"
           placeholder="홍길동"
-          value={signupForm.nickname}
+          value={signupForm.nickName}
           onChange={handleChange}
           className={styles.inputField}
           required
@@ -147,9 +163,9 @@ const RegisterPage = () => {
         <div className={styles.phoneInputGroup}>
           <input
             type="text"
-            name="phoneNumber"
+            name="phone"
             placeholder="전화번호 (- 포함)"
-            value={signupForm.phoneNumber}
+            value={signupForm.phone}
             onChange={handleChange}
             className={styles.inputField}
             required

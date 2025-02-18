@@ -6,14 +6,15 @@ import CategorySideMenu from "../layouts/CategorySideMenu";
 import style from "../styles/CategoryLayout.module.css";
 
 const CategoryLayout = () => {
-  const { categoryId } = useParams();
-
   return (
     <>
       <Header />
       <main className={style.layoutContainer}>
         <CategorySideMenu />
-        <Outlet context={{ categoryId }} />
+        {/* ✅ Outlet을 div로 감싸서 스타일 적용 */}
+        <div className={style.mainContents}>
+          <Outlet />
+        </div>
       </main>
       <Footer />
     </>

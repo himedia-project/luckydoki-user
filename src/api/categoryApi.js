@@ -24,3 +24,28 @@ export const getChildCategories = async (subCategoryId) => {
 export const getProductsByCategoryId = async (categoryId) => {
   return await axiosInstance.get(`/category/${categoryId}/product/list`);
 };
+
+export const getCategoryHierarchy = async (categoryId) => {
+  const parentResponse = await getParentCategory(categoryId);
+  const subResponse = await getSubCategories(categoryId);
+  const subCategories = subResponse.data || [];
+  
+  const childPromises = subCategories.map(async (sub) => {
+    const childResponse = await getChildCategories(sub.categoryId);
+    return { categoryId: sub.categoryId, children: childResponse.data || [] };
+  });
+  
+  const childResults = await Promise.all(childPromises);
+  const childCategories = {};
+  childResults.forEach(({ categoryId, children }) => {
+    childCategories[categoryId] = children;
+  });
+  
+  return {
+    data: {
+      parent: parentResponse.data,
+      subCategories,
+      childCategories,
+    },
+  };
+};
