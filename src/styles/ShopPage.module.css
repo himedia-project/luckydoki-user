@@ -108,12 +108,18 @@
 
 .add_button {
   background-color: #00de90;
-  width: 245px;
+  width: 180px;
 }
 
 .delete_button {
-  width: 108px;
-  border: 1px solid #999;
+  width: 180px;
+  background-color: #ff6b00;
+}
+
+.owner_buttons .plusButton {
+  width: 10px;
+  height: 10px;
+  margin-right: 10px;
 }
 
 .community_list {

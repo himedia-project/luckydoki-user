@@ -64,9 +64,9 @@ export default function ShopPage() {
     navigate("/product_add");
   };
 
-  const handleDeleteProduct = () => {
+  const handleAddCommunity = () => {
     console.log("상품 삭제 버튼 클릭됨");
-    // TODO: 상품 삭제 로직 구현
+    navigate("/community_add");
   };
 
   return (
@@ -82,13 +82,15 @@ export default function ShopPage() {
           {userNickname === sellerInfo?.nickName ? (
             <div className={style.owner_buttons}>
               <button className={style.add_button} onClick={handleAddProduct}>
-                + 상품 추가
+                <img src="/plus.png" alt="" className={style.plusButton} />
+                상품 추가
               </button>
               <button
                 className={style.delete_button}
-                onClick={handleDeleteProduct}
+                onClick={handleAddCommunity}
               >
-                상품 삭제
+                <img src="/plus.png" alt="" className={style.plusButton} />
+                커뮤니티 글 추가
               </button>
             </div>
           ) : (
