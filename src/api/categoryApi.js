@@ -1,5 +1,10 @@
 import axiosInstance from "./axiosInstance";
 
+// 부모 카테고리 조회
+export const getParentCategory = async (categoryId) => {
+  return await axiosInstance.get(`/category/${categoryId}/parent`);
+};
+
 // 메인 카테고리 목록 조회
 export const getMainCategories = async () => {
   return await axiosInstance.get("/category");

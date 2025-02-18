@@ -145,6 +145,42 @@ export default function ProductDetail() {
     }
   };
 
+  const handleAddToPayment = () => {
+    if (!email) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        title: "로그인이 필요합니다.",
+        icon: "warning",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: false,
+      });
+      return;
+    }
+
+    const selectedProducts = [
+      {
+        productId: product.id,
+        productName: product.name,
+        imageName: product.uploadFileNames[0],
+        price: product.price,
+        discountPrice: product.discountPrice,
+        discountRate: product.discountRate,
+        qty: quantity,
+      },
+    ];
+
+    const totalAmount = product.discountPrice * quantity;
+
+    navigate("/payment", {
+      state: {
+        selectedProducts,
+        totalAmount,
+      },
+    });
+  };
+
   // const handleScrollToSection = (ref) => {
   //   if (ref.current) {
   //     const elementPosition =
@@ -309,7 +345,9 @@ export default function ProductDetail() {
           <button className={style.cartButton} onClick={handleAddToCart}>
             장바구니
           </button>
-          <button className={style.buyButton}>구매하기</button>
+          <button className={style.buyButton} onClick={handleAddToPayment}>
+            구매하기
+          </button>
         </div>
       </section>
       <MessageButton

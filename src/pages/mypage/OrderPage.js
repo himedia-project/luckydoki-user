@@ -75,6 +75,10 @@ export default function OrderPage() {
     });
   };
 
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
   return (
     <div className={style.container}>
       <h2 className={style.title}>주문 내역</h2>
@@ -118,7 +122,11 @@ export default function OrderPage() {
               {/* 주문 아이템 리스트 */}
               {order.orderItems.map((item) => (
                 <div key={item.productId} className={style.orderItem}>
-                  <div className={style.productInfo}>
+                  <div
+                    className={style.productInfo}
+                    onClick={() => handleProductClick(item.productId)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <ImageLoader
                       imagePath={item.image}
                       alt={item.productName}

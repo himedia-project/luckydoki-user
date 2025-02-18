@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../api/redux/loginSlice";
+import { clearCartItems } from "../api/redux/cartSlice";
 import style from "../styles/Header.module.css";
 import NotificationDropdown from "../components/dropdown/NotificationDropdown";
 import MessageDropdown from "../components/dropdown/MessageDropdown";
@@ -9,6 +10,8 @@ import { getMainCategories } from "../api/categoryApi";
 import CategoryNav from "../components/CategoryNav";
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { nickName } = useSelector((state) => state.loginSlice);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
@@ -16,6 +19,7 @@ const Header = () => {
   const [mainCategories, setMainCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const { cartItems } = useSelector((state) => state.cartSlice);
 
   useEffect(() => {
     const fetchMainCategories = async () => {
@@ -74,6 +78,11 @@ const Header = () => {
     setActiveCategory(null);
   };
 
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(clearCartItems());
+  };
+
   return (
     <div className={style.header}>
       <div className={style.inner}>
@@ -82,7 +91,7 @@ const Header = () => {
         >
           <ul className={style.login_nav}>
             {nickName ? (
-              <li className={style.logout} onClick={logout}>
+              <li className={style.logout} onClick={handleLogout}>
                 로그아웃
               </li>
             ) : (
@@ -131,9 +140,12 @@ const Header = () => {
                 <img src="/mypage.png" alt="마이페이지" />
               </Link>
             </li>
-            <li>
+            <li className={style.cart_icon}>
               <Link to="/cart">
                 <img src="/cart.png" alt="장바구니" />
+                {cartItems.length > 0 && (
+                  <span className={style.cart_count}>{cartItems.length}</span>
+                )}
               </Link>
             </li>
           </ul>

@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
     console.log("interceptor error: ", error);
     if (
       error.response.data &&
-      error.response.data.error === "ERROR_ACCESS_TOKEN"
+      error.response.data.error === "ERROR_ACCESS_TOKEN" // TODO: 토큰 만료 시에만! 토큰 갱신
     ) {
       const result = await refreshJWT();
       console.log("refreshJWT RESULT", result);

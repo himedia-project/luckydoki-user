@@ -180,3 +180,23 @@
   visibility: visible;
   transform: translateY(0);
 }
+
+.cart_icon {
+  position: relative;
+}
+
+.cart_count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4b4b;
+  color: white;
+  font-size: 12px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
