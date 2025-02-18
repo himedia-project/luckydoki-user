@@ -7,10 +7,12 @@ import { getOrderList } from "../api/orderApi";
 import { getProductInfo } from "../api/productApi";
 import { getReviewByProduct } from "../api/reviewApi";
 import LikeButton from "../components/button/LikeButton";
+import MessageButton from "../components/button/MessageButton";
 import ImageLoader from "../components/card/ImageLoader";
 import ReviewCard from "../components/card/ReviewCard";
+import StarRating from "../components/StarRating";
 import style from "../styles/ProductDetail.module.css";
-import MessageButton from "../components/button/MessageButton";
+import ReviewRating from "../components/ReviewRating";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
@@ -283,12 +285,15 @@ export default function ProductDetail() {
       {/* 오른쪽 섹션 */}
       <section className={style.rightSection}>
         <div className={style.shopInfo} onClick={handleMoveShop}>
-          <ImageLoader
-            imagePath={product?.shopImage}
-            alt="샵 이미지"
-            className={style.shop_img}
-          />
-          <p>{product?.shopName} mart</p>
+          <div className={style.sellerInfo}>
+            <ImageLoader
+              imagePath={product?.shopImage}
+              alt="샵 이미지"
+              className={style.shop_img}
+            />
+            <p>{product?.shopName} mart</p>
+          </div>
+          <ReviewRating rating={product?.reviewAverage} />
         </div>
 
         {/* 좋아요 */}

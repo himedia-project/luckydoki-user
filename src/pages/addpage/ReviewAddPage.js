@@ -4,6 +4,7 @@ import style from "../../styles/ReviewAddPage.module.css";
 import StarRating from "../../components/StarRating";
 import { createReview } from "../../api/registerApi";
 import ImageLoader from "../../components/card/ImageLoader";
+import Swal from "sweetalert2";
 
 export default function ReviewAddPage() {
   const location = useLocation();
@@ -20,7 +21,14 @@ export default function ReviewAddPage() {
     if (file) {
       const fileSize = file.size / 1024 / 1024;
       if (fileSize > 20) {
-        alert("최대 20MB 이하의 이미지만 업로드할 수 있습니다.");
+        Swal.fire({
+          toast: true,
+          position: "top",
+          icon: "warning",
+          title: "최대 20MB 이하의 이미지만 업로드할 수 있습니다.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         return;
       }
       setImageFile(file);
@@ -33,7 +41,14 @@ export default function ReviewAddPage() {
 
   const handleSubmit = async () => {
     if (!rating || !content.trim()) {
-      alert("별점과 리뷰 내용을 입력해주세요.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "별점과 리뷰 내용을 입력해주세요.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
 
@@ -48,11 +63,23 @@ export default function ReviewAddPage() {
 
     try {
       await createReview(formData);
-      alert("리뷰가 등록되었습니다!");
-      navigate(-1);
+      Swal.fire({
+        title: "리뷰가 등록되었습니다!",
+        icon: "success",
+        confirmButtonText: "확인",
+      }).then(() => {
+        navigate(-1);
+      });
     } catch (error) {
       console.error("리뷰 등록 실패:", error);
-      alert("리뷰 등록에 실패했습니다.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "error",
+        title: "리뷰 등록에 실패했습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
   };
 

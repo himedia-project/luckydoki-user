@@ -6,6 +6,7 @@ import {
   getChildCategories,
 } from "../../api/categoryApi";
 import { createProduct } from "../../api/registerApi";
+import Swal from "sweetalert2";
 
 export default function ProductAddPage() {
   const [formData, setFormData] = useState({
@@ -76,7 +77,14 @@ export default function ProductAddPage() {
       e.preventDefault();
       if (formData.tagInput.trim() === "") return;
       if (formData.tags.length >= 5) {
-        alert("최대 5개의 태그만 추가할 수 있습니다.");
+        Swal.fire({
+          toast: true,
+          position: "top",
+          icon: "warning",
+          title: "최대 5개의 태그만 추가할 수 있습니다.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         return;
       }
       setFormData((prev) => ({
@@ -97,7 +105,14 @@ export default function ProductAddPage() {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     if (formData.images.length + files.length > 5) {
-      alert("최대 5개의 이미지만 업로드할 수 있습니다.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "최대 5개의 이미지만 업로드할 수 있습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
     const newImages = files.map((file) => URL.createObjectURL(file));
@@ -123,11 +138,25 @@ export default function ProductAddPage() {
       !formData.price ||
       !formData.stock
     ) {
-      alert("모든 필수 정보를 입력해주세요.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "모든 필수 정보를 입력해주세요.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
     if (!formData.childCategory) {
-      alert("자식 카테고리를 선택해주세요.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "자식 카테고리를 선택해주세요.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
 
@@ -155,9 +184,13 @@ export default function ProductAddPage() {
 
     try {
       const response = await createProduct(multipartFormData);
-      alert("상품이 성공적으로 등록되었습니다!");
-
-      console.log("상품 등록 성공:", response.data);
+      Swal.fire({
+        title: "상품 등록이 완료되었습니다.",
+        icon: "success",
+        confirmButtonText: "확인",
+      }).then(() => {
+        window.history.back();
+      });
 
       // 폼 리셋
       setFormData({
@@ -176,7 +209,14 @@ export default function ProductAddPage() {
       });
     } catch (error) {
       console.error("상품 등록 실패:", error);
-      alert("상품 등록에 실패했습니다. 다시 시도해주세요.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "error",
+        title: "상품 등록에 실패했습니다. 다시 시도해주세요.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
   };
 
