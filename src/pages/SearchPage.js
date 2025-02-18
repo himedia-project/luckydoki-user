@@ -5,6 +5,7 @@ import styles from "../styles/SearchPage.module.css";
 import { searchProduct, searchCommunity } from "../api/searchApi";
 import ProductCard from "../components/card/ProductCard";
 import CommunityCard from "../components/card/CommunityCard";
+import { IoSearchSharp } from "react-icons/io5";
 
 export default function SearchPage() {
   const [keyword, setKeyword] = useState("");
@@ -62,6 +63,7 @@ export default function SearchPage() {
           onKeyDown={handleKeyDown}
           className={styles.searchInput}
         />
+        <IoSearchSharp className={styles.searchIcon} />
       </div>
 
       {/* 검색 전 상태 */}

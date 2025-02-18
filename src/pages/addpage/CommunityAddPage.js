@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import style from "../../styles/CommunityAdd.module.css";
+import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import { createPost } from "../../api/communityApi";
+import { getShopProducts } from "../../api/shopApi";
 import ProductSelect from "../../components/ProductSelect";
 import SelectedProducts from "../../components/SelectedProducts";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { getShopProducts } from "../../api/shopApi";
-import { createPost } from "../../api/communityApi";
+import style from "../../styles/CommunityAdd.module.css";
 
 export default function CommunityAddPage() {
-  const navigate = useNavigate();
   const shopId = useSelector((state) => state.infoSlice?.shopId);
   const roles = useSelector((state) => state.loginSlice.roles[0]);
 
@@ -18,7 +17,6 @@ export default function CommunityAddPage() {
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
-  
 
   useEffect(() => {
     if (!shopId || roles !== "SELLER") return;
@@ -39,7 +37,14 @@ export default function CommunityAddPage() {
     const files = Array.from(e.target.files);
 
     if (images.length + files.length > 5) {
-      alert("최대 5개의 이미지만 업로드할 수 있습니다.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "최대 5개의 이미지만 업로드할 수 있습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
 
@@ -55,12 +60,26 @@ export default function CommunityAddPage() {
 
   const handleSelectProduct = (product) => {
     if (selectedProducts.length >= 5) {
-      alert("최대 5개의 상품만 선택할 수 있습니다.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "최대 5개의 상품만 선택할 수 있습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
     const alreadySelected = selectedProducts.find((p) => p.id === product.id);
     if (alreadySelected) {
-      alert("이미 선택된 상품입니다.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "이미 선택된 상품입니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
     setSelectedProducts([...selectedProducts, product]);
@@ -72,11 +91,25 @@ export default function CommunityAddPage() {
 
   const handleRegister = async () => {
     if (!title.trim() || !content.trim()) {
-      alert("제목과 내용을 입력해주세요.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "제목과 내용을 입력해주세요.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
     if (imageFiles.length === 0) {
-      alert("이미지 파일은 최소 1장 이상 첨부해야 합니다.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "이미지 파일은 최소 1장 이상 첨부해야 합니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
 
@@ -94,11 +127,29 @@ export default function CommunityAddPage() {
 
     try {
       await createPost(formData);
-      alert("게시글이 등록되었습니다!");
-      navigate("/community");
+      Swal.fire({
+        title: "상품 등록이 완료되었습니다.",
+        icon: "success",
+        confirmButtonText: "확인",
+      }).then(() => {
+        window.history.back();
+      });
+
+      setTitle("");
+      setContent("");
+      setImages([]);
+      setImageFiles([]);
+      setSelectedProducts([]);
     } catch (error) {
       console.error("게시글 등록 실패:", error);
-      alert("게시글 등록에 실패했습니다.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "error",
+        title: "게시글 등록에 실패했습니다. 다시 시도해주세요.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
   };
 

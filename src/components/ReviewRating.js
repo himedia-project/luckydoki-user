@@ -1,6 +1,5 @@
 import { FaRegStar, FaStar } from "react-icons/fa";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
 
 const StarSection = styled.div`
   display: flex;
@@ -14,22 +13,18 @@ const StarSection = styled.div`
   }
 
   .score {
-    font-size: 20px;
-    margin-left: 10px;
+    font-size: 16px;
+    margin-left: 4px;
   }
 `;
 
 const ReviewRating = ({ rating }) => {
-  const [starScore, setStarScore] = useState(rating);
-
-  useEffect(() => {
-    setStarScore(rating);
-  }, [rating]);
+  const roundedRating = Math.round(rating);
 
   const ratingStarHandler = () => {
     return Array.from({ length: 5 }, (_, i) => (
       <span key={i + 1}>
-        {i + 1 <= starScore ? (
+        {i < roundedRating ? (
           <FaStar className="star" />
         ) : (
           <FaRegStar className="star" />
@@ -38,7 +33,12 @@ const ReviewRating = ({ rating }) => {
     ));
   };
 
-  return <StarSection>{ratingStarHandler()}</StarSection>;
+  return (
+    <StarSection>
+      {ratingStarHandler()}
+      <span className="score">{rating} 점</span>
+    </StarSection>
+  );
 };
 
 export default ReviewRating;

@@ -3,16 +3,15 @@ import { getComments, deleteComment, postComment } from "../api/commentApi";
 import styles from "../styles/CommunityComments.module.css";
 import ImageLoader from "./card/ImageLoader";
 import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 function CommunityComments({ postId }) {
   const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState("");
   const userNickName = useSelector((state) => state.loginSlice.nickName);
 
-  // 댓글 목록 조회
   useEffect(() => {
     fetchComments();
-    // eslint-disable-next-line
   }, [postId]);
 
   const fetchComments = async () => {
@@ -30,12 +29,39 @@ function CommunityComments({ postId }) {
       fetchComments();
     } catch (error) {
       console.error("댓글 삭제 실패:", error);
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "error",
+        title: "댓글 삭제에 실패했습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
   };
 
   const handleSubmit = async () => {
+    if (!userNickName) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "로그인이 필요합니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
     if (!commentInput.trim()) {
-      alert("댓글 내용을 입력해 주세요.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "댓글 내용을 입력해 주세요.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
 
@@ -45,7 +71,14 @@ function CommunityComments({ postId }) {
       fetchComments();
     } catch (error) {
       console.error("댓글 등록 실패:", error);
-      alert("댓글 등록 중 오류가 발생했습니다.");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "error",
+        title: "댓글 등록 중 오류가 발생했습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
   };
 

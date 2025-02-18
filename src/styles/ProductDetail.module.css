@@ -76,6 +76,12 @@
   min-height: 200px;
 }
 
+.sellerInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .reviewSection {
   margin-top: 30px;
   min-height: 300px;
@@ -128,8 +134,8 @@
 
 .shopInfo {
   display: flex;
-  gap: 8px;
   align-items: center;
+  justify-content: space-between;
   font-size: 14px;
   color: #333;
   cursor: pointer;
