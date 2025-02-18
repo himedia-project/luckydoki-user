@@ -37,18 +37,18 @@ export default function CommunityDetailPage() {
     fetchPostInfo();
   }, [id]);
 
-  // Swiper 네비게이션 버튼 연결
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       if (imgSwiperRef.current?.swiper) {
-        imgSwiperRef.current.swiper.params.navigation.prevEl =
-          imgPrevRef.current;
-        imgSwiperRef.current.swiper.params.navigation.nextEl =
-          imgNextRef.current;
-        imgSwiperRef.current.swiper.navigation.init();
-        imgSwiperRef.current.swiper.navigation.update();
+        const swiper = imgSwiperRef.current.swiper;
+        swiper.params.navigation.prevEl = imgPrevRef.current;
+        swiper.params.navigation.nextEl = imgNextRef.current;
+        swiper.navigation.destroy();
+        swiper.navigation.init();
+        swiper.navigation.update();
       }
-    }, 100);
+    }, 200);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleProductClick = (productId, event) => {

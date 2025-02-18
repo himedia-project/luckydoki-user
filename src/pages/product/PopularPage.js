@@ -12,7 +12,7 @@ const PopularPage = () => {
   useEffect(() => {
     const fetchPopularProducts = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/product`, {
+        const response = await axios.get(`${API_URL}/api/product/list`, {
           withCredentials: true,
         });
 
@@ -35,7 +35,7 @@ const PopularPage = () => {
     <>
       <Header />
       <div className={style.productListContainer}>
-        <h2 className={style.pageTitle}> 인기 상품</h2>
+        <h2 className={style.pageTitle}>인기 상품</h2>
         {products.length > 0 ? (
           <div className={style.productGrid}>
             {products.map((product) => (

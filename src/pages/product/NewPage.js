@@ -12,7 +12,7 @@ const NewPage = () => {
   useEffect(() => {
     const fetchNewProducts = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/product`, {
+        const response = await axios.get(`${API_URL}/api/product/list`, {
           withCredentials: true,
         });
 
