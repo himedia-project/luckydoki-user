@@ -18,6 +18,7 @@ export default function CommunityAddPage() {
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
+  
 
   useEffect(() => {
     if (!shopId || roles !== "SELLER") return;

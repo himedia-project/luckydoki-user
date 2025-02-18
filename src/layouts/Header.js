@@ -8,6 +8,7 @@ import NotificationDropdown from "../components/dropdown/NotificationDropdown";
 import MessageDropdown from "../components/dropdown/MessageDropdown";
 import { getMainCategories } from "../api/categoryApi";
 import CategoryNav from "../components/CategoryNav";
+import Swal from "sweetalert2";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -43,6 +44,22 @@ const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const handleProtectedRoute = (event, path) => {
+    if (!nickName) {
+      event.preventDefault();
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "로그인이 필요합니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } else {
+      navigate(path);
+    }
+  };
 
   const handleMouseEnter = (categoryId) => {
     setActiveCategory(categoryId);
@@ -131,17 +148,26 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <Link to="/likeslist">
+              <Link
+                to="/likeslist"
+                onClick={(e) => handleProtectedRoute(e, "/likeslist")}
+              >
                 <img src="/heart.png" alt="좋아요" />
               </Link>
             </li>
             <li>
-              <Link to="/mypage">
+              <Link
+                to="/mypage"
+                onClick={(e) => handleProtectedRoute(e, "/mypage")}
+              >
                 <img src="/mypage.png" alt="마이페이지" />
               </Link>
             </li>
             <li className={style.cart_icon}>
-              <Link to="/cart">
+              <Link
+                to="/cart"
+                onClick={(e) => handleProtectedRoute(e, "/cart")}
+              >
                 <img src="/cart.png" alt="장바구니" />
                 {cartItems.length > 0 && (
                   <span className={style.cart_count}>{cartItems.length}</span>
