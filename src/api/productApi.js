@@ -1,5 +1,12 @@
 import axiosInstance from "./axiosInstance";
 
+// 상품 리스트(searchPage에도 사용)
+export const getProductList = async (searchKeyword) => {
+  return await axiosInstance.get("/product/list", {
+    params: { searchKeyword: searchKeyword },
+  });
+};
+
 // 상품 정보 가져오기(detail)
 export const getProductInfo = async (productId) => {
   return await axiosInstance.get(`/product/${productId}/detail`);

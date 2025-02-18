@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { getProductList } from "../../api/productApi";
 import ProductCard from "../../components/card/ProductCard";
-import style from "../../styles/ProductListPage.module.css";
-import { API_URL } from "../../config/apiConfig";
-import Header from "../../layouts/Header";
 import Footer from "../../layouts/Footer";
+import Header from "../../layouts/Header";
+import style from "../../styles/ProductListPage.module.css";
 
 const PopularPage = () => {
   const [products, setProducts] = useState([]);
@@ -12,9 +11,7 @@ const PopularPage = () => {
   useEffect(() => {
     const fetchPopularProducts = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/product/list`, {
-          withCredentials: true,
-        });
+        const response = await getProductList();
 
         // ✅ best === "Y" 인 상품들만 필터링
         const bestProducts = response.data.filter(
