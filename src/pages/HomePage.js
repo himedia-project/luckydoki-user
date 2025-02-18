@@ -30,8 +30,7 @@ const HomePage = () => {
         });
         setEvents(eventRes.data);
 
-        // ✅ 상품 데이터 가져오기
-        const productRes = await axios.get(`${API_URL}/api/product`, {
+        const productRes = await axios.get(`${API_URL}/api/product/list`, {
           headers,
           withCredentials: true,
         });
