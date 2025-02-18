@@ -5,59 +5,10 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import styles from "../../styles/EventSwiper.module.css";
+import ImageLoader from "../card/ImageLoader";
 
 const EventSwiper = ({ events }) => {
   const [textColors, setTextColors] = useState({});
-
-  useEffect(() => {
-    if (!events || events.length === 0) return;
-
-    const getTextColor = (imgSrc, id) => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.src = imgSrc;
-
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, img.width, img.height);
-
-          const pixelData = ctx.getImageData(
-            img.width / 2,
-            img.height / 2,
-            1,
-            1
-          ).data;
-          const color = rgbToHex(pixelData[0], pixelData[1], pixelData[2]);
-
-          resolve({ id, color });
-        };
-      });
-    };
-
-    const updateTextColors = async () => {
-      const colorPromises = events.map((event) =>
-        getTextColor(event.image, event.id)
-      );
-      const results = await Promise.all(colorPromises);
-
-      const newColors = results.reduce((acc, { id, color }) => {
-        acc[id] = color;
-        return acc;
-      }, {});
-
-      setTextColors(newColors);
-    };
-
-    updateTextColors();
-  }, [events]);
-
-  const rgbToHex = (r, g, b) => {
-    return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
-  };
 
   if (!events || events.length === 0) {
     return (
@@ -83,17 +34,11 @@ const EventSwiper = ({ events }) => {
         {events.map((event) => (
           <SwiperSlide key={event.id} className={styles.eventSlide}>
             <div className={styles.imageWrapper}>
-              <img
-                src={event.image}
+              <ImageLoader
+                imagePath={event.image}
                 alt={event.title}
                 className={styles.eventImage}
               />
-              <div
-                className={styles.imageTitle}
-                style={{ color: textColors[event.id] || "white" }}
-              >
-                {event.title}
-              </div>
             </div>
           </SwiperSlide>
         ))}
