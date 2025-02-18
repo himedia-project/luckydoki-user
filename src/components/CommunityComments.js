@@ -1,0 +1,115 @@
+import React, { useState, useEffect } from "react";
+import { getComments, deleteComment, postComment } from "../api/commentApi";
+import styles from "../styles/CommunityComments.module.css";
+import ImageLoader from "./card/ImageLoader";
+import { useSelector } from "react-redux";
+
+function CommunityComments({ postId }) {
+  const [comments, setComments] = useState([]);
+  const [commentInput, setCommentInput] = useState("");
+  const userNickName = useSelector((state) => state.loginSlice.nickName);
+
+  // 댓글 목록 조회
+  useEffect(() => {
+    fetchComments();
+    // eslint-disable-next-line
+  }, [postId]);
+
+  const fetchComments = async () => {
+    try {
+      const response = await getComments(postId);
+      setComments(response.data || []);
+    } catch (error) {
+      console.error("댓글 조회 실패:", error);
+    }
+  };
+
+  const handleDelete = async (commentId) => {
+    try {
+      await deleteComment(postId, commentId);
+      fetchComments();
+    } catch (error) {
+      console.error("댓글 삭제 실패:", error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!commentInput.trim()) {
+      alert("댓글 내용을 입력해 주세요.");
+      return;
+    }
+
+    try {
+      await postComment(postId, { content: commentInput });
+      setCommentInput("");
+      fetchComments();
+    } catch (error) {
+      console.error("댓글 등록 실패:", error);
+      alert("댓글 등록 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
+  return (
+    <div className={styles.commentsContainer}>
+      {/* 댓글 입력 영역 */}
+      <h4 className={styles.commentTopHeader}>댓글</h4>
+      <div className={styles.inputWrapper}>
+        <input
+          type="text"
+          placeholder="댓글을 입력해 주세요."
+          value={commentInput}
+          onChange={(e) => setCommentInput(e.target.value)}
+          className={styles.commentInput}
+          onKeyDown={handleKeyDown}
+        />
+        <button onClick={handleSubmit} className={styles.submitButton}>
+          등록
+        </button>
+      </div>
+
+      {/* 댓글 목록 영역 */}
+      <div className={styles.commentsList}>
+        {comments.length === 0 ? (
+          <p className={styles.noComments}>등록된 댓글이 없습니다.</p>
+        ) : (
+          comments.map((comment) => (
+            <div key={comment.id} className={styles.commentItem}>
+              <div className={styles.commentHeader}>
+                <ImageLoader
+                  imagePath={comment.profileImage}
+                  className={styles.userImage}
+                />
+                <div className={styles.userInfoBox}>
+                  <span className={styles.commentAuthor}>
+                    {comment.nickName}
+                  </span>
+                  <span className={styles.commentDate}>
+                    {new Date(comment.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.commentContent}>{comment.content}</div>
+              {userNickName === comment.nickName && (
+                <button
+                  className={styles.deleteButton}
+                  onClick={() => handleDelete(comment.id)}
+                >
+                  삭제
+                </button>
+              )}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default CommunityComments;

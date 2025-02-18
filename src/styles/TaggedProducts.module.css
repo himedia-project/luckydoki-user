@@ -10,7 +10,14 @@
   flex-direction: column;
   gap: 10px;
   width: 626px;
+  height: fit-content;
   padding: 12px 16px;
+}
+
+.productGrid {
+  width: fit-content;
+  display: flex;
+  gap: 8px;
 }
 
 .cardList {
@@ -90,9 +97,13 @@
   font-size: 12px;
 }
 
-.navButton {
+.TaggedProducts {
+  position: relative;
+}
+
+.taggedNavButton {
   position: absolute;
-  top: 530px;
+  top: 0;
   width: 34px;
   height: 34px;
   background-color: white;
@@ -108,10 +119,24 @@
   transition: background-color 0.3s;
 }
 
-.prevButton {
-  left: 290px;
+.taggedPrevButton,
+.taggedNextButton {
+  display: block;
+  width: 34px;
+  height: 34px;
+  position: absolute;
+  top: 765px;
+  z-index: 1000;
+  cursor: pointer;
+  background: #fff;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.nextButton {
-  right: 290px;
+.taggedPrevButton {
+  left: 320px;
+}
+
+.taggedNextButton {
+  right: 325px;
 }

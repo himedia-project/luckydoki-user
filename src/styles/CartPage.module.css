@@ -118,6 +118,12 @@
   gap: 20px;
 }
 
+.cartLeft {
+  display: flex;
+  width: 760px;
+  justify-content: space-between;
+}
+
 .product_image {
   width: 100px;
   height: 100px;
@@ -156,7 +162,20 @@
   color: #ff0000;
 }
 
+.productInfoBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.controlNav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .quantity_control {
+  height: fit-content;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -174,6 +193,7 @@
   border: 1px solid #ddd;
   background: white;
   cursor: pointer;
+  height: 27px;
 }
 
 .cart_summary {

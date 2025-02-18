@@ -52,6 +52,7 @@ export default function CommunityPage() {
                 uploadFileNames={post?.uploadFileNames}
                 productDTOs={post?.productDTOs}
                 sellerImage={post?.shopImage}
+                hideSwiper={true}
               />
             ))}
           </div>

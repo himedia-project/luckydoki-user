@@ -187,9 +187,9 @@
 
 .cart_count {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: #ff4b4b;
+  top: -3px;
+  right: -5px;
+  background-color: #00de90;
   color: white;
   font-size: 12px;
   min-width: 18px;

@@ -283,53 +283,57 @@ const CartPage = () => {
                 onChange={() => handleSelectItem(item.cartItemId)}
                 className={style.one_select_box}
               />
-              <div
-                onClick={() => handleProductClick(item.productId)}
-                style={{ cursor: "pointer" }}
-              >
-                <ImageLoader
-                  imagePath={item.imageName}
-                  alt={item.productName}
-                  className={style.product_image}
-                />
-                <div className={style.product_info}>
-                  <h3>{item.productName}</h3>
-                  <div className={style.price_info}>
-                    <span className={style.discount_price}>
-                      {calculateItemTotal(item).toLocaleString()}원
-                    </span>
-                    <span className={style.original_price}>
-                      {(item.price * item.qty).toLocaleString()}원
-                    </span>
-                    <span className={style.discount_rate}>
-                      {item.discountRate}%
-                    </span>
+              <div className={style.cartLeft}>
+                <div
+                  onClick={() => handleProductClick(item.productId)}
+                  className={style.productInfoBox}
+                >
+                  <ImageLoader
+                    imagePath={item.imageName}
+                    alt={item.productName}
+                    className={style.product_image}
+                  />
+                  <div className={style.product_info}>
+                    <h3>{item.productName}</h3>
+                    <div className={style.price_info}>
+                      <span className={style.discount_price}>
+                        {calculateItemTotal(item).toLocaleString()}원
+                      </span>
+                      <span className={style.original_price}>
+                        {(item.price * item.qty).toLocaleString()}원
+                      </span>
+                      <span className={style.discount_rate}>
+                        {item.discountRate}%
+                      </span>
+                    </div>
                   </div>
                 </div>
+                <div className={style.controlNav}>
+                  <div className={style.quantity_control}>
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(item.cartItemId, item.qty, -1)
+                      }
+                    >
+                      -
+                    </button>
+                    <span>{item.qty}</span>
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(item.cartItemId, item.qty, 1)
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    className={style.delete_btn}
+                    onClick={() => handleDeleteItem(item.cartItemId)}
+                  >
+                    삭제
+                  </button>
+                </div>
               </div>
-              <div className={style.quantity_control}>
-                <button
-                  onClick={() =>
-                    handleQuantityChange(item.cartItemId, item.qty, -1)
-                  }
-                >
-                  -
-                </button>
-                <span>{item.qty}</span>
-                <button
-                  onClick={() =>
-                    handleQuantityChange(item.cartItemId, item.qty, 1)
-                  }
-                >
-                  +
-                </button>
-              </div>
-              <button
-                className={style.delete_btn}
-                onClick={() => handleDeleteItem(item.cartItemId)}
-              >
-                삭제
-              </button>
             </div>
           ))}
         </div>

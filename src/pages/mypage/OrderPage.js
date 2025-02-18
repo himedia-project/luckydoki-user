@@ -90,14 +90,7 @@ export default function OrderPage() {
               <div className={style.orderGroupHeader}>
                 <div className={style.orderHeader}>
                   <h3 className={style.orderCode}>
-                    {new Date(order.orderDate)
-                      .toLocaleDateString("ko-KR")
-                      .replaceAll(" ", " ")
-                      .replace("년", "")
-                      .replace("월", "")
-                      .replace("일", "")
-                      .replace(/\.$/, "")
-                      .trim()}{" "}
+                    {new Date(order?.orderDate).toLocaleDateString()}
                     주문
                   </h3>
 
@@ -115,7 +108,7 @@ export default function OrderPage() {
                   )}
                 </div>
                 <div className={style.orderTotalPrice}>
-                  {/* <p>{order.totalPrice.toLocaleString()}원</p> */}
+                  <p>{order.totalPrice.toLocaleString()}원</p>
                 </div>
               </div>
 

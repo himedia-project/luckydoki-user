@@ -1,14 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPostInfo } from "../../api/communityApi";
 import ImageLoader from "../../components/card/ImageLoader";
 import TaggedProducts from "../../components/card/TaggedProducts";
-import styles from "../../styles/CommunityDetailPage.module.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import styles from "../../styles/CommunityDetailPage.module.css";
+import CommunityComments from "../../components/CommunityComments";
 
 export default function CommunityDetailPage() {
   const { id } = useParams();
@@ -16,10 +17,10 @@ export default function CommunityDetailPage() {
   const [postInfo, setPostInfo] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Swiper 관련 ref 선언
+  const imgSwiperRef = useRef(null);
   const imgPrevRef = useRef(null);
   const imgNextRef = useRef(null);
-  const productPrevRef = useRef(null);
-  const productNextRef = useRef(null);
 
   useEffect(() => {
     const fetchPostInfo = async () => {
@@ -35,6 +36,20 @@ export default function CommunityDetailPage() {
 
     fetchPostInfo();
   }, [id]);
+
+  // Swiper 네비게이션 버튼 연결
+  useEffect(() => {
+    setTimeout(() => {
+      if (imgSwiperRef.current?.swiper) {
+        imgSwiperRef.current.swiper.params.navigation.prevEl =
+          imgPrevRef.current;
+        imgSwiperRef.current.swiper.params.navigation.nextEl =
+          imgNextRef.current;
+        imgSwiperRef.current.swiper.navigation.init();
+        imgSwiperRef.current.swiper.navigation.update();
+      }
+    }, 100);
+  }, []);
 
   const handleProductClick = (productId, event) => {
     if (event) {
@@ -60,30 +75,30 @@ export default function CommunityDetailPage() {
         />
         <div className={styles.infoBox}>
           <p className={styles.author}>{postInfo.nickName}</p>
-          <p className={styles.date}>{postInfo.createdAt}</p>
+          <p className={styles.date}>
+            {new Date(postInfo.createdAt).toLocaleDateString()}
+          </p>
         </div>
       </div>
 
-      {/* 📌 게시글 이미지 Swiper (개별 네비게이션) */}
+      {/* 이미지 스와이퍼 영역 */}
       {postInfo.uploadFileNames && postInfo.uploadFileNames.length > 0 && (
-        <div className={styles.swiperContainer}>
+        <div className={styles.imageSwiperWrapper}>
           <Swiper
-            modules={[Navigation, Pagination]}
+            ref={imgSwiperRef}
             spaceBetween={10}
             slidesPerView={1}
+            loop={postInfo.uploadFileNames.length > 1}
             navigation={{
               prevEl: imgPrevRef.current,
               nextEl: imgNextRef.current,
             }}
-            pagination={{ clickable: true }}
-            onBeforeInit={(swiper) => {
-              swiper.params.navigation.prevEl = imgPrevRef.current;
-              swiper.params.navigation.nextEl = imgNextRef.current;
-            }}
+            pagination={{ clickable: true, el: ".custom-pagination" }}
+            modules={[Navigation, Pagination]}
             className={styles.imageSwiper}
           >
             {postInfo.uploadFileNames.map((filePath, index) => (
-              <SwiperSlide key={index}>
+              <SwiperSlide key={index} className={styles.slide}>
                 <ImageLoader
                   imagePath={filePath}
                   alt={`게시글 이미지 ${index + 1}`}
@@ -93,31 +108,62 @@ export default function CommunityDetailPage() {
             ))}
           </Swiper>
 
-          <button
-            ref={imgPrevRef}
-            className={`${styles.navButton} ${styles.prevButton}`}
-          >
-            &lt;
-          </button>
-          <button
-            ref={imgNextRef}
-            className={`${styles.navButton} ${styles.nextButton}`}
-          >
-            &gt;
-          </button>
+          <div className="custom-pagination" />
+
+          {postInfo.uploadFileNames.length > 1 && (
+            <>
+              <button
+                ref={imgPrevRef}
+                className={`${styles.navButton} ${styles.prevButton}`}
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="black"
+                  strokeWidth="1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button
+                ref={imgNextRef}
+                className={`${styles.navButton} ${styles.nextButton}`}
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="black"
+                  strokeWidth="1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </>
+          )}
         </div>
       )}
 
       {postInfo.productDTOs && postInfo.productDTOs.length > 0 && (
-        <TaggedProducts
-          productDTOs={postInfo.productDTOs}
-          handleProductClick={handleProductClick}
-          prevRef={productPrevRef}
-          nextRef={productNextRef}
-        />
+        <div className={styles.TaggedProducts}>
+          <TaggedProducts
+            productDTOs={postInfo.productDTOs}
+            handleProductClick={handleProductClick}
+          />
+        </div>
       )}
 
       <div className={styles.content}>{postInfo.content}</div>
+
+      {/* 댓글 */}
+      <CommunityComments postId={id} />
     </div>
   );
 }

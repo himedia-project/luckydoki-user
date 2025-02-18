@@ -12,6 +12,7 @@ const CommunityCard = ({
   uploadFileNames,
   sellerImage,
   productDTOs,
+  hideSwiper,
 }) => {
   const navigate = useNavigate();
 
@@ -59,6 +60,7 @@ const CommunityCard = ({
           productDTOs={productDTOs}
           handleProductClick={handleProductClick}
           limit={2}
+          hideSwiper
         />
       )}
 

@@ -96,8 +96,28 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
-    dispatch(clearCartItems());
+    Swal.fire({
+      title: "로그아웃 하시겠습니까?",
+      text: "확인을 누르면 홈으로 이동합니다.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "확인",
+      cancelButtonText: "취소",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(logout());
+        dispatch(clearCartItems());
+        Swal.fire({
+          title: "로그아웃되었습니다.",
+          icon: "success",
+          confirmButtonText: "확인",
+        }).then(() => {
+          navigate("/");
+        });
+      }
+    });
   };
 
   return (
