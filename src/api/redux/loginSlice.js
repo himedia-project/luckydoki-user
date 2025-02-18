@@ -24,8 +24,13 @@ const loginSlice = createSlice({
       console.log("setAccessToken: accessToken", action.payload);
       state.accessToken = action.payload;
     },
+    setRoles: (state, action) => {
+      // TODO: seller 관리자 승인시, 알림 줄때 사용
+      console.log("setRoles: roles", action.payload);
+      state.roles = action.payload;
+    },
   },
 });
 
-export const { login, logout, setAccessToken } = loginSlice.actions;
+export const { login, logout, setAccessToken, setRoles } = loginSlice.actions;
 export default loginSlice.reducer;
