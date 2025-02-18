@@ -13,7 +13,7 @@ const ReviewCard = ({ review }) => {
           className={styles.profile}
         />
         <div className={styles.info_box}>
-          <p className={styles.nickname}>도성곤</p>
+          <p className={styles.nickname}>{review.nickname}</p>
           <div className={styles.sub_info}>
             <ReviewRating rating={review.rating} />
             <span>{new Date(review.createdAt).toLocaleDateString()}</span>
