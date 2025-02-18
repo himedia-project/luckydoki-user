@@ -37,7 +37,7 @@ export default function MyPage() {
             <div className={style.bar}></div>
             <Link to="/coupon" className={style.box}>
               <p>쿠폰</p>
-              <p>0</p>
+              <p>{userInfo?.activeCouponCount ?? 0}</p>
             </Link>
             <div className={style.bar}></div>
             <div className={style.box}>
@@ -62,17 +62,17 @@ export default function MyPage() {
             <div className={style.product_grid}>
               {likedProducts.map((product) => (
                 <ProductCard
-                  key={product.productId}
-                  id={product.productId}
-                  name={product.productName}
-                  price={product.price}
-                  discountPrice={product.discountPrice}
-                  discountRate={product.discountRate}
-                  productImageUrl={product.productImageUrl}
-                  isNew={product.isNew === "Y"}
-                  event={product.event === "Y"}
-                  best={product.best === "Y"}
-                  likes={product.likes}
+                  key={product?.productId}
+                  id={product?.productId}
+                  name={product?.productName}
+                  price={product?.price}
+                  discountPrice={product?.discountPrice}
+                  discountRate={product?.discountRate}
+                  productImageUrl={product?.productImageUrl}
+                  isNew={product?.isNew === "Y"}
+                  event={product?.event === "Y"}
+                  best={product?.best === "Y"}
+                  likes={product?.likes}
                   onUnlike={handleUnlikeProduct}
                 />
               ))}

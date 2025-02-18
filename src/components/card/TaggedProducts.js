@@ -25,13 +25,13 @@ const TaggedProducts = ({
           spaceBetween={16}
           slidesPerView={productDTOs.length < 2 ? 1 : 2}
           navigation={{
-            prevEl: prevRef.current,
-            nextEl: nextRef.current,
+            prevEl: prevRef?.current,
+            nextEl: nextRef?.current,
           }}
           pagination={{ clickable: true }}
           onBeforeInit={(swiper) => {
-            swiper.params.navigation.prevEl = prevRef.current;
-            swiper.params.navigation.nextEl = nextRef.current;
+            swiper.params.navigation.prevEl = prevRef?.current;
+            swiper.params.navigation.nextEl = nextRef?.current;
           }}
           preventClicksPropagation={false}
           className={styles.productSwiper}

@@ -28,30 +28,30 @@ export default function CommunityPage() {
           <div className={style.community_grid_left}>
             {posts.slice(0, Math.ceil(posts.length / 2)).map((post) => (
               <CommunityCard
-                key={post.id}
-                id={post.id}
-                title={post.title}
-                content={post.content}
-                createdAt={post.createdAt}
-                nickName={post.nickName}
-                uploadFileNames={post.uploadFileNames}
-                productDTOs={post.productDTOs}
-                sellerImage={post.shopImage}
+                key={post?.id}
+                id={post?.id}
+                title={post?.title}
+                content={post?.content}
+                createdAt={post?.createdAt}
+                nickName={post?.nickName}
+                uploadFileNames={post?.uploadFileNames}
+                productDTOs={post?.productDTOs}
+                sellerImage={post?.shopImage}
               />
             ))}
           </div>
           <div className={style.community_grid_right}>
             {posts.slice(Math.ceil(posts.length / 2)).map((post) => (
               <CommunityCard
-                key={post.id}
-                id={post.id}
-                title={post.title}
-                content={post.content}
-                createdAt={post.createdAt}
-                nickName={post.nickName}
-                uploadFileNames={post.uploadFileNames}
-                productDTOs={post.productDTOs}
-                sellerImage={post.shopImage}
+                key={post?.id}
+                id={post?.id}
+                title={post?.title}
+                content={post?.content}
+                createdAt={post?.createdAt}
+                nickName={post?.nickName}
+                uploadFileNames={post?.uploadFileNames}
+                productDTOs={post?.productDTOs}
+                sellerImage={post?.shopImage}
               />
             ))}
           </div>
