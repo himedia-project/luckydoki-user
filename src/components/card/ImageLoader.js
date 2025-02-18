@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getImageUrl } from "../../api/imageApi";
 
-const DEFAULT_IMAGE = "/images/default_profile.png";
+const DEFAULT_IMAGE = "/profile.png";
 
 const ImageLoader = ({
   imagePath,

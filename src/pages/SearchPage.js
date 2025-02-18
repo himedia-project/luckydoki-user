@@ -138,7 +138,7 @@ export default function SearchPage() {
                           nickName={post.nickName}
                           uploadFileNames={post.uploadFileNames}
                           productDTOs={post.productDTOs}
-                          sellerImage={post.sellerImage || null}
+                          sellerImage={post.shopImage || null}
                         />
                       ))}
                   </div>
@@ -156,7 +156,7 @@ export default function SearchPage() {
                           nickName={post.nickName}
                           uploadFileNames={post.uploadFileNames}
                           productDTOs={post.productDTOs}
-                          sellerImage={post.sellerImage || null}
+                          sellerImage={post.shopImage || null}
                         />
                       ))}
                   </div>

@@ -13,7 +13,8 @@
 
 .header_top {
   height: 30px;
-  transition: height 0.1s ease-in-out;
+  transition-delay: 0;
+  transition: height 0.1s ease-out;
   overflow: hidden;
 }
 

@@ -1,11 +1,12 @@
 .container {
   position: relative;
   width: 1280px;
+  min-height: 100vh;
 }
 
 .inputBox {
   position: sticky;
-  z-index: 1000;
+  z-index: 9;
   top: 100px;
   width: 1280px;
   height: 100px;

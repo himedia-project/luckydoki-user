@@ -195,9 +195,7 @@ export default function CommunityAddPage() {
           className={style.file_input}
           onChange={handleFileChange}
         />
-        <p>
-          사진은 최대 20MB 이하의 JPG, PNG, GIF 파일 5장까지 첨부 가능합니다.
-        </p>
+        <p>사진은 최대 20MB 이하의 JPG, PNG 파일 5장까지 첨부 가능합니다.</p>
       </div>
 
       {/* 이미지 미리보기 */}
