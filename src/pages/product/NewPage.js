@@ -11,14 +11,13 @@ const NewPage = () => {
   useEffect(() => {
     const fetchNewProducts = async () => {
       try {
-        const response = await getProductList();
+        const response = await getProductList("");
 
         // ✅ isNew === "Y" 인 상품들만 필터링
         const newProducts = response.data.filter(
           (product) => product.isNew === "Y"
         );
 
-        console.log("상품 개수:", newProducts.length); // ✅ 상품 개수 확인
         setProducts(newProducts);
       } catch (error) {
         console.error("신규 상품 불러오기 실패:", error);
@@ -28,14 +27,12 @@ const NewPage = () => {
     fetchNewProducts();
   }, []);
 
-  console.log("NewPage 렌더링됨"); // ✅ 페이지가 렌더링되는지 확인
-
   return (
     <>
       <Header />
 
       <div className={style.productListContainer}>
-        <h2 className={style.pageTitle}>신규 상품</h2>
+        <h2 className={style.pageTitle}>최신상품</h2>
         {products.length > 0 ? (
           <div className={style.productGrid}>
             {products.map((product) => (
