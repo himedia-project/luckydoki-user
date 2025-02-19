@@ -19,7 +19,7 @@
   width: 20px;
   height: 20px;
   position: absolute;
-  right: 350px;
+  right: 455px;
   color: #333;
 }
 
@@ -28,7 +28,7 @@
   left: 50%;
   transform: translateX(-50%);
   display: block;
-  width: 630px;
+  width: 400px;
   font-size: 14px;
   font-weight: 600;
   padding: 15px 20px;
