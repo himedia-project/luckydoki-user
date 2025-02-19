@@ -51,7 +51,6 @@ const ProductSwiper = ({ title, items }) => {
           prevEl: prevRef.current,
           nextEl: nextRef.current,
         }}
-        pagination={{ el: ".custom-pagination", type: "bullets" }}
         modules={[Navigation, Pagination]}
         breakpoints={{
           1280: { slidesPerView: 5 },
@@ -85,7 +84,6 @@ const ProductSwiper = ({ title, items }) => {
             </div>
           </SwiperSlide>
         ))}
-        <div className="custom-pagination"></div>
       </Swiper>
 
       {/* ✅ Swiper 개별 네비게이션 버튼 */}
