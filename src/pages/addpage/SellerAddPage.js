@@ -3,12 +3,16 @@ import style from "../../styles/SellerPage.module.css";
 import { upgradeToSeller } from "../../api/registerApi";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useFCMToken } from "../../hooks/useFCMToken";
+import { useSelector } from "react-redux";
 
 export default function SellerAddPage() {
   const navigate = useNavigate();
   const [image, setImage] = useState("https://placehold.co/100");
   const [file, setFile] = useState(null);
   const [content, setContent] = useState("");
+  const { updateToken } = useFCMToken();
+  const email = useSelector((state) => state.loginSlice.email);
 
   const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -38,6 +42,15 @@ export default function SellerAddPage() {
     }
 
     try {
+      if (email) {
+        try {
+          // 셀러 신청 페이지에서 fcm 토큰 업데이트
+          await updateToken(email);
+        } catch (error) {
+          console.error("FCM 토큰 초기화 실패:", error);
+        }
+      }
+
       const formData = new FormData();
       formData.append("introduction", content);
       formData.append("profileImage", file);

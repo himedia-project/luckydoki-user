@@ -28,7 +28,8 @@ const LoginPage = () => {
   };
 
   const handleKakaoLogin = () => {
-    window.location.href = getKakaoLoginLink();
+    const link = getKakaoLoginLink();
+    window.location.href = link;
   };
 
   const handleGoogleLogin = () => {

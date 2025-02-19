@@ -20,19 +20,13 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const headers = accessToken
-          ? { Authorization: `Bearer ${accessToken}` }
-          : {};
-
         // ✅ 이벤트 데이터 가져오기
         const eventRes = await axios.get(`${API_URL}/api/event/active`, {
-          headers,
           withCredentials: true,
         });
         setEvents(eventRes.data);
 
         const productRes = await axios.get(`${API_URL}/api/product/list`, {
-          headers,
           withCredentials: true,
         });
 
@@ -40,7 +34,7 @@ const HomePage = () => {
         setProducts(allProducts);
 
         setRandomProducts(
-          allProducts.sort(() => 0.5 - Math.random()).slice(0, 10)
+          allProducts.sort(() => 0.5 - Math.random()).slice(0, 20)
         );
         setNewProducts(allProducts.filter((product) => product.isNew === "Y"));
         setBestProducts(allProducts.filter((product) => product.best === "Y"));

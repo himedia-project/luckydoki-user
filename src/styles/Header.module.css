@@ -201,3 +201,16 @@
   justify-content: center;
   padding: 0 4px;
 }
+
+.notification_count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4444;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  min-width: 16px;
+  text-align: center;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -11,18 +11,26 @@ const ProductSwiper = ({ title, items }) => {
   const swiperRef = useRef(null);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+  const [swiperId] = useState(
+    () => `swiper-${Math.random().toString(36).substr(2, 9)}`
+  );
 
-  // ✅ 항상 실행되도록 useEffect를 조건문 바깥으로 이동
   useEffect(() => {
-    setTimeout(() => {
-      if (swiperRef.current?.swiper) {
-        swiperRef.current.swiper.params.navigation.prevEl = prevRef.current;
-        swiperRef.current.swiper.params.navigation.nextEl = nextRef.current;
-        swiperRef.current.swiper.navigation.init();
-        swiperRef.current.swiper.navigation.update();
+    const timer = setTimeout(() => {
+      if (swiperRef.current && swiperRef.current.swiper) {
+        const swiperInstance = swiperRef.current.swiper;
+        swiperInstance.params.navigation.prevEl = `.${swiperId}-prev`;
+        swiperInstance.params.navigation.nextEl = `.${swiperId}-next`;
+        swiperInstance.navigation.init();
+        swiperInstance.navigation.update();
+        swiperInstance.params.pagination.el = `.${swiperId}-pagination`;
+        swiperInstance.pagination.init();
+        swiperInstance.pagination.update();
       }
-    }, 100);
-  }, []);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [swiperId]);
 
   if (!items || items.length === 0) {
     return (
@@ -33,10 +41,13 @@ const ProductSwiper = ({ title, items }) => {
     );
   }
 
-  // ✅ 2개씩 묶어서 행으로 그룹화
   const groupedItems = [];
-  for (let i = 0; i < items.length; i += 2) {
-    groupedItems.push(items.slice(i, i + 2));
+  for (let i = 0; i < items.length; i += 10) {
+    const group = items.slice(i, i + 10);
+    while (group.length < 10) {
+      group.push(null);
+    }
+    groupedItems.push(group);
   }
 
   return (
@@ -44,52 +55,59 @@ const ProductSwiper = ({ title, items }) => {
       <h2 className={styles.sectionTitle}>{title}</h2>
       <Swiper
         ref={swiperRef}
+        key={groupedItems.length}
         spaceBetween={10}
-        slidesPerView={5}
-        loop={items.length > 5}
+        slidesPerView={1}
+        slidesPerGroup={1}
+        loop={groupedItems.length > 1}
+        observer={true}
+        observeParents={true}
+        pagination={{
+          el: `.${swiperId}-pagination`,
+          clickable: true,
+        }}
         navigation={{
-          prevEl: prevRef.current,
-          nextEl: nextRef.current,
+          prevEl: `.${swiperId}-prev`,
+          nextEl: `.${swiperId}-next`,
         }}
         modules={[Navigation, Pagination]}
-        breakpoints={{
-          1280: { slidesPerView: 5 },
-          1024: { slidesPerView: 4 },
-          768: { slidesPerView: 2 },
-          480: { slidesPerView: 1 },
-        }}
       >
         {groupedItems.map((group, index) => (
           <SwiperSlide key={index} className={styles.slide}>
-            <div className={styles.productRow}>
-              {group.map((item) => (
-                <ProductCard
-                  key={item.id}
-                  id={item.id}
-                  name={item.name}
-                  price={item.price}
-                  discountRate={item.discountRate}
-                  discountPrice={item.discountPrice}
-                  productImageUrl={
-                    item.uploadFileNames?.length > 0
-                      ? item.uploadFileNames[0]
-                      : null
-                  }
-                  isNew={item.isNew}
-                  event={item.event}
-                  likes={item.likes}
-                  best={item.best}
-                />
-              ))}
+            <div className={styles.gridContainer}>
+              {group.map((item, i) =>
+                item ? (
+                  <ProductCard
+                    key={item.id}
+                    id={item.id}
+                    name={item.name}
+                    price={item.price}
+                    discountRate={item.discountRate}
+                    discountPrice={item.discountPrice}
+                    productImageUrl={
+                      item.uploadFileNames?.length > 0
+                        ? item.uploadFileNames[0]
+                        : null
+                    }
+                    isNew={item.isNew}
+                    event={item.event}
+                    likes={item.likes}
+                    best={item.best}
+                  />
+                ) : (
+                  <div
+                    key={`empty-${index}-${i}`}
+                    className={styles.emptySlot}
+                  />
+                )
+              )}
             </div>
           </SwiperSlide>
         ))}
+        <div className={`${swiperId}-pagination ${styles.customPagination}`} />
       </Swiper>
-
-      {/* ✅ Swiper 개별 네비게이션 버튼 */}
       <button
-        ref={prevRef}
-        className={`${styles.navButton} ${styles.prevButton}`}
+        className={`${swiperId}-prev ${styles.navButton} ${styles.prevButton}`}
       >
         <svg
           width="28"
@@ -106,8 +124,7 @@ const ProductSwiper = ({ title, items }) => {
       </button>
 
       <button
-        ref={nextRef}
-        className={`${styles.navButton} ${styles.nextButton}`}
+        className={`${swiperId}-next ${styles.navButton} ${styles.nextButton}`}
       >
         <svg
           width="28"

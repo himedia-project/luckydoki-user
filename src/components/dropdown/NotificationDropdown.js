@@ -1,49 +1,71 @@
 import React from "react";
-import styles from "../../styles/Dropdown.module.css";
+import styles from "../../styles/NotificationDropdown.module.css";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { clearNotificationItems } from "../../api/redux/notificationSlice";
 
-const NotificationDropdown = ({ notifications }) => {
+const NotificationDropdown = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const notifications = useSelector(
+    (state) => state.notificationSlice.notificationItems
+  );
+
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+  };
 
   const handleClick = () => {
-    navigate("/notice");
+    navigate("/notification");
+  };
+
+  const handleClear = () => {
+    dispatch(clearNotificationItems());
   };
 
   return (
     <div className={styles.dropdown}>
-      <h3 className={styles.title}>알림</h3>
-      {notifications.length > 0 ? (
+      <div className={styles.title}>
+        알림
+        {notifications.length > 0 && (
+          <button onClick={handleClear} className={styles.clearButton}>
+            모두 지우기
+          </button>
+        )}
+      </div>
+
+      {notifications.length === 0 ? (
+        <div className={styles.empty}>
+          <img src="/clover.png" alt="알림 없음" className={styles.emptyIcon} />
+          <div>새로운 알림이 없습니다.</div>
+        </div>
+      ) : (
         <div className={styles.notificationList}>
           {notifications.map((notification, index) => (
             <div key={index} className={styles.item}>
               <img
-                src="/default-profile.png"
+                src="/profile.png"
                 alt="알림 아이콘"
                 className={styles.icon}
               />
               <div className={styles.textBox}>
                 <div className={styles.text}>
-                  <span className={styles.category}>
-                    {notification.category}
+                  <span className={styles.category}>{notification.title}</span>
+                  <span className={styles.date}>
+                    {formatTime(notification.timestamp)}
                   </span>
-                  <span className={styles.date}>{notification.date}</span>
                 </div>
-                <p className={styles.content}>{notification.message}</p>
+                <div className={styles.content}>{notification.body}</div>
               </div>
             </div>
           ))}
         </div>
-      ) : (
-        <div className={styles.empty}>
-          <img src="/clover.png" alt="비어 있음" className={styles.emptyIcon} />
-          <p>알림이 없습니다.</p>
-        </div>
       )}
-      {notifications.length > 0 && (
-        <button className={styles.viewAll} onClick={handleClick}>
-          모두 보기
-        </button>
-      )}
+
+      <button className={styles.viewAll} onClick={handleClick}>
+        모두 보기
+      </button>
     </div>
   );
 };
