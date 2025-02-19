@@ -1,74 +1,150 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import style from "../styles/QuickButtonNav.module.css";
 import { useNavigate } from "react-router-dom";
+import { getMainCategories, getSubCategories } from "../api/categoryApi";
+import ImageLoader from "../components/card/ImageLoader";
 
 export default function QuickButtonNav() {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
 
-  const handleCategoryClick = () => {};
+  useEffect(() => {
+    const fetchCategoriesAndSubs = async () => {
+      try {
+        const mainResponse = await getMainCategories();
+        const mainCategories = mainResponse.data;
 
-  const handleAIClick = () => {};
+        const categoriesWithSubs = await Promise.all(
+          mainCategories.map(async (category) => {
+            const subResponse = await getSubCategories(category.categoryId);
+            return { ...category, subCategories: subResponse.data };
+          })
+        );
+
+        setCategories(categoriesWithSubs);
+      } catch (error) {
+        console.error("카테고리 데이터를 가져오는 중 에러 발생:", error);
+      }
+    };
+
+    fetchCategoriesAndSubs();
+  }, []);
+
+  console.log(categories);
+
+  const handleCategoryClick = (subCategoryId) => {
+    navigate(`/category/${subCategoryId}`);
+  };
+
+  const handleAIClick = () => {
+    navigate("/ai_suggest");
+  };
 
   return (
     <div className={style.buttonContainer}>
       <ul className={style.buttonNav}>
-        <li className={style.LinkButton}>
+        <li
+          className={style.LinkButton}
+          onClick={() =>
+            handleCategoryClick(categories[0]?.subCategories[0]?.categoryId)
+          }
+        >
           <div className={style.imageContainer}>
-            <img src="/profile.png" alt="" />
+            <ImageLoader imagePath={categories[0]?.subCategories[0]?.logo} />
           </div>
-          <p>주얼리</p>
+          <p>{categories[0]?.subCategories[0]?.name}</p>
         </li>
-        <li className={style.LinkButton}>
+        <li
+          className={style.LinkButton}
+          onClick={() =>
+            handleCategoryClick(categories[0]?.subCategories[1]?.categoryId)
+          }
+        >
           <div className={style.imageContainer}>
-            <img src="/profile.png" alt="" />
+            <ImageLoader imagePath={categories[0]?.subCategories[1]?.logo} />
           </div>
-          <p>의류</p>
+          <p>{categories[0]?.subCategories[1]?.name}</p>
         </li>
-        <li className={style.LinkButton}>
+        <li
+          className={style.LinkButton}
+          onClick={() =>
+            handleCategoryClick(categories[0]?.subCategories[2]?.categoryId)
+          }
+        >
           <div className={style.imageContainer}>
-            <img src="/profile.png" alt="" />
+            <ImageLoader imagePath={categories[0]?.subCategories[2]?.logo} />
           </div>
-          <p>패션잡화</p>
+          <p>{categories[0]?.subCategories[2]?.name}</p>
         </li>
-        <li className={style.LinkButton}>
+        <li
+          className={style.LinkButton}
+          onClick={() =>
+            handleCategoryClick(categories[1]?.subCategories[0]?.categoryId)
+          }
+        >
           <div className={style.imageContainer}>
-            <img src="/profile.png" alt="" />
+            <ImageLoader imagePath={categories[1]?.subCategories[0]?.logo} />
           </div>
-          <p>케이스/액세서리</p>
+          <p>{categories[1]?.subCategories[0]?.name}</p>
         </li>
-        <li className={style.LinkButton}>
+        <li
+          className={style.LinkButton}
+          onClick={() =>
+            handleCategoryClick(categories[1]?.subCategories[1]?.categoryId)
+          }
+        >
           <div className={style.imageContainer}>
-            <img src="/profile.png" alt="" />
+            <ImageLoader imagePath={categories[1]?.subCategories[1]?.logo} />
           </div>
-          <p>문구/취미</p>
+          <p>{categories[1]?.subCategories[1]?.name}</p>
         </li>
-        <li className={style.LinkButton}>
+        <li
+          className={style.LinkButton}
+          onClick={() =>
+            handleCategoryClick(categories[1]?.subCategories[2]?.categoryId)
+          }
+        >
           <div className={style.imageContainer}>
-            <img src="/profile.png" alt="" />
+            <ImageLoader imagePath={categories[1]?.subCategories[2]?.logo} />
           </div>
-          <p>기념일/파티</p>
+          <p>{categories[1]?.subCategories[2]?.name}</p>
         </li>
-        <li className={style.LinkButton}>
+        <li
+          className={style.LinkButton}
+          onClick={() =>
+            handleCategoryClick(categories[2]?.subCategories[0]?.categoryId)
+          }
+        >
           <div className={style.imageContainer}>
-            <img src="/profile.png" alt="" />
+            <ImageLoader imagePath={categories[2]?.subCategories[0]?.logo} />
           </div>
-          <p>사료/간식</p>
+          <p>{categories[2]?.subCategories[0]?.name}</p>
         </li>
-        <li className={style.LinkButton}>
+        <li
+          className={style.LinkButton}
+          onClick={() =>
+            handleCategoryClick(categories[2]?.subCategories[1]?.categoryId)
+          }
+        >
           <div className={style.imageContainer}>
-            <img src="/profile.png" alt="" />
+            <ImageLoader imagePath={categories[2]?.subCategories[1]?.logo} />
           </div>
-          <p>반려패션</p>
+          <p>{categories[2]?.subCategories[1]?.name}</p>
         </li>
-        <li className={style.LinkButton}>
+        <li
+          className={style.LinkButton}
+          onClick={() =>
+            handleCategoryClick(categories[2]?.subCategories[2]?.categoryId)
+          }
+        >
           <div className={style.imageContainer}>
-            <img src="/profile.png" alt="" />
+            <ImageLoader imagePath={categories[2]?.subCategories[2]?.logo} />
           </div>
-          <p>반려용품</p>
+          <p>{categories[2]?.subCategories[2]?.name}</p>
         </li>
-        <li className={style.LinkButton}>
+        <li className={style.LinkButton} onClick={() => handleAIClick()}>
           <div className={style.imageContainer}>
-            <img src="/profile.png" alt="" />
+            <img src="/ailogo.png" alt="" />
           </div>
           <p>AI추천</p>
         </li>
