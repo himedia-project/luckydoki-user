@@ -34,7 +34,7 @@ const HomePage = () => {
         setProducts(allProducts);
 
         setRandomProducts(
-          allProducts.sort(() => 0.5 - Math.random()).slice(0, 10)
+          allProducts.sort(() => 0.5 - Math.random()).slice(0, 20)
         );
         setNewProducts(allProducts.filter((product) => product.isNew === "Y"));
         setBestProducts(allProducts.filter((product) => product.best === "Y"));
