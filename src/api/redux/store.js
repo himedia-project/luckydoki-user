@@ -6,12 +6,13 @@ import categorySlice from "./categorySlice"; // ✅ 카테고리 슬라이스 �
 import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
 import persistStore from "redux-persist/es/persistStore";
-
+import notificationSlice from "./notificationSlice";
 const rootReducer = combineReducers({
   loginSlice,
   infoSlice,
   cartSlice,
   category: categorySlice, // ✅ 카테고리 슬라이스 추가 (키 명확히 설정)
+  notificationSlice,
 });
 
 const persistConfig = {

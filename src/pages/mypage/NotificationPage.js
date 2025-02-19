@@ -1,7 +1,7 @@
 import React from "react";
 import style from "../../styles/Notice.module.css";
 
-export default function NoticePage() {
+export default function NotificationPage() {
   return (
     <div className={style.notice_container}>
       <h2>알림 내역</h2>

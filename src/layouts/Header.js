@@ -9,11 +9,14 @@ import MessageDropdown from "../components/dropdown/MessageDropdown";
 import { getMainCategories } from "../api/categoryApi";
 import CategoryNav from "../components/CategoryNav";
 import Swal from "sweetalert2";
+import { useNotification } from "../hooks/useNotification";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { nickName } = useSelector((state) => state.loginSlice);
+  const { notifications, notificationCount, clearNotifications } =
+    useNotification();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showHeaderTop, setShowHeaderTop] = useState(true);
@@ -142,8 +145,20 @@ const Header = () => {
               onMouseLeave={() => setShowNotifications(false)}
             >
               <img src="/notification.png" alt="알림" />
-              <Link>알림</Link>
-              {showNotifications && <NotificationDropdown notifications={[]} />}
+              <Link>
+                알림
+                {notificationCount > 0 && (
+                  <span className={style.notification_count}>
+                    {notificationCount}
+                  </span>
+                )}
+              </Link>
+              {showNotifications && (
+                <NotificationDropdown
+                  notifications={notifications}
+                  onClear={clearNotifications}
+                />
+              )}
             </li>
             <li
               className={style.message}
