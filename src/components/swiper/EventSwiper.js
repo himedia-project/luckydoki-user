@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -8,8 +8,6 @@ import styles from "../../styles/EventSwiper.module.css";
 import ImageLoader from "../card/ImageLoader";
 
 const EventSwiper = ({ events }) => {
-  const [textColors, setTextColors] = useState({});
-
   if (!events || events.length === 0) {
     return (
       <p className={styles.emptyMessage}>현재 진행 중인 이벤트가 없습니다.</p>
