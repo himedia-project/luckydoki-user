@@ -53,6 +53,7 @@
   display: flex;
   align-items: center;
   width: 370px;
+  position: relative;
 }
 
 .phoneInputGroup .inputField,
@@ -92,4 +93,18 @@
 
 .requiredText {
   color: #ff6a56;
+}
+
+.verifiedButton {
+  background-color: #00de90;
+  color: #fff;
+  cursor: default;
+}
+
+.timerText {
+  position: absolute;
+  right: 50px;
+  color: red;
+  min-width: 100px;
+  font-size: 14px;
 }

@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import styles from "../styles/RegisterPage.module.css";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { API_URL } from "../config/apiConfig";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import styles from "../styles/RegisterPage.module.css";
 
 const RegisterPage = () => {
   const [signupForm, setSignupForm] = useState({
@@ -15,6 +14,8 @@ const RegisterPage = () => {
   });
   const [isVerified, setIsVerified] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
+  const [timer, setTimer] = useState(300);
+  const [timerActive, setTimerActive] = useState(false);
 
   const REQUIRED_TEXT = <span className={styles.requiredText}>(필수)</span>;
 
@@ -55,6 +56,8 @@ const RegisterPage = () => {
         },
         { withCredentials: true }
       );
+      setTimer(300);
+      setTimerActive(true);
       setShowVerification(true);
       Swal.fire(
         "인증번호 전송",
@@ -77,6 +80,7 @@ const RegisterPage = () => {
         { withCredentials: true }
       );
       setIsVerified(true);
+      setTimerActive(false);
       Swal.fire("인증 성공", "전화번호 인증이 완료되었습니다.", "success");
     } catch (error) {
       Swal.fire("오류", "인증번호가 올바르지 않습니다.", "error");
@@ -105,6 +109,35 @@ const RegisterPage = () => {
     } catch (error) {
       Swal.fire("오류", "회원가입에 실패했습니다.", "error");
     }
+  };
+
+  useEffect(() => {
+    let interval = null;
+    if (showVerification && timerActive) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [showVerification, timerActive]);
+
+  useEffect(() => {
+    if (timer <= 0 && showVerification && !isVerified) {
+      Swal.fire(
+        "알림",
+        "인증번호가 만료되었습니다. 인증번호를 재전송합니다.",
+        "info"
+      );
+      handleSendVerificationCode();
+    }
+  }, [timer, showVerification, isVerified]);
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m < 10 ? "0" + m : m}:${s < 10 ? "0" + s : s}`;
   };
 
   return (
@@ -169,10 +202,12 @@ const RegisterPage = () => {
             onChange={handleChange}
             className={styles.inputField}
             required
+            disabled={isVerified}
           />
           <button
             onClick={handleSendVerificationCode}
             className={styles.verifyButton}
+            disabled={isVerified}
           >
             인증요청
           </button>
@@ -188,10 +223,18 @@ const RegisterPage = () => {
             onChange={handleChange}
             className={styles.inputField}
             required
+            disabled={isVerified}
           />
-          <button onClick={handleVerifyCode} className={styles.verifyButton}>
-            인증
+          <button
+            onClick={handleVerifyCode}
+            className={`${styles.verifyButton} ${
+              isVerified ? styles.verifiedButton : ""
+            }`}
+            disabled={isVerified}
+          >
+            {isVerified ? "인증완료" : "인증"}
           </button>
+          <p className={styles.timerText}>{formatTime(timer)}</p>
         </div>
       )}
       <button onClick={handleSignup} className={styles.signupButton}>

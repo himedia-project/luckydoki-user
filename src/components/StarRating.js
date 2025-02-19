@@ -42,7 +42,7 @@ const StarRating = ({ setRating }) => {
   return (
     <StarSection>
       {ratingStarHandler()}
-      <span className="score">{starScore} 점</span>
+      <span className="score">{starScore.toFixed(1)} 점</span>
     </StarSection>
   );
 };
