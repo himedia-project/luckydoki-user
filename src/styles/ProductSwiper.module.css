@@ -1,32 +1,15 @@
 .section {
   margin-top: 40px;
   position: relative;
-  overflow: visible; /* ✅ 버튼이 보이도록 변경 */
+  overflow: visible; /* ✅ Swiper 내부 버튼이 잘리지 않도록 설정 */
 }
 
 /* ✅ Swiper 전체 너비 사용 */
 :global(.swiper) {
   width: 100%;
-  overflow: hidden; /* ✅ Swiper 내부 버튼 보이도록 변경 */
+  overflow: hidden; /* ✅ Swiper 내부 버튼 보이도록 설정 */
 }
 
-/* ✅ Swiper 네비게이션 버튼 */
-:global(.swiper-button-prev),
-:global(.swiper-button-next) {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  background-color: white;
-  color: black;
-  border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 15; /* ✅ Swiper보다 위에 표시 */
-}
 /* ✅ 네비게이션 버튼 */
 .navButton {
   position: absolute;
@@ -39,57 +22,60 @@
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s;
 }
-/* ✅ 왼쪽 버튼 */
+
 .prevButton {
   left: -60px;
 }
 
-/* ✅ 오른쪽 버튼 */
 .nextButton {
   right: -60px;
 }
 
-/* ✅ Swiper 페이지네이션 스타일 */
-:global(.custom-pagination) {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px; /* 점 간격 조정 */
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5열 고정 */
+  grid-template-rows: repeat(2, auto); /* 2행 고정 */
+  width: 100%;
 }
 
-/* ✅ 기본 점 스타일 */
+.customPagination {
+  display: flex;
+  transform: translateX(50%);
+  margin-top: 40px;
+  gap: 8px;
+  z-index: 10;
+}
+
+/* ✅ Swiper 페이지네이션 도트 */
 :global(.swiper-pagination-bullet) {
   width: 10px;
   height: 10px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: #d9d9d9;
   border-radius: 50%;
-  transition: background-color 0.3s ease;
-  opacity: 1 !important; /* ✅ Swiper 기본 스타일 덮어쓰기 */
+  transition: background-color 0.2s ease;
+  opacity: 1 !important;
 }
 
-/* ✅ 활성화된 점 스타일 */
+/* ✅ 활성화된 도트 */
 :global(.swiper-pagination-bullet-active) {
-  background-color: white;
-  width: 12px; /* ✅ 활성화된 점 크기 증가 */
-  height: 12px;
+  background-color: #333;
+  width: 10px;
+  height: 10px;
 }
 
 /* ✅ 반응형 조정 */
 @media (max-width: 1024px) {
-  :global(.swiper-button-prev) {
+  .prevButton {
     left: -30px;
   }
 
-  :global(.swiper-button-next) {
+  .nextButton {
     right: -30px;
   }
 }

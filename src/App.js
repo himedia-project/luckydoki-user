@@ -16,7 +16,7 @@ import CouponPage from "./pages/mypage/CouponPage";
 import LikesListPage from "./pages/mypage/LikesListPage";
 import MyPage from "./pages/mypage/MyPage";
 import MyReviewPage from "./pages/mypage/MyReviewPage";
-import NoticePage from "./pages/mypage/NoticePage";
+import NotificationPage from "./pages/mypage/NotificationPage";
 import OrderPage from "./pages/mypage/OrderPage";
 import UserInfoPage from "./pages/mypage/UserInfoPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -62,7 +62,7 @@ function App() {
       <Route element={<MyPageLayout />}>
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/order" element={<OrderPage />} />
-        <Route path="/notice" element={<NoticePage />} />
+        <Route path="/notification" element={<NotificationPage />} />
         <Route path="/my_review" element={<MyReviewPage />} />
         <Route path="/likeslist" element={<LikesListPage />} />
         <Route path="/coupon" element={<CouponPage />} />
