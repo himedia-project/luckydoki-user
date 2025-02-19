@@ -2,10 +2,7 @@ import React from "react";
 import styles from "../../styles/NotificationDropdown.module.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  clearNotificationItems,
-  setNotificationItems,
-} from "../../api/redux/notificationSlice";
+import { clearNotificationItems } from "../../api/redux/notificationSlice";
 
 const NotificationDropdown = () => {
   const navigate = useNavigate();

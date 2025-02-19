@@ -15,8 +15,8 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { nickName } = useSelector((state) => state.loginSlice);
-  const { notifications, notificationCount, clearNotifications } =
-    useNotification();
+  const { notificationItems } = useSelector((state) => state.notificationSlice);
+  const { notificationCount, clearNotifications } = useNotification();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showHeaderTop, setShowHeaderTop] = useState(true);
@@ -155,7 +155,7 @@ const Header = () => {
               </Link>
               {showNotifications && (
                 <NotificationDropdown
-                  notifications={notifications}
+                  notifications={notificationItems}
                   onClear={clearNotifications}
                 />
               )}

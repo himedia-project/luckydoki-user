@@ -7,8 +7,6 @@ import { clearNotificationItems } from "../api/redux/notificationSlice";
 
 export const useNotification = () => {
   const dispatch = useDispatch();
-  const [notifications, setNotifications] = useState([]);
-  const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
     console.log("useNotification hook initialized");
@@ -37,8 +35,6 @@ export const useNotification = () => {
       try {
         return onMessage(messaging, (payload) => {
           console.log("Raw payload received:", payload);
-          console.log("Notification data:", payload.data);
-          console.log("Notification content:", payload.notification);
 
           const newNotification = {
             title: payload.notification?.title || payload.data?.title,
@@ -49,12 +45,8 @@ export const useNotification = () => {
 
           console.log("Processed notification:", newNotification);
 
-          setNotifications((prev) => {
-            console.log("Previous notifications:", prev);
-            return [newNotification, ...prev];
-          });
+          // notificationSlice에 알림 추가
           dispatch(setNotificationItems((prev) => [newNotification, ...prev]));
-          setNotificationCount((prev) => prev + 1);
         });
       } catch (error) {
         console.error("Error in message listener setup:", error);
@@ -73,12 +65,9 @@ export const useNotification = () => {
 
   const clearNotifications = () => {
     dispatch(clearNotificationItems());
-    setNotificationCount(0);
   };
 
   return {
-    notifications,
-    notificationCount,
     clearNotifications,
   };
 };
