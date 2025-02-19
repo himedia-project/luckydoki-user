@@ -1,0 +1,38 @@
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.buttonNav {
+  width: 589px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.LinkButton {
+  width: 105px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.imageContainer {
+  width: 100px;
+  height: 100px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.LinkButton img {
+  width: 75px;
+  height: 75px;
+}
+
+.LinkButton p {
+}

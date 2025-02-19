@@ -15,7 +15,6 @@ export default function CommunityDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [postInfo, setPostInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   // Swiper 관련 ref 선언
   const imgSwiperRef = useRef(null);
@@ -29,8 +28,6 @@ export default function CommunityDetailPage() {
         setPostInfo(response.data);
       } catch (err) {
         console.log(err);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -58,37 +55,29 @@ export default function CommunityDetailPage() {
     navigate(`/product/${productId}`);
   };
 
-  if (loading) {
-    return <div>로딩 중...</div>;
-  }
-
-  if (!postInfo) {
-    return <div>게시글 정보를 불러올 수 없습니다.</div>;
-  }
-
   return (
     <div className={styles.detailContainer}>
       <div className={styles.userInfoBox}>
         <ImageLoader
-          imagePath={postInfo.shopImage}
+          imagePath={postInfo?.shopImage}
           className={styles.shopImage}
         />
         <div className={styles.infoBox}>
-          <p className={styles.author}>{postInfo.nickName}</p>
+          <p className={styles.author}>{postInfo?.nickName}</p>
           <p className={styles.date}>
-            {new Date(postInfo.createdAt).toLocaleDateString()}
+            {new Date(postInfo?.createdAt).toLocaleDateString()}
           </p>
         </div>
       </div>
 
       {/* 이미지 스와이퍼 영역 */}
-      {postInfo.uploadFileNames && postInfo.uploadFileNames.length > 0 && (
+      {postInfo?.uploadFileNames && postInfo?.uploadFileNames.length > 0 && (
         <div className={styles.imageSwiperWrapper}>
           <Swiper
             ref={imgSwiperRef}
             spaceBetween={10}
             slidesPerView={1}
-            loop={postInfo.uploadFileNames.length > 1}
+            loop={postInfo?.uploadFileNames.length > 1}
             navigation={{
               prevEl: imgPrevRef.current,
               nextEl: imgNextRef.current,
@@ -97,7 +86,7 @@ export default function CommunityDetailPage() {
             modules={[Navigation, Pagination]}
             className={styles.imageSwiper}
           >
-            {postInfo.uploadFileNames.map((filePath, index) => (
+            {postInfo?.uploadFileNames.map((filePath, index) => (
               <SwiperSlide key={index} className={styles.slide}>
                 <ImageLoader
                   imagePath={filePath}
@@ -110,7 +99,7 @@ export default function CommunityDetailPage() {
 
           <div className="custom-pagination" />
 
-          {postInfo.uploadFileNames.length > 1 && (
+          {postInfo?.uploadFileNames.length > 1 && (
             <>
               <button
                 ref={imgPrevRef}
@@ -151,16 +140,16 @@ export default function CommunityDetailPage() {
         </div>
       )}
 
-      {postInfo.productDTOs && postInfo.productDTOs.length > 0 && (
+      {postInfo?.productDTOs && postInfo?.productDTOs.length > 0 && (
         <div className={styles.TaggedProducts}>
           <TaggedProducts
-            productDTOs={postInfo.productDTOs}
+            productDTOs={postInfo?.productDTOs}
             handleProductClick={handleProductClick}
           />
         </div>
       )}
 
-      <div className={styles.content}>{postInfo.content}</div>
+      <div className={styles.content}>{postInfo?.content}</div>
 
       {/* 댓글 */}
       <CommunityComments postId={id} />

@@ -57,7 +57,7 @@
 }
 
 /* ✅ Swiper 페이지네이션 스타일 */
-:global(.swiper-pagination) {
+:global(.custom-pagination) {
   position: absolute;
   bottom: 10px;
   left: 50%;

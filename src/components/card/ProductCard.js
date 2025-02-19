@@ -18,8 +18,6 @@ const ProductCard = ({
   onUnlike,
 }) => {
   const navigate = useNavigate();
-
-  // 상세 페이지 이동 handler
   const handleCardClick = () => {
     navigate(`/product/${id}`);
   };
@@ -67,9 +65,9 @@ const ProductCard = ({
 
       {/* ✅ 태그 버튼 (조건부 렌더링) */}
       <div className={styles.tagContainer}>
-        {Boolean(isNew) && <span className={styles.tagNew}>new</span>}
-        {Boolean(event) && <span className={styles.tagEvent}>event</span>}
-        {Boolean(best) && <span className={styles.tagBest}>best</span>}
+        {isNew === "Y" && <span className={styles.tagNew}>new</span>}
+        {event === "Y" && <span className={styles.tagEvent}>event</span>}
+        {best === "Y" && <span className={styles.tagBest}>best</span>}
       </div>
     </div>
   );

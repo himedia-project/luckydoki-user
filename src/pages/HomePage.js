@@ -5,6 +5,7 @@ import { API_URL } from "../config/apiConfig";
 import ProductSwiper from "../components/swiper/ProductSwiper";
 import EventSwiper from "../components/swiper/EventSwiper";
 import styles from "../styles/HomePage.module.css";
+import QuickButtonNav from "../components/QuickButtonNav";
 
 const HomePage = () => {
   const [events, setEvents] = useState([]);
@@ -19,19 +20,13 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const headers = accessToken
-          ? { Authorization: `Bearer ${accessToken}` }
-          : {};
-
         // ✅ 이벤트 데이터 가져오기
         const eventRes = await axios.get(`${API_URL}/api/event/active`, {
-          headers,
           withCredentials: true,
         });
         setEvents(eventRes.data);
 
         const productRes = await axios.get(`${API_URL}/api/product/list`, {
-          headers,
           withCredentials: true,
         });
 
@@ -57,14 +52,25 @@ const HomePage = () => {
   return (
     <div className={styles.container}>
       <EventSwiper events={events} />
+      <div className={styles.quickButton}>
+        <QuickButtonNav />
+      </div>
 
-      <ProductSwiper title="이 상품을 찾으시나요?" items={randomProducts} />
-      <ProductSwiper title="신규 상품" items={newProducts} />
-      <ProductSwiper title="베스트 상품" items={bestProducts} />
-      <ProductSwiper
-        title="사장님이 미쳤어요! 대폭 할인 상품"
-        items={discountedProducts}
-      />
+      <section className={styles.section}>
+        <ProductSwiper title="이 상품을 찾으시나요?" items={randomProducts} />
+      </section>
+      <section className={styles.section}>
+        <ProductSwiper title="신규 상품" items={newProducts} />
+      </section>
+      <section className={styles.section}>
+        <ProductSwiper title="베스트 상품" items={bestProducts} />
+      </section>
+      <section className={styles.section}>
+        <ProductSwiper
+          title="사장님이 미쳤어요! 대폭 할인 상품"
+          items={discountedProducts}
+        />
+      </section>
     </div>
   );
 };
