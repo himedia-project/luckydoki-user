@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { API_URL, FRONT_USER_HOST } from "../config/apiConfig";
 
-const rest_api_key = process.env.REACT_APP_KAKAO_REST_API_KEY;
+const rest_api_key = process.env.REACT_APP_KAKAO_CLIENT_ID;
 const client_secret = process.env.REACT_APP_KAKAO_CLIENT_SECRET;
 
 // 리다이렉트 uri => kakaoRedirectPage로 이동
