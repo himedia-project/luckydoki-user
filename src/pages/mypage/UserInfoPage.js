@@ -29,15 +29,29 @@ export default function UserInfo() {
       });
   }, []);
 
+  const formatPhoneNumber = (value) => {
+    const onlyNumbers = value.replace(/\D/g, "");
+
+    if (onlyNumbers.length <= 3) {
+      return onlyNumbers;
+    } else if (onlyNumbers.length <= 7) {
+      return `${onlyNumbers.slice(0, 3)}-${onlyNumbers.slice(3)}`;
+    } else {
+      return `${onlyNumbers.slice(0, 3)}-${onlyNumbers.slice(
+        3,
+        7
+      )}-${onlyNumbers.slice(7, 11)}`;
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserInfo((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "phone" ? formatPhoneNumber(value) : value,
     }));
   };
 
-  // 회원정보 수정 핸들러
   const handleSave = async () => {
     try {
       const updateData = {

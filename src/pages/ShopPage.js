@@ -81,16 +81,16 @@ export default function ShopPage() {
 
           {userNickname === sellerInfo?.nickName ? (
             <div className={style.owner_buttons}>
-              <button className={style.add_button} onClick={handleAddProduct}>
-                <img src="/plus.png" alt="" className={style.plusButton} />
-                상품 추가
-              </button>
               <button
                 className={style.delete_button}
                 onClick={handleAddCommunity}
               >
                 <img src="/plus.png" alt="" className={style.plusButton} />
                 커뮤니티 글 추가
+              </button>
+              <button className={style.add_button} onClick={handleAddProduct}>
+                <img src="/plus.png" alt="" className={style.plusButton} />
+                상품 추가
               </button>
             </div>
           ) : (
