@@ -178,7 +178,7 @@ export default function MessagePage() {
     e.preventDefault();
     if (userEmail && !stompClient) {
       const client = new Client({
-        webSocketFactory: () => new SockJS("http://localhost:8080/ws-stomp"),
+        webSocketFactory: () => new SockJS("http://3.34.99.192:8080/ws-stomp"),
         connectHeaders: {
           "X-Authorization": `Bearer ${accessToken}`,
         },
