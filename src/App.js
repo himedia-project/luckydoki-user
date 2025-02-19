@@ -31,13 +31,14 @@ import CategoryListPage from "./pages/CategoryListPage";
 import PopularPage from "./pages/product/PopularPage";
 import NewPage from "./pages/product/NewPage";
 import ShopPage from "./pages/ShopPage";
+import MessagePage from "./pages/MessagePage";
 
 function App() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/message" />
+        <Route path="/message" element={<MessagePage />} />
         <Route path="/shop/:shopId" element={<ShopPage />} />
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/community/:id" element={<CommunityDetailPage />} />
