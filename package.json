@@ -8,6 +8,7 @@
     "@mui/icons-material": "^6.4.3",
     "@mui/material": "^6.4.3",
     "@reduxjs/toolkit": "^2.5.1",
+    "@stomp/stompjs": "^7.0.0",
     "@tosspayments/payment-sdk": "^1.9.1",
     "axios": "^1.7.9",
     "canvas-confetti": "^1.9.3",
@@ -24,6 +25,7 @@
     "react-spinners": "^0.15.0",
     "react-spinners-kit": "^1.9.1",
     "redux-persist": "^6.0.0",
+    "sockjs-client": "^1.6.1",
     "styled-components": "^6.1.15",
     "sweetalert2": "^11.16.0",
     "swiper": "^11.2.2"
