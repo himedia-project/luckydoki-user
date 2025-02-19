@@ -20,19 +20,13 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const headers = accessToken
-          ? { Authorization: `Bearer ${accessToken}` }
-          : {};
-
         // ✅ 이벤트 데이터 가져오기
         const eventRes = await axios.get(`${API_URL}/api/event/active`, {
-          headers,
           withCredentials: true,
         });
         setEvents(eventRes.data);
 
         const productRes = await axios.get(`${API_URL}/api/product/list`, {
-          headers,
           withCredentials: true,
         });
 

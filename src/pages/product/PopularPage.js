@@ -11,7 +11,8 @@ const PopularPage = () => {
   useEffect(() => {
     const fetchPopularProducts = async () => {
       try {
-        const response = await getProductList();
+        const response = (await getProductList()) || []; // ✅ undefined 방지
+        console.log("📌 전체 응답 데이터:", response);
 
         // ✅ best === "Y" 인 상품들만 필터링
         const bestProducts = response.data.filter(
@@ -32,7 +33,7 @@ const PopularPage = () => {
     <>
       <Header />
       <div className={style.productListContainer}>
-        <h2 className={style.pageTitle}>인기 상품</h2>
+        <h2 className={style.pageTitle}>인기상품</h2>
         {products.length > 0 ? (
           <div className={style.productGrid}>
             {products.map((product) => (
