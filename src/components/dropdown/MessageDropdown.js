@@ -8,7 +8,7 @@ const MessageDropdown = ({ messages }) => {
   const email = useSelector((state) => state.loginSlice.email);
 
   const handleClick = () => {
-    navigate("/messages");
+    navigate("/message");
   };
 
   if (!email) {

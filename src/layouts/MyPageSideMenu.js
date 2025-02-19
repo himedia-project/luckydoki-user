@@ -75,7 +75,7 @@ export default function MyPageSideMenu({ userInfo }) {
           <b>알림 및 메시지</b>
           <p>
             <NavLink
-              to="/notice"
+              to="/notification"
               className={({ isActive }) => (isActive ? style.active : "")}
             >
               알림
