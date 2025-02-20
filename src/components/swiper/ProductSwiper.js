@@ -93,6 +93,8 @@ const ProductSwiper = ({ title, items }) => {
                     event={item.event}
                     likes={item.likes}
                     best={item.best}
+                    reviewAverage={item.reviewAverage}
+                    reviewCount={item.reviewCount}
                   />
                 ) : (
                   <div

@@ -1,14 +1,15 @@
 /* ✅ 상품 카드 */
 .productCard {
+  position: relative;
   display: flex;
   flex-direction: column;
   cursor: pointer;
   align-items: flex-start;
   width: 243px;
-  height: 370px; /* ✅ 상품 카드 높이 고정 */
+  min-height: 370px; /* ✅ 상품 카드 높이 고정 */
   -webkit-line-clamp: 1; /* ✅ 최대 2줄까지 표시 */
   -webkit-box-orient: vertical;
-  justify-content: space-between; /* ✅ 내부 요소 정렬 */
+  justify-content: space-between;
 }
 
 /* ✅ 이미지 컨테이너 */
@@ -21,6 +22,19 @@
   background-color: #f5f5f5;
   flex-shrink: 0; /* ✅ 줄어들지 않도록 설정 */
   margin-top: 10px;
+}
+
+.rating {
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.reviewCount {
+  color: #999;
 }
 
 .productImage {

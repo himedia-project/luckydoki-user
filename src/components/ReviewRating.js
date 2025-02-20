@@ -13,8 +13,9 @@ const StarSection = styled.div`
   }
 
   .score {
-    font-size: 16px;
-    margin-left: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 2px;
   }
 `;
 
@@ -36,7 +37,7 @@ const ReviewRating = ({ rating }) => {
   return (
     <StarSection>
       {ratingStarHandler()}
-      <span className="score">{rating} 점</span>
+      <span className="score">{rating}</span>
     </StarSection>
   );
 };
