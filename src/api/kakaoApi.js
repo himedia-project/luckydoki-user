@@ -15,9 +15,9 @@ const auth_code_path = `https://kauth.kakao.com/oauth/authorize`;
 const access_token_url = `https://kauth.kakao.com/oauth/token`;
 
 // 환경변수에서 값을 제대로 가져오는지 디버깅을 위해 로깅
-console.log("REST API KEY:", rest_api_key);
-console.log("FRONT HOST:", FRONT_USER_HOST);
-console.log("REDIRECT URI:", redirect_uri);
+// console.log("REST API KEY:", rest_api_key);
+// console.log("FRONT HOST:", FRONT_USER_HOST);
+// console.log("REDIRECT URI:", redirect_uri);
 
 // 카카오 로그인 요청 -> 카카오 로그인 페이지(리다이렉트 페이지)로 이동
 export const getKakaoLoginLink = () => {

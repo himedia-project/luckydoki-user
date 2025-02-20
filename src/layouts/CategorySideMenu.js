@@ -36,10 +36,10 @@ const CategorySideMenu = () => {
   }, [categoryId, subCategories, childCategories]);
 
   useEffect(() => {
-    if (activeChildInfo && !expandedCategories[activeChildInfo.subCategoryId]) {
-      dispatch(toggleCategory(activeChildInfo.subCategoryId));
+    if (activeChildInfo) {
+      dispatch(setExpandedCategory(activeChildInfo.subCategoryId));
     }
-  }, [activeChildInfo, expandedCategories, dispatch]);
+  }, [activeChildInfo, dispatch]);
 
   if (status === "loading") return <p className={style.loading}>로딩 중...</p>;
   if (status === "failed")
@@ -47,7 +47,7 @@ const CategorySideMenu = () => {
   if (!parentCategory) return <p>카테고리 데이터가 없습니다.</p>;
 
   return (
-    <nav className={style.sideMenu}>
+    <nav className={style.sideMenu} key={JSON.stringify(expandedCategories)}>
       <ul>
         {subCategories.length === 0 ? (
           <li>카테고리 없음</li>
@@ -102,10 +102,8 @@ const CategorySideMenu = () => {
                       : ""
                   }`}
                   onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
                     navigate(`/category/${sub.categoryId}`);
-                    dispatch(toggleCategory(sub.categoryId));
+                    dispatch(setExpandedCategory(sub.categoryId));
                   }}
                 >
                   전체
@@ -121,8 +119,10 @@ const CategorySideMenu = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
+
+                      dispatch(setExpandedCategory(sub.categoryId));
+
                       navigate(`/category/${child.categoryId}`);
-                      dispatch(toggleCategory(sub.categoryId));
                     }}
                   >
                     {child.name}
