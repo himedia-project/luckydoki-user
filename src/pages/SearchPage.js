@@ -114,13 +114,13 @@ export default function SearchPage() {
   };
 
   return (
-    <div
-      tabIndex={0}
-      onMouseLeave={handleMouseLeave} // 🔥 마우스가 떠나면 일정 시간 후 닫기
-      className={styles.container}
-    >
+    <div className={styles.container}>
       {/* 검색어 입력 */}
-      <div className={styles.inputBox}>
+      <div
+        tabIndex={0}
+        onMouseLeave={handleMouseLeave}
+        className={styles.inputBox}
+      >
         <input
           type="text"
           placeholder="검색어를 입력하세요"
