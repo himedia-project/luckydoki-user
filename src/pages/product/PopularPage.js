@@ -4,6 +4,7 @@ import ProductCard from "../../components/card/ProductCard";
 import Footer from "../../layouts/Footer";
 import Header from "../../layouts/Header";
 import style from "../../styles/ProductListPage.module.css";
+import QuickButtonNav from "../../components/QuickButtonNav";
 
 const PopularPage = () => {
   const [products, setProducts] = useState([]);

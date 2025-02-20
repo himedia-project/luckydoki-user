@@ -9,12 +9,14 @@ import {
   getMessageHistory,
   getChatRooms,
 } from "../api/ChatApi";
+import { API_URL } from "../config/apiConfig";
+import MessageDropdown from "../components/dropdown/MessageDropdown";
+import axiosInstance from "../api/axiosInstance";
 
 export default function MessagePage() {
   const location = useLocation();
   const routeShopData = location.state;
 
-  const [shops, setShops] = useState([]);
   const [selectedShopId, setSelectedShopId] = useState(
     routeShopData?.shopId || null
   );
@@ -29,6 +31,41 @@ export default function MessagePage() {
   const accessToken = useSelector((state) => state.loginSlice.accessToken);
   const [chatRooms, setChatRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const [unreadMessages, setUnreadMessages] = useState({}); // 읽지 않은 메시지 수 관리
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const [dropdownMessages, setDropdownMessages] = useState([]);
+
+  // 알림 권한 요청 useEffect
+  useEffect(() => {
+    if (Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  // 드롭다운 메시지 생성 useEffect 추가
+  useEffect(() => {
+    // 읽지 않은 메시지가 있는 채팅방을 기반으로 드롭다운 메시지 생성
+    const newDropdownMessages = Object.entries(unreadMessages)
+      .filter(([roomId, count]) => count > 0)
+      .map(([roomId, count]) => {
+        // 해당 roomId의 채팅방 찾기
+        const room = chatRooms.find((r) => r.id === parseInt(roomId));
+
+        return {
+          sender: room ? room.shopName : "알 수 없는 상점",
+          date: new Date().toLocaleDateString(),
+          content: `${count}개의 새 메시지가 있습니다.`,
+          lastMessage: room ? room.lastMessage : "새 메시지",
+        };
+      });
+
+    setDropdownMessages(newDropdownMessages);
+  }, [unreadMessages, chatRooms]);
+
+  // 기존의 다른 useEffect, 함수들은 그대로 유지
 
   useEffect(() => {
     const initializeChat = async () => {
@@ -103,6 +140,30 @@ export default function MessagePage() {
           const receivedMessage = JSON.parse(message.body);
           // 기존 메시지 목록에 새 메시지 추가
           console.log("받은 메세지 : ", receivedMessage);
+          // 자신이 보낸 메시지가 아닐 때만 알림 표시
+          if (receivedMessage.email !== userEmail) {
+            if (Notification.permission === "granted") {
+              new Notification("새 메시지 도착", {
+                body: receivedMessage.message,
+              });
+            } else if (Notification.permission !== "denied") {
+              Notification.requestPermission().then((permission) => {
+                if (permission === "granted") {
+                  new Notification("새 메시지 도착", {
+                    body: receivedMessage.message,
+                  });
+                }
+              });
+            }
+
+            // 읽지 않은 메시지 카운트 증가
+            setUnreadMessages((prev) => ({
+              ...prev,
+              [roomId]: (prev[roomId] || 0) + 1,
+            }));
+          }
+
+          // 메시지 목록 업데이트
           setRealTimeMessage((prevMessages) => [
             ...prevMessages,
             receivedMessage,
@@ -110,35 +171,71 @@ export default function MessagePage() {
         }
       );
 
-      // cleanup
-      return () => {
-        if (subscription) {
-          subscription.unsubscribe();
+      // 알림 구독
+      const notificationSubscription = stompClient.subscribe(
+        `/user/queue/notifications/`,
+        (notification) => {
+          // 알림 처리 로직
+          const notificationMessage = JSON.parse(notification.body);
+          console.log("새 알림: ", notificationMessage);
+          // 드롭다운 메시지에 실시간 알림 추가
+          setDropdownMessages((prev) => [
+            {
+              sender: "새 메시지 알림",
+              date: new Date(
+                notificationMessage.timestamp
+              ).toLocaleDateString(),
+              content: notificationMessage.notificationMessage,
+              roomId: notificationMessage.roomId,
+              isRead: notificationMessage.isRead,
+              recipientEmail: notificationMessage.email,
+            },
+            ...prev,
+          ]);
+
+          // 읽지 않은 메시지 상태 업데이트 (isRead 상태 활용)
+          if (!notificationMessage.isRead) {
+            setUnreadMessages((prev) => ({
+              ...prev,
+              [notificationMessage.roomId]:
+                (prev[notificationMessage.roomId] || 0) + 1,
+            }));
+          }
+
+          // 브라우저 알림 표시
+          if (
+            !notificationMessage.isRead &&
+            notificationMessage.email === userEmail && // 현재 사용자에게 온 알림인지 확인
+            Notification.permission === "granted"
+          ) {
+            new Notification("새 메시지 알림", {
+              body: notificationMessage.notificationMessage,
+              timestamp: notificationMessage.timestamp,
+            });
+          }
         }
+      );
+
+      // cleanup 함수
+      return () => {
+        subscription.unsubscribe();
+        notificationSubscription.unsubscribe();
       };
     }
-  }, [roomId, stompClient]);
-
-  // useEffect(() => {
-  //   const fetchChatRooms = async () => {
-  //     try {
-  //       console.log("현재 이메일:", userEmail); // email 확인
-  //       console.log("현재 토큰:", accessToken);
-  //       const response = await getChatRooms();
-  //       setChatRooms(response.data);
-  //     } catch (error) {
-  //       console.error("채팅방 목록 불러오기 실패:", error);
-  //     }
-  //   };
-
-  //   fetchChatRooms();
-  // }, []);
+  }, [roomId, stompClient, userEmail]);
+  /////////채팅방 선택/////////////
 
   const handleRoomSelect = async (room) => {
     setSelectedRoom(room);
     setSelectedShopId(room.shopId);
     setRoomId(room.id);
 
+    setUnreadMessages((prev) => ({
+      ...prev,
+      [room.id]: 0, // 해당 채팅방의 읽지 않은 메시지 초기화
+    }));
+
+    ///////채팅메세지 기록 불러오는 api/////////
     try {
       const historyResponse = await getMessageHistory(room.id);
       setRealTimeMessage(historyResponse.data);
@@ -150,6 +247,7 @@ export default function MessagePage() {
     }
   };
 
+  ////////스크롤 이벤트 (좀 과하게 내려감)//////
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -178,7 +276,7 @@ export default function MessagePage() {
     e.preventDefault();
     if (userEmail && !stompClient) {
       const client = new Client({
-        webSocketFactory: () => new SockJS("http://3.34.99.192:8080/ws-stomp"),
+        webSocketFactory: () => new SockJS(`${API_URL}/ws-stomp`),
         connectHeaders: {
           "X-Authorization": `Bearer ${accessToken}`,
         },
@@ -253,6 +351,7 @@ export default function MessagePage() {
         }
       }
 
+      /////전송 메세지 폼 //////
       const chatMessage = {
         roomId: roomId || selectedRoom?.id,
         sender: null, //보내는 사람의 이메일
@@ -270,9 +369,13 @@ export default function MessagePage() {
         return;
       }
 
+      // FormData를 사용하여 메시지와 이미지를 함께 전송
+
       stompClient.publish({
         destination: "/app/message",
-        headers: { "X-Authorization": `Bearer ${accessToken}` },
+        headers: {
+          "X-Authorization": `Bearer ${accessToken}`,
+        },
         body: JSON.stringify(chatMessage),
       });
 
@@ -284,98 +387,107 @@ export default function MessagePage() {
 
   return (
     <div className={styles.messagePageContainer}>
-      {/* 왼쪽 사이드바 - 채팅방 목록 */}
-      <div className={styles.chatRoomList}>
-        {chatRooms && chatRooms.length > 0 ? (
-          chatRooms.map((room) =>
-            room && room.id ? ( // room과 room.id가 있는지 확인
-              <div
-                key={room.id}
-                className={`${styles.chatRoomItem} ${
-                  selectedRoom?.id === room.id ? styles.selected : ""
-                }`}
-                onClick={() => handleRoomSelect(room)}
-              >
-                <div className={styles.shopImage}>
-                  <img
-                    src={room.shopImage || ""}
-                    alt={room.shopName || "상점 이미지"}
-                  />
-                </div>
-                <div className={styles.roomInfo}>
-                  <h3>{room.shopName || "상점"}</h3>
-                  <p className={styles.lastMessage}>
-                    {room.lastMessage || "메시지가 없습니다"}
-                  </p>
-                  <span className={styles.messageTime}>
-                    {room.lastMessageTime
-                      ? new Date(room.lastMessageTime).toLocaleString()
-                      : ""}
-                  </span>
-                </div>
-              </div>
-            ) : null
-          )
-        ) : (
-          <div className={styles.noChatRooms}>채팅방이 없습니다.</div>
-        )}
-      </div>
+      {/* MessageDropdown 컴포넌트 추가 */}
+      <MessageDropdown messages={dropdownMessages} />
 
-      {/* 오른쪽 - 채팅 영역 */}
-      <div className={styles.chatArea}>
-        {selectedRoom || (routeShopData && roomId) ? (
-          <>
-            <div className={styles.messagesContainer}>
-              {realtimeMessages.map((msg, index) => (
+      <div className={styles.messagePageContainer}>
+        {/* 왼쪽 사이드바 - 채팅방 목록 */}
+        <div className={styles.chatRoomList}>
+          {chatRooms && chatRooms.length > 0 ? (
+            chatRooms.map((room) =>
+              room && room.id ? ( // room과 room.id가 있는지 확인
                 <div
-                  key={`${msg.sendTime}-${index}`}
-                  className={`${styles.messageItem} ${
-                    msg.email === userEmail
-                      ? styles.messageItemRight
-                      : styles.messageItemLeft
+                  key={room.id}
+                  className={`${styles.chatRoomItem} ${
+                    selectedRoom?.id === room.id ? styles.selected : ""
                   }`}
+                  onClick={() => handleRoomSelect(room)}
                 >
-                  <div
-                    className={`${styles.messageContent} ${
-                      msg.email === userEmail
-                        ? styles.messageSent
-                        : styles.messageReceived
-                    }`}
-                  >
-                    <p>{msg.message}</p>
-                    <small className={styles.messageTime}>
-                      {new Date(msg.sendTime).toLocaleTimeString()}
-                    </small>
+                  <div className={styles.shopImage}>
+                    <img
+                      src={room.shopImage || ""}
+                      alt={room.shopName || "상점 이미지"}
+                    />
+                  </div>
+                  <div className={styles.roomInfo}>
+                    <h3>{room.shopName || "상점"}</h3>
+                    <p className={styles.lastMessage}>
+                      {room.lastMessage || "메시지가 없습니다"}
+                    </p>
+                    <span className={styles.messageTime}>
+                      {room.lastMessageTime
+                        ? new Date(room.lastMessageTime).toLocaleString()
+                        : ""}
+                    </span>
+                    <span className={styles.unreadCount}>
+                      {unreadMessages[room.id] > 0 &&
+                        `(${unreadMessages[room.id]} 새 메시지)`}
+                    </span>
                   </div>
                 </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-            <div className={styles.messageForm}>
-              <form
-                onSubmit={sendMessage}
-                className={styles.messageInputContainer}
-              >
-                <input
-                  type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className={styles.messageInput}
-                  placeholder="메시지를 입력하세요..."
-                />
-                <button
-                  type="submit"
-                  className={styles.sendButton}
-                  disabled={!connected}
+              ) : null
+            )
+          ) : (
+            <div className={styles.noChatRooms}>채팅방이 없습니다.</div>
+          )}
+        </div>
+
+        {/* 오른쪽 - 채팅 영역 */}
+        <div className={styles.chatArea}>
+          {selectedRoom || (routeShopData && roomId) ? (
+            <>
+              <div className={styles.messagesContainer}>
+                {realtimeMessages.map((msg, index) => (
+                  <div
+                    key={`${msg.sendTime}-${index}`}
+                    className={`${styles.messageItem} ${
+                      msg.email === userEmail
+                        ? styles.messageItemRight
+                        : styles.messageItemLeft
+                    }`}
+                  >
+                    <div
+                      className={`${styles.messageContent} ${
+                        msg.email === userEmail
+                          ? styles.messageSent
+                          : styles.messageReceived
+                      }`}
+                    >
+                      <p>{msg.message}</p>
+                      <small className={styles.messageTime}>
+                        {new Date(msg.sendTime).toLocaleTimeString()}
+                      </small>
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+              <div className={styles.messageForm}>
+                <form
+                  onSubmit={sendMessage}
+                  className={styles.messageInputContainer}
                 >
-                  전송
-                </button>
-              </form>
-            </div>
-          </>
-        ) : (
-          <div className={styles.noChatSelected}>채팅방을 선택해주세요</div>
-        )}
+                  <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    className={styles.messageInput}
+                    placeholder="메시지를 입력하세요..."
+                  />
+                  <button
+                    type="submit"
+                    className={styles.sendButton}
+                    disabled={!connected}
+                  >
+                    전송
+                  </button>
+                </form>
+              </div>
+            </>
+          ) : (
+            <div className={styles.noChatSelected}>채팅방을 선택해주세요</div>
+          )}
+        </div>
       </div>
     </div>
   );

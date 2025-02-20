@@ -11,6 +11,8 @@ const NotificationDropdown = () => {
     (state) => state.notificationSlice.notificationItems
   );
 
+  const email = useSelector((state) => state.loginSlice.email);
+
   const formatTime = (timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleString();
@@ -23,6 +25,18 @@ const NotificationDropdown = () => {
   const handleClear = () => {
     dispatch(clearNotificationItems());
   };
+
+  if (!email) {
+    return (
+      <div className={styles.dropdown}>
+        <div className={styles.title}>알림</div>
+        <div className={styles.empty}>
+          <img src="/clover.png" alt="알림 없음" className={styles.emptyIcon} />
+          <div>로그인이 필요합니다.</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.dropdown}>
@@ -38,7 +52,7 @@ const NotificationDropdown = () => {
       {notifications.length === 0 ? (
         <div className={styles.empty}>
           <img src="/clover.png" alt="알림 없음" className={styles.emptyIcon} />
-          <div>새로운 알림이 없습니다.</div>
+          <div className={styles.notNotice}>새로운 알림이 없습니다.</div>
         </div>
       ) : (
         <div className={styles.notificationList}>

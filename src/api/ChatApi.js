@@ -19,3 +19,11 @@ export const getChatRooms = async () => {
   console.log("API 호출 시 헤더:", axiosInstance.defaults.headers);
   return await axiosInstance.get(`/chat/history`);
 };
+
+export const getUnReadMessages = async () => {
+  return await axiosInstance.get(`/chat/notifications`);
+};
+
+export const changeIsRead = async (roomId) => {
+  return await axiosInstance.patch(`/chat/${roomId}`);
+};

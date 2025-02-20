@@ -13,8 +13,6 @@ export default function LikeButton({
   unlikedIcon = "/backheart.png",
 }) {
   const [isLiked, setIsLiked] = useState(initialLikeState);
-  console.log(isLiked);
-
   useEffect(() => {
     setIsLiked(initialLikeState);
   }, [initialLikeState]);

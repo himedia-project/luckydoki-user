@@ -75,12 +75,19 @@ const categorySlice = createSlice({
   reducers: {
     setExpandedCategory: (state, action) => {
       const categoryId = action.payload;
-      state.expandedCategories = { [categoryId]: true }; // ✅ "전체" 클릭 시 기존 스타일 유지
+
+      // ✅ 하나의 부모 카테고리만 열리도록 수정
+      state.expandedCategories = { [categoryId]: true };
     },
+
     toggleCategory: (state, action) => {
       const subCategoryId = action.payload;
-      state.expandedCategories[subCategoryId] =
-        !state.expandedCategories[subCategoryId];
+
+      // ✅ 현재 상태를 반전 (true → false, false → true)
+      state.expandedCategories = {
+        ...state.expandedCategories,
+        [subCategoryId]: !state.expandedCategories[subCategoryId],
+      };
     },
   },
   extraReducers: (builder) => {
@@ -95,7 +102,10 @@ const categorySlice = createSlice({
         state.childCategories = action.payload.childCategories;
         const selectedCategory = action.payload.defaultExpanded;
         if (selectedCategory) {
-          state.expandedCategories = { [selectedCategory]: true };
+          state.expandedCategories = {
+            ...state.expandedCategories, // ✅ 기존 상태 유지
+            [selectedCategory]: true, // ✅ 새로운 카테고리만 추가
+          };
         }
       })
       .addCase(fetchCategoryHierarchy.rejected, (state, action) => {

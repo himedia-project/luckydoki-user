@@ -8,8 +8,6 @@ const CategoryNav = ({ activeCategory, isDropdownVisible }) => {
   const [childCategories, setChildCategories] = useState({});
 
   useEffect(() => {
-    console.log("Active Category Changed:", activeCategory);
-
     if (!activeCategory) {
       setSubCategories([]);
       setChildCategories({});
@@ -18,7 +16,6 @@ const CategoryNav = ({ activeCategory, isDropdownVisible }) => {
 
     const fetchSubCategories = async () => {
       try {
-        console.log("Fetching SubCategories for:", activeCategory);
         const subResponse = await getSubCategories(activeCategory);
         if (!subResponse.data || subResponse.data.length === 0) return;
         setSubCategories(subResponse.data);
@@ -31,8 +28,6 @@ const CategoryNav = ({ activeCategory, isDropdownVisible }) => {
   }, [activeCategory]);
 
   useEffect(() => {
-    console.log("SubCategories Updated:", subCategories);
-
     if (subCategories.length === 0) return;
 
     const fetchChildCategories = async () => {
@@ -41,7 +36,6 @@ const CategoryNav = ({ activeCategory, isDropdownVisible }) => {
         await Promise.all(
           subCategories.map(async (sub) => {
             if (!sub.categoryId) return;
-            console.log("Fetching ChildCategories for:", sub.categoryId);
             const childResponse = await getChildCategories(sub.categoryId);
             childData[sub.categoryId] = childResponse.data;
           })

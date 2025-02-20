@@ -31,6 +31,7 @@ import CategoryListPage from "./pages/CategoryListPage";
 import PopularPage from "./pages/product/PopularPage";
 import NewPage from "./pages/product/NewPage";
 import ShopPage from "./pages/ShopPage";
+import AiSuggestPage from "./pages/AiSuggestPage";
 import MessagePage from "./pages/MessagePage";
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
         <Route path="/payment/fail" element={<PaymentFailPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/product/:productId" element={<ProductDetailPage />} />
+        <Route path="/ai_suggest" element={<AiSuggestPage />} />
 
         <Route path="/review_add" element={<ReviewAddPage />} />
         <Route path="/product_add" element={<ProductAddPage />} />
