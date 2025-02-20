@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { addCartItem } from "../api/cartApi";
@@ -13,10 +13,12 @@ import ReviewCard from "../components/card/ReviewCard";
 import StarRating from "../components/StarRating";
 import style from "../styles/ProductDetail.module.css";
 import ReviewRating from "../components/ReviewRating";
+import { addCartItems } from "../api/redux/cartSlice";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
   const email = useSelector((state) => state.loginSlice.email);
+  const dispatch = useDispatch();
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -121,8 +123,12 @@ export default function ProductDetail() {
 
     try {
       // 재고 수량 검증
-      const validateResponse = await validateCount(productId, quantity);
-      await addCartItem(productId, quantity);
+      await validateCount(productId, quantity);
+      const response = await addCartItem(productId, quantity);
+      // console.log(response);
+
+      // redux에 장바구니 상품 추가
+      dispatch(addCartItems(response));
 
       const result = await Swal.fire({
         title: "장바구니에 추가되었습니다.",
@@ -167,7 +173,7 @@ export default function ProductDetail() {
 
     try {
       // 재고 수량 검증
-      const validateResponse = await validateCount(productId, quantity);
+      await validateCount(productId, quantity);
 
       const selectedProducts = [
         {
