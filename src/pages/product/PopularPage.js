@@ -54,6 +54,8 @@ const PopularPage = () => {
                 event={product.event}
                 likes={product.likes}
                 best={product.best}
+                reviewAverage={product.reviewAverage}
+                reviewCount={product.reviewCount}
               />
             ))}
           </div>
