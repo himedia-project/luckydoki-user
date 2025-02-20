@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
-import { API_URL } from "../config/apiConfig";
-import ProductSwiper from "../components/swiper/ProductSwiper";
-import EventSwiper from "../components/swiper/EventSwiper";
-import styles from "../styles/HomePage.module.css";
+import axiosInstance from "../api/axiosInstance";
 import QuickButtonNav from "../components/QuickButtonNav";
+import EventSwiper from "../components/swiper/EventSwiper";
+import ProductSwiper from "../components/swiper/ProductSwiper";
+import styles from "../styles/HomePage.module.css";
+import { getProductList } from "../api/productApi";
 
 const HomePage = () => {
   const [events, setEvents] = useState([]);
@@ -21,14 +21,10 @@ const HomePage = () => {
     const fetchData = async () => {
       try {
         // ✅ 이벤트 데이터 가져오기
-        const eventRes = await axios.get(`${API_URL}/api/event/active`, {
-          withCredentials: true,
-        });
+        const eventRes = await axiosInstance.get(`/event/list`);
         setEvents(eventRes.data);
 
-        const productRes = await axios.get(`${API_URL}/api/product/list`, {
-          withCredentials: true,
-        });
+        const productRes = await getProductList();
 
         const allProducts = productRes.data;
         setProducts(allProducts);
