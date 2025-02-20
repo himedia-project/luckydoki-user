@@ -17,3 +17,12 @@ export const getProductInfo = async (productId) => {
 export const postProduct = async (formData) => {
   return await axiosInstance.post(`/cart`, formData);
 };
+
+// 상품 validate 수량
+// GET http://localhost:8080/api/product/{{id}}/validate/count?
+//     count={{$random.integer(100)}}
+export const validateCount = async (productId, count) => {
+  return await axiosInstance.get(`/product/${productId}/validate/count`, {
+    params: { count },
+  });
+};
