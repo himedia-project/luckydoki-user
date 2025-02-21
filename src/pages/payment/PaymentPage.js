@@ -190,14 +190,18 @@ const PaymentPage = () => {
       <div className={style.payment_header}>
         <h2>주문하기</h2>
         <div className={style.payment_steps}>
-          <span>01 장바구니</span>
-          <span className={style.active}>02 주문 결제</span>
+          <span className={`${style.steps_first}`}>01 장바구니</span>
+          <span className={`${style.active} ${style.steps_second}`}>
+            02 주문 결제
+          </span>
           <span>03 주문 완료</span>
         </div>
       </div>
       <div className={style.payment_content}>
         <div className={style.payment_items}>
-          <div className={style.payment_section}>
+          <div
+            className={`${style.payment_section} ${style.paymentContentContainer}`}
+          >
             <div className={style.section_header}>
               <h3>주문 상품 정보</h3>
               <button className={style.coupon_btn} onClick={handleCouponClick}>

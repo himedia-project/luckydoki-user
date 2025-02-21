@@ -6,7 +6,7 @@
   cursor: pointer;
   align-items: flex-start;
   width: 243px;
-  min-height: 370px; /* ✅ 상품 카드 높이 고정 */
+  height: 370px; /* ✅ 상품 카드 높이 고정 */
   -webkit-line-clamp: 1; /* ✅ 최대 2줄까지 표시 */
   -webkit-box-orient: vertical;
   justify-content: space-between;

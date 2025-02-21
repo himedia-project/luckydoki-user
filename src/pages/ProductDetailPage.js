@@ -10,9 +10,8 @@ import LikeButton from "../components/button/LikeButton";
 import MessageButton from "../components/button/MessageButton";
 import ImageLoader from "../components/card/ImageLoader";
 import ReviewCard from "../components/card/ReviewCard";
-import StarRating from "../components/StarRating";
-import style from "../styles/ProductDetail.module.css";
 import ReviewRating from "../components/ReviewRating";
+import style from "../styles/ProductDetail.module.css";
 import { addCartItems } from "../api/redux/cartSlice";
 
 export default function ProductDetail() {
@@ -316,7 +315,7 @@ export default function ProductDetail() {
               alt="샵 이미지"
               className={style.shop_img}
             />
-            <p>{product?.shopName} mart</p>
+            <p>{product?.shopName} Shop</p>
           </div>
           <ReviewRating rating={product?.reviewAverage} />
         </div>

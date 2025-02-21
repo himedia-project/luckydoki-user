@@ -247,8 +247,10 @@ const CartPage = () => {
       <div className={style.cart_header}>
         <h2>장바구니</h2>
         <div className={style.cart_steps}>
-          <span className={style.active}>01 장바구니</span>
-          <span>02 주문 결제</span>
+          <span className={`${style.active} ${style.steps_first}`}>
+            01 장바구니
+          </span>
+          <span className={`${style.steps_second}`}>02 주문 결제</span>
           <span>03 주문 완료</span>
         </div>
       </div>

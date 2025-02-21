@@ -11,6 +11,9 @@
 
 .rightSection {
   flex: 1;
+  position: sticky;
+  top: 130px;
+  height: fit-content;
 }
 
 .imageContainer {
