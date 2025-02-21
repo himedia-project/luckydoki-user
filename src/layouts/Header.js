@@ -10,13 +10,13 @@ import { getMainCategories } from "../api/categoryApi";
 import CategoryNav from "../components/CategoryNav";
 import Swal from "sweetalert2";
 import { useNotification } from "../hooks/useNotification";
+import { useFCMToken } from "../hooks/useFCMToken";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { nickName } = useSelector((state) => state.loginSlice);
-  const { notificationItems } = useSelector((state) => state.notificationSlice);
-  const { notificationCount, clearNotifications } = useNotification();
+  const { email } = useSelector((state) => state.loginSlice);
+  const { notifications, clearNotifications } = useNotification();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showHeaderTop, setShowHeaderTop] = useState(true);
@@ -24,6 +24,7 @@ const Header = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const { cartItems } = useSelector((state) => state.cartSlice);
+  const { updateToken } = useFCMToken();
 
   useEffect(() => {
     const fetchMainCategories = async () => {
@@ -48,8 +49,25 @@ const Header = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const initializeFCM = async () => {
+      if (email) {
+        try {
+          const permission = await Notification.requestPermission();
+          if (permission === "granted") {
+            await updateToken(email);
+          }
+        } catch (error) {
+          console.error("FCM 초기화 실패:", error);
+        }
+      }
+    };
+
+    initializeFCM();
+  }, [email]);
+
   const handleProtectedRoute = (event, path) => {
-    if (!nickName) {
+    if (!email) {
       event.preventDefault();
       Swal.fire({
         toast: true,
@@ -130,7 +148,7 @@ const Header = () => {
           className={`${style.header_top} ${showHeaderTop ? "" : style.hidden}`}
         >
           <ul className={style.login_nav}>
-            {nickName ? (
+            {email ? (
               <li className={style.logout} onClick={handleLogout}>
                 로그아웃
               </li>
@@ -147,18 +165,13 @@ const Header = () => {
               <img src="/notification.png" alt="알림" />
               <Link>
                 알림
-                {notificationCount > 0 && (
+                {notifications.length > 0 && (
                   <span className={style.notification_count}>
-                    {notificationCount}
+                    {notifications.length}
                   </span>
                 )}
               </Link>
-              {showNotifications && (
-                <NotificationDropdown
-                  notifications={notificationItems}
-                  onClear={clearNotifications}
-                />
-              )}
+              {showNotifications && <NotificationDropdown />}
             </li>
             <li
               className={style.message}

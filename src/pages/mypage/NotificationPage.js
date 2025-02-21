@@ -23,7 +23,14 @@ export default function NotificationPage() {
       <h2>알림 내역</h2>
       <div className={style.content_box}>
         {notifications.length === 0 ? (
-          <p>알림 내역이 없습니다.</p>
+          <div className={style.empty}>
+            <img
+              src="/clover.png"
+              alt="알림 없음"
+              className={style.emptyIcon}
+            />
+            <p>알림 내역이 없습니다.</p>
+          </div>
         ) : (
           notifications.map((notification, index) => (
             <div key={index} className={style.notification_item}>
@@ -31,8 +38,15 @@ export default function NotificationPage() {
                 <img src="/profile.png" alt="프로필 이미지" />
               </div>
               <div className={style.notification_content}>
-                <p>{notification.body}</p>
-                <span>{notification.createdAt}</span>
+                <div className={style.notification_header}>
+                  <span className={style.notification_title}>
+                    {notification.title}
+                  </span>
+                  <span className={style.notification_time}>
+                    {notification.createdAt}
+                  </span>
+                </div>
+                <p className={style.notification_body}>{notification.body}</p>
               </div>
             </div>
           ))
