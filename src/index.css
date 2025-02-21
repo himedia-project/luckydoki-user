@@ -44,3 +44,7 @@ body {
 input {
   accent-color: #00d990;
 }
+
+img {
+  object-fit: cover;
+}

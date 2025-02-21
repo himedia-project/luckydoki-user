@@ -53,6 +53,7 @@ const NewPage = () => {
                 likes={product.likes}
                 best={product.best}
                 reviewAverage={product.reviewAverage}
+                reviewCount={product.reviewCount}
               />
             ))}
           </div>
