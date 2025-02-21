@@ -16,9 +16,12 @@
   font-weight: bold;
   padding-bottom: 8px;
   border-bottom: 1px solid #eee;
-  text-align: center;
   height: 48px;
   line-height: 48px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .item {
@@ -100,8 +103,6 @@
 .clearButton {
   position: absolute;
   right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
   background: none;
   border: none;
   color: #666;
