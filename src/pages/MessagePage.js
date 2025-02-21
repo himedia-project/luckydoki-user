@@ -32,9 +32,6 @@ export default function MessagePage() {
   const [chatRooms, setChatRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [unreadMessages, setUnreadMessages] = useState({}); // 읽지 않은 메시지 수 관리
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const fileInputRef = useRef(null);
 
   const [dropdownMessages, setDropdownMessages] = useState([]);
 

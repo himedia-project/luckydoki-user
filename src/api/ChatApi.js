@@ -20,10 +20,13 @@ export const getChatRooms = async () => {
   return await axiosInstance.get(`/chat/history`);
 };
 
-export const getUnReadMessages = async () => {
-  return await axiosInstance.get(`/chat/notifications`);
+export const deleteChatRooms = async (roomId) => {
+  return await axiosInstance.delete(`/${roomId}`);
 };
+// export const getUnReadMessages = async () => {
+//   return await axiosInstance.get(`/chat/notifications`);
+// };
 
-export const changeIsRead = async (roomId) => {
-  return await axiosInstance.patch(`/chat/${roomId}`);
-};
+// export const changeIsRead = async (roomId) => {
+//   return await axiosInstance.patch(`/chat/${roomId}`);
+// };

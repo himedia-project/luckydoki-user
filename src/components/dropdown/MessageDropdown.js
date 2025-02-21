@@ -2,47 +2,31 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Dropdown.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { changeIsRead, getUnReadMessages } from "../../api/ChatApi";
+import { getChatRooms } from "../../api/ChatApi";
 
 const MessageDropdown = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const email = useSelector((state) => state.loginSlice.email);
-  const [unreadMessages, setUnreadMessages] = useState([]);
+  const [messages, setMessages] = useState([]);
 
   // 메시지 목록 갱신을 위한 상태
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    const fetchUnreadMessages = async () => {
+    const fetchMessages = async () => {
       try {
-        const response = await getUnReadMessages();
-        setUnreadMessages(response.data);
+        const response = await getChatRooms();
+        setMessages(response.data);
       } catch (error) {
         console.error("Failed to fetch unread messages:", error);
       }
     };
 
     if (email) {
-      fetchUnreadMessages();
+      fetchMessages();
     }
   }, [email, refreshTrigger]); // refreshTrigger 의존성 추가
-
-  const handleMessageClick = async (roomId) => {
-    try {
-      await changeIsRead(roomId);
-      console.log("읽기 상태 변경 성공");
-
-      // 상태 업데이트
-      setUnreadMessages((prev) => prev.filter((msg) => msg.roomId !== roomId));
-      // 강제 리프레시 트리거
-      setRefreshTrigger((prev) => prev + 1);
-
-      navigate("/message", { state: { selectedRoomId: roomId } });
-    } catch (error) {
-      console.error("Failed to mark message as read:", error);
-    }
-  };
 
   // 메시지 페이지에서는 드롭다운 숨기기
   if (location.pathname === "/message") {
@@ -67,14 +51,10 @@ const MessageDropdown = () => {
   return (
     <div className={styles.dropdown}>
       <h3 className={styles.title}>메시지</h3>
-      {unreadMessages.length > 0 ? (
+      {messages.length > 0 ? (
         <div className={styles.notificationList}>
-          {unreadMessages.map((message, index) => (
-            <div
-              key={index}
-              className={styles.item}
-              onClick={() => handleMessageClick(message.roomId)}
-            >
+          {messages.map((message, index) => (
+            <div key={index} className={styles.item}>
               <img
                 src="/default-profile.png"
                 alt="프로필"
@@ -87,7 +67,7 @@ const MessageDropdown = () => {
                     {new Date(message.timestamp).toLocaleDateString()}
                   </span>
                 </div>
-                <p className={styles.content}>{message.notificationMessage}</p>
+                <p className={styles.content}>{message.lastMessage}</p>
               </div>
             </div>
           ))}
