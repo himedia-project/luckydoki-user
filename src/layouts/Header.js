@@ -15,8 +15,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { nickName } = useSelector((state) => state.loginSlice);
-  const { notificationItems } = useSelector((state) => state.notificationSlice);
-  const { notificationCount, clearNotifications } = useNotification();
+  const { notifications, clearNotifications } = useNotification();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showHeaderTop, setShowHeaderTop] = useState(true);
@@ -147,18 +146,13 @@ const Header = () => {
               <img src="/notification.png" alt="알림" />
               <Link>
                 알림
-                {notificationCount > 0 && (
+                {notifications.length > 0 && (
                   <span className={style.notification_count}>
-                    {notificationCount}
+                    {notifications.length}
                   </span>
                 )}
               </Link>
-              {showNotifications && (
-                <NotificationDropdown
-                  notifications={notificationItems}
-                  onClear={clearNotifications}
-                />
-              )}
+              {showNotifications && <NotificationDropdown />}
             </li>
             <li
               className={style.message}
