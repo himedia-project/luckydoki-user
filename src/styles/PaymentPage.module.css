@@ -57,6 +57,8 @@
 .payment_content {
   display: flex;
   gap: 20px;
+  position: relative;
+  height: fit-content;
 }
 
 .payment_items {
@@ -195,7 +197,10 @@
 }
 
 .payment_summary {
+  position: sticky;
+  top: 130px;
   width: 300px;
+  height: fit-content;
   border: 1px solid #eee;
   border-radius: 4px;
   padding: 20px;
