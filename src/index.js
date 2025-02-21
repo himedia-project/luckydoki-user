@@ -1,13 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import store, { persistor } from "./api/redux/store";
-import ScrollToTop from "./components/button/ScrollToTop";
-import F5Blocker from "./components/button/F5Blocker";
+import { BrowserRouter } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
+import store, { persistor } from "./api/redux/store";
+import App from "./App";
+import ScrollToTop from "./components/button/ScrollToTop";
+import "./index.css";
 
 // import reportWebVitals from './reportWebVitals';
 
@@ -17,7 +16,7 @@ root.render(
     <PersistGate loading={null} persistor={persistor}>
       <BrowserRouter>
         <ScrollToTop />
-        <F5Blocker />
+        {/* <F5Blocker /> */}
         <App />
       </BrowserRouter>
     </PersistGate>

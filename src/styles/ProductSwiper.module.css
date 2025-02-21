@@ -41,6 +41,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr); /* 5열 고정 */
   grid-template-rows: repeat(2, auto); /* 2행 고정 */
+  height: 790px;
   width: 100%;
 }
 

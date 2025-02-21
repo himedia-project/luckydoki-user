@@ -1,4 +1,3 @@
-import axios from "axios";
 import axiosInstance from "./axiosInstance";
 
 // // 로그인
@@ -18,4 +17,9 @@ import axiosInstance from "./axiosInstance";
 export const logoutPost = async () => {
   const response = await axiosInstance.post("/member/logout");
   return response.data;
+};
+
+export const quitMember = async () => {
+  const response = await axiosInstance.delete("/member");
+  return response;
 };

@@ -4,15 +4,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { addCartItem } from "../api/cartApi";
 import { getOrderList } from "../api/orderApi";
-import { getProductInfo } from "../api/productApi";
+import { getProductInfo, validateCount } from "../api/productApi";
 import { getReviewByProduct } from "../api/reviewApi";
 import LikeButton from "../components/button/LikeButton";
 import MessageButton from "../components/button/MessageButton";
 import ImageLoader from "../components/card/ImageLoader";
 import ReviewCard from "../components/card/ReviewCard";
-import StarRating from "../components/StarRating";
-import style from "../styles/ProductDetail.module.css";
 import ReviewRating from "../components/ReviewRating";
+import style from "../styles/ProductDetail.module.css";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
@@ -120,6 +119,8 @@ export default function ProductDetail() {
     }
 
     try {
+      // 재고 수량 검증
+      const validateResponse = await validateCount(productId, quantity);
       await addCartItem(productId, quantity);
 
       const result = await Swal.fire({
@@ -138,16 +139,18 @@ export default function ProductDetail() {
       }
     } catch (error) {
       console.error("장바구니 추가 실패:", error);
+      const errorMessage =
+        error.response?.data?.errMsg || "장바구니 추가에 실패했습니다.";
       Swal.fire({
-        title: "오류",
-        text: "장바구니 추가에 실패했습니다.",
+        title: "재고 부족",
+        text: errorMessage,
         icon: "error",
         confirmButtonText: "확인",
       });
     }
   };
 
-  const handleAddToPayment = () => {
+  const handleAddToPayment = async () => {
     if (!email) {
       Swal.fire({
         toast: true,
@@ -161,26 +164,41 @@ export default function ProductDetail() {
       return;
     }
 
-    const selectedProducts = [
-      {
-        productId: product.id,
-        productName: product.name,
-        imageName: product.uploadFileNames[0],
-        price: product.price,
-        discountPrice: product.discountPrice,
-        discountRate: product.discountRate,
-        qty: quantity,
-      },
-    ];
+    try {
+      // 재고 수량 검증
+      const validateResponse = await validateCount(productId, quantity);
 
-    const totalAmount = product.discountPrice * quantity;
+      const selectedProducts = [
+        {
+          productId: product.id,
+          productName: product.name,
+          imageName: product.uploadFileNames[0],
+          price: product.price,
+          discountPrice: product.discountPrice,
+          discountRate: product.discountRate,
+          qty: quantity,
+        },
+      ];
 
-    navigate("/payment", {
-      state: {
-        selectedProducts,
-        totalAmount,
-      },
-    });
+      const totalAmount = product.discountPrice * quantity;
+
+      navigate("/payment", {
+        state: {
+          selectedProducts,
+          totalAmount,
+        },
+      });
+    } catch (error) {
+      console.error("재고 확인 실패:", error);
+      const errorMessage =
+        error.response?.data?.errMsg || "재고 확인에 실패했습니다.";
+      Swal.fire({
+        title: "재고 부족",
+        text: errorMessage,
+        icon: "error",
+        confirmButtonText: "확인",
+      });
+    }
   };
 
   // const handleScrollToSection = (ref) => {
@@ -291,7 +309,7 @@ export default function ProductDetail() {
               alt="샵 이미지"
               className={style.shop_img}
             />
-            <p>{product?.shopName} mart</p>
+            <p>{product?.shopName} Shop</p>
           </div>
           <ReviewRating rating={product?.reviewAverage} />
         </div>

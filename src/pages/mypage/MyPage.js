@@ -74,6 +74,8 @@ export default function MyPage() {
                   best={product?.best === "Y"}
                   likes={product?.likes}
                   onUnlike={handleUnlikeProduct}
+                  reviewAverage={product?.reviewAverage}
+                  reviewCount={product?.reviewCount}
                 />
               ))}
             </div>
