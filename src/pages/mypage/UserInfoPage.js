@@ -4,6 +4,7 @@ import axiosInstance from "../../api/axiosInstance";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getMyProfile, updateMyProfile } from "../../api/memberApi";
+import { quitMember } from "../../api/loginApi";
 
 export default function UserInfo() {
   const navigate = useNavigate();
@@ -84,9 +85,7 @@ export default function UserInfo() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axiosInstance.delete("/api/user/delete", {
-            data: { email: userInfo.email },
-          });
+          await quitMember();
           Swal.fire("탈퇴되었습니다.", "", "success").then(() => {
             navigate("/");
           });
