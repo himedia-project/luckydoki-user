@@ -7,6 +7,8 @@ import { useDispatch } from "react-redux";
 import { login, setAccessToken } from "../api/redux/loginSlice";
 import Cookies from "js-cookie";
 import { API_URL } from "../config/apiConfig"; // ✅ API 경로 사용
+import { setCartEmail } from "../api/redux/cartSlice";
+import { setNotificationEmail } from "../api/redux/notificationSlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -49,9 +51,11 @@ const LoginPage = () => {
 
       const { accessToken, refreshToken, roles } = response.data;
 
-      Cookies.set("refresh_token", refreshToken, { expires: 7, secure: true });
-      dispatch(setAccessToken(accessToken));
+      // Cookies.set("refresh_token", refreshToken, { expires: 7, secure: true });
+      // dispatch(setAccessToken(accessToken));
       dispatch(login(response.data));
+      dispatch(setCartEmail(response.data.email));
+      dispatch(setNotificationEmail(response.data.email));
       const isAdmin = roles.includes("ADMIN");
       navigate(isAdmin ? "/admin" : "/");
     } catch (error) {

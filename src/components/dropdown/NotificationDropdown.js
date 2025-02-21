@@ -16,8 +16,13 @@ const NotificationDropdown = () => {
   const email = useSelector((state) => state.loginSlice.email);
 
   const formatTime = (timestamp) => {
+    // 2025-02-21 12:00:00 -> 2025-02-21
     const date = new Date(timestamp);
-    return date.toLocaleString();
+    return date.toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
   };
 
   const handleClick = () => {

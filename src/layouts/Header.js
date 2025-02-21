@@ -10,10 +10,17 @@ import CategoryNav from "../components/CategoryNav";
 import Swal from "sweetalert2";
 import { useNotification } from "../hooks/useNotification";
 import { useFCMToken } from "../hooks/useFCMToken";
+import { clearCartItems, setCartEmail } from "../api/redux/cartSlice";
+import {
+  clearNotificationItems,
+  setNotificationEmail,
+} from "../api/redux/notificationSlice";
+import { clearInfo } from "../api/redux/infoSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // current user email
   const { email } = useSelector((state) => state.loginSlice);
   const { notifications, clearNotifications } = useNotification();
   const [showNotifications, setShowNotifications] = useState(false);
@@ -22,8 +29,23 @@ const Header = () => {
   const [mainCategories, setMainCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const { cartItems } = useSelector((state) => state.cartSlice);
+  const { cartItems, email: cartEmail } = useSelector(
+    (state) => state.cartSlice
+  );
+  const { notificationItems, email: notificationEmail } = useSelector(
+    (state) => state.notificationSlice
+  );
   const { updateToken } = useFCMToken();
+
+  // 현재 로그인한 사용자의 데이터만 표시
+
+  const currentUserCartItems = email === cartEmail ? cartItems : [];
+
+  const currentUserNotifications =
+    email === notificationEmail ? notificationItems : [];
+
+  console.log("currentUserCartItems: ", currentUserCartItems);
+  console.log("currentUserNotifications: ", currentUserNotifications);
 
   useEffect(() => {
     const fetchMainCategories = async () => {
@@ -128,6 +150,9 @@ const Header = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(logout());
+        dispatch(clearInfo());
+        dispatch(setCartEmail(""));
+        dispatch(setNotificationEmail(""));
         // dispatch(clearCartItems());
         // dispatch(clearNotificationItems());
         Swal.fire({
@@ -183,9 +208,9 @@ const Header = () => {
               <img src="/notification.png" alt="알림" />
               <Link>
                 알림
-                {email && notifications.length > 0 && (
+                {email && currentUserNotifications.length > 0 && (
                   <span className={style.notification_count}>
-                    {notifications.length}
+                    {currentUserNotifications.length}
                   </span>
                 )}
               </Link>
@@ -234,8 +259,10 @@ const Header = () => {
                 onClick={(e) => handleProtectedRoute(e, "/cart")}
               >
                 <img src="/cart.png" alt="장바구니" />
-                {email && cartItems.length > 0 && (
-                  <span className={style.cart_count}>{cartItems.length}</span>
+                {email && currentUserCartItems.length > 0 && (
+                  <span className={style.cart_count}>
+                    {currentUserCartItems.length}
+                  </span>
                 )}
               </Link>
             </li>

@@ -18,7 +18,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["loginSlice", "cartSlice", "notificationSlice"], // ✅ 필요하면 특정 슬라이스만 영속 저장
+  whitelist: ["cartSlice", "notificationSlice"], // ✅ 필요하면 특정 슬라이스만 영속 저장
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
