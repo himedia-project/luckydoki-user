@@ -138,17 +138,19 @@ export default function ShopPage() {
             <div className={style.product_grid}>
               {data.map((product) => (
                 <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  name={product.name}
-                  price={product.price}
-                  discountPrice={product.discountPrice || product.price}
-                  discountRate={product.discountRate || 0}
+                  key={product?.id}
+                  id={product?.id}
+                  name={product?.name}
+                  price={product?.price}
+                  discountPrice={product?.discountPrice || product?.price}
+                  discountRate={product?.discountRate || 0}
                   productImageUrl={product.uploadFileNames?.[0]}
-                  isNew={product.isNew === "Y"}
-                  event={product.event === "Y"}
-                  best={product.best === "Y"}
-                  likes={product.likes}
+                  isNew={product?.isNew === "Y"}
+                  event={product?.event === "Y"}
+                  best={product?.best === "Y"}
+                  likes={product?.likes}
+                  reviewAverage={product?.reviewAverage}
+                  reviewCount={product?.reviewCount}
                 />
               ))}
             </div>
@@ -163,14 +165,14 @@ export default function ShopPage() {
               <div className={style.community_grid_left}>
                 {data.slice(0, Math.ceil(data.length / 2)).map((post) => (
                   <CommunityCard
-                    key={post.id}
-                    id={post.id}
-                    title={post.title}
-                    content={post.content}
-                    createdAt={post.createdAt}
-                    nickName={post.nickName}
-                    uploadFileNames={post.uploadFileNames}
-                    productDTOs={post.productDTOs}
+                    key={post?.id}
+                    id={post?.id}
+                    title={post?.title}
+                    content={post?.content}
+                    createdAt={post?.createdAt}
+                    nickName={post?.nickName}
+                    uploadFileNames={post?.uploadFileNames}
+                    productDTOs={post?.productDTOs}
                     sellerImage={sellerInfo?.image}
                   />
                 ))}
