@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../api/redux/loginSlice";
-import { clearCartItems } from "../api/redux/cartSlice";
 import style from "../styles/Header.module.css";
 import NotificationDropdown from "../components/dropdown/NotificationDropdown";
 import MessageDropdown from "../components/dropdown/MessageDropdown";
@@ -129,7 +128,8 @@ const Header = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(logout());
-        dispatch(clearCartItems());
+        // dispatch(clearCartItems());
+        // dispatch(clearNotificationItems());
         Swal.fire({
           title: "로그아웃되었습니다.",
           icon: "success",
@@ -165,7 +165,7 @@ const Header = () => {
               <img src="/notification.png" alt="알림" />
               <Link>
                 알림
-                {notifications.length > 0 && (
+                {email && notifications.length > 0 && (
                   <span className={style.notification_count}>
                     {notifications.length}
                   </span>
@@ -217,7 +217,7 @@ const Header = () => {
                 onClick={(e) => handleProtectedRoute(e, "/cart")}
               >
                 <img src="/cart.png" alt="장바구니" />
-                {cartItems.length > 0 && (
+                {email && cartItems.length > 0 && (
                   <span className={style.cart_count}>{cartItems.length}</span>
                 )}
               </Link>
