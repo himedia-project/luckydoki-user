@@ -104,3 +104,37 @@
   min-width: 20px;
   text-align: center;
 }
+
+.chatHeader {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+}
+
+.partnerInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.partnerImage {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.partnerDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.partnerDetails h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.partnerDetails span {
+  color: #666;
+  font-size: 0.9rem;
+}
