@@ -21,11 +21,22 @@ const cartSlice = createSlice({
         0
       );
     },
+    addCartItems: (state, action) => {
+      state.cartItems.push(action.payload);
+      state.totalPrice = action.payload.reduce(
+        (sum, item) => sum + item.price,
+        0
+      );
+      state.totalDiscountPrice = action.payload.reduce(
+        (sum, item) => sum + item.discountPrice,
+        0
+      );
+    },
     clearCartItems: (state) => {
       return { ...initState };
     },
   },
 });
 
-export const { setCartItems, clearCartItems } = cartSlice.actions;
+export const { setCartItems, addCartItems, clearCartItems } = cartSlice.actions;
 export default cartSlice.reducer;

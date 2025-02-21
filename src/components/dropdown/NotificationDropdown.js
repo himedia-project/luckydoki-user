@@ -11,6 +11,8 @@ const NotificationDropdown = () => {
     (state) => state.notificationSlice.notificationItems
   );
 
+  console.log("NotificationDropdown notifications: ", notifications);
+
   const email = useSelector((state) => state.loginSlice.email);
 
   const formatTime = (timestamp) => {

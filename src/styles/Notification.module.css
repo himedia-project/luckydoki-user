@@ -39,5 +39,23 @@
 
 .notification_content span {
   color: #666;
+  font-size: 15px;
+}
+
+.notification_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.notification_title {
+  font-size: 17px;
+  color: #333;
+  font-weight: 500;
+}
+
+.notification_time {
   font-size: 12px;
+  color: #999;
 }

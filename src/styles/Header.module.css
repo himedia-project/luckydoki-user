@@ -24,6 +24,7 @@
 
 .inner {
   width: 1280px;
+  position: relative;
 }
 
 .login_nav {
