@@ -147,6 +147,24 @@ const Header = () => {
         <div
           className={`${style.header_top} ${showHeaderTop ? "" : style.hidden}`}
         >
+          {showNotifications && (
+            <div
+              onMouseEnter={() => setShowNotifications(true)}
+              onMouseLeave={() => setShowNotifications(false)}
+            >
+              <NotificationDropdown />
+            </div>
+          )}
+
+          {showMessages && (
+            <div
+              onMouseEnter={() => setShowMessages(true)}
+              onMouseLeave={() => setShowMessages(false)}
+            >
+              <MessageDropdown messages={[]} />
+            </div>
+          )}
+
           <ul className={style.login_nav}>
             {email ? (
               <li className={style.logout} onClick={handleLogout}>
@@ -171,8 +189,8 @@ const Header = () => {
                   </span>
                 )}
               </Link>
-              {showNotifications && <NotificationDropdown />}
             </li>
+
             <li
               className={style.message}
               onMouseEnter={() => setShowMessages(true)}
@@ -180,7 +198,6 @@ const Header = () => {
             >
               <img src="/chat.png" alt="메시지" />
               <Link>메시지</Link>
-              {showMessages && <MessageDropdown messages={[]} />}
             </li>
           </ul>
         </div>
