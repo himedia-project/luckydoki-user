@@ -62,6 +62,8 @@ export default function LikesListPage() {
                     event={item.event === "Y"}
                     best={item.best === "Y"}
                     onUnlike={handleUnlikeProduct}
+                    reviewAverage={item?.reviewAverage}
+                    reviewCount={item?.reviewCount}
                   />
                 ))}
               </div>
