@@ -52,6 +52,7 @@
 .cart_content {
   min-height: 400px;
   margin-top: 30px;
+  position: relative;
 }
 
 /* 장바구니에 상품이 있을 때만 flex 적용 */
@@ -218,9 +219,12 @@
 
 .cart_summary {
   width: 300px;
+  height: fit-content;
   border: 1px solid #eee;
   border-radius: 4px;
   padding: 20px;
+  position: sticky;
+  top: 130px;
 }
 
 .summary_row {
