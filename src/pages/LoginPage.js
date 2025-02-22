@@ -9,6 +9,13 @@ import Cookies from "js-cookie";
 import { API_URL } from "../config/apiConfig"; // ✅ API 경로 사용
 import { setCartEmail } from "../api/redux/cartSlice";
 import { setNotificationEmail } from "../api/redux/notificationSlice";
+import { loginPost } from "../api/loginApi";
+import { clearCartItems } from "../api/redux/cartSlice";
+import { clearNotificationItems } from "../api/redux/notificationSlice";
+import { getCartItemList } from "../api/cartApi";
+import { getNotificationList } from "../api/notificationApi";
+import { setCartItems } from "../api/redux/cartSlice";
+import { setNotificationItems } from "../api/redux/notificationSlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -40,22 +47,37 @@ const LoginPage = () => {
   };
 
   const handleLogin = async () => {
+    if (!loginForm.email || !loginForm.password) {
+      setErrorMessage("이메일과 비밀번호를 입력해주세요.");
+      return;
+    }
+
     try {
-      const response = await axios.post(
-        `${API_URL}/api/member/login`,
-        loginForm,
-        {
-          withCredentials: true, // ✅ 쿠키 포함 요청
-        }
-      );
+      const response = await loginPost(loginForm.email, loginForm.password);
+      const { email, roles } = response.data;
 
-      const { accessToken, refreshToken, roles } = response.data;
+      // 먼저 이전 데이터 초기화
+      dispatch(clearCartItems());
+      dispatch(clearNotificationItems());
 
-      // Cookies.set("refresh_token", refreshToken, { expires: 7, secure: true });
-      // dispatch(setAccessToken(accessToken));
+      // 로그인 처리
       dispatch(login(response.data));
-      dispatch(setCartEmail(response.data.email));
-      dispatch(setNotificationEmail(response.data.email));
+
+      // 새로운 사용자의 이메일로 상태 업데이트
+      dispatch(setCartEmail(email));
+      dispatch(setNotificationEmail(email));
+
+      // 해당 사용자의 데이터 가져오기
+      try {
+        const cartResponse = await getCartItemList();
+        dispatch(setCartItems(cartResponse));
+
+        const notificationResponse = await getNotificationList();
+        dispatch(setNotificationItems(notificationResponse));
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+
       const isAdmin = roles.includes("ADMIN");
       navigate(isAdmin ? "/admin" : "/");
     } catch (error) {

@@ -22,7 +22,7 @@ const Header = () => {
   const navigate = useNavigate();
   // current user email
   const { email } = useSelector((state) => state.loginSlice);
-  const { notifications, clearNotifications } = useNotification();
+  // const { notificationItems, email: notificationEmail } = useNotification();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showHeaderTop, setShowHeaderTop] = useState(true);
@@ -44,6 +44,9 @@ const Header = () => {
   const currentUserNotifications =
     email === notificationEmail ? notificationItems : [];
 
+  console.log("email: ", email);
+  console.log("cartEmail: ", cartEmail);
+  console.log("notificationEmail: ", notificationEmail);
   console.log("currentUserCartItems: ", currentUserCartItems);
   console.log("currentUserNotifications: ", currentUserNotifications);
 
@@ -71,9 +74,11 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
+    // 현재 로그인한 사용자의 이메일이 있으면 FCM 초기화
     const initializeFCM = async () => {
       if (email) {
         try {
+          // 알림 권한 요청
           const permission = await Notification.requestPermission();
           if (permission === "granted") {
             await updateToken(email);
@@ -149,12 +154,14 @@ const Header = () => {
       cancelButtonColor: "#d33",
     }).then((result) => {
       if (result.isConfirmed) {
+        // 로그아웃 시 모든 상태 초기화
         dispatch(logout());
-        dispatch(clearInfo());
         dispatch(setCartEmail(""));
         dispatch(setNotificationEmail(""));
-        // dispatch(clearCartItems());
-        // dispatch(clearNotificationItems());
+        dispatch(clearCartItems());
+        dispatch(clearNotificationItems());
+        dispatch(clearInfo());
+
         Swal.fire({
           title: "로그아웃되었습니다.",
           icon: "success",

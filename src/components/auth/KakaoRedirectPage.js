@@ -5,6 +5,13 @@ import Swal from "sweetalert2";
 
 import { getAccessToken, getMemberWithAccessToken } from "../../api/kakaoApi";
 import { login } from "../../api/redux/loginSlice";
+import { setCartEmail, setCartItems } from "../../api/redux/cartSlice";
+import {
+  setNotificationEmail,
+  setNotificationItems,
+} from "../../api/redux/notificationSlice";
+import { getCartItemList } from "../../api/cartApi";
+import { getNotificationList } from "../../api/notificationApi";
 
 const KakaoRedirectPage = () => {
   const [searchParams] = useSearchParams();
@@ -21,10 +28,23 @@ const KakaoRedirectPage = () => {
       console.log("getAccessToken: ", accessToken);
       // 카카오 사용자 정보 요청
       getMemberWithAccessToken(accessToken)
-        .then((memberInfo) => {
+        .then(async (memberInfo) => {
           console.log("memberInfo: ", memberInfo);
           // dispatch를 이용하여 login action을 호출
           dispatch(login(memberInfo));
+          dispatch(setCartEmail(memberInfo.email));
+          dispatch(setNotificationEmail(memberInfo.email));
+
+          // 해당 사용자의 데이터 가져오기
+          try {
+            const cartResponse = await getCartItemList();
+            dispatch(setCartItems(cartResponse));
+
+            const notificationResponse = await getNotificationList();
+            dispatch(setNotificationItems(notificationResponse));
+          } catch (error) {
+            console.error("Failed to fetch user data:", error);
+          }
 
           if (memberInfo) {
             Swal.fire({
