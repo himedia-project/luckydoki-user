@@ -1,7 +1,8 @@
 import axios from "axios";
 import store from "./redux/store";
-import { setAccessToken } from "./redux/loginSlice";
+import { login, setAccessToken } from "./redux/loginSlice";
 import { API_URL } from "../config/apiConfig";
+import { useDispatch } from "react-redux";
 const axiosInstance = axios.create({
   baseURL: `${API_URL}/api`,
   // 쿠키 허용
@@ -45,9 +46,14 @@ axiosInstance.interceptors.response.use(
       const result = await refreshJWT();
       console.log("refreshJWT RESULT", result);
 
-      const accessToken = result.newAccessToken;
-
-      store.dispatch(setAccessToken(accessToken));
+      // 로그인 성공 시 Redux store 업데이트
+      useDispatch(
+        login({
+          email: result.email,
+          roles: result.roles,
+          accessToken: result.accessToken,
+        })
+      );
 
       return axiosInstance(error.config); // 재요청
     }
