@@ -140,8 +140,8 @@ const PaymentPage = () => {
 
       // 주문 목록 조회
       const orderListResponse = await getOrderList();
+      console.log("orderListResponse: ", orderListResponse);
       const latestOrder = orderListResponse.data[0];
-
       const tossPayments = await loadTossPayments(
         process.env.REACT_APP_TOSS_CLIENT_KEY
       );

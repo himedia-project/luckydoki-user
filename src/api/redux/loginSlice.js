@@ -8,25 +8,23 @@ const initState = {
 
 const loginSlice = createSlice({
   name: "loginSlice",
-  initialState: initState,
+  initialState: {
+    email: "",
+    roles: [],
+    accessToken: "",
+  },
   reducers: {
     login: (state, action) => {
-      console.log("login: {}", action.payload);
-      const payload = action.payload; // email, roles, accessToken으로 구성
+      const payload = action.payload;
       return { ...payload };
     },
     logout: (state) => {
-      // email 삭제
-      // accessToken 삭제
       return { ...initState };
     },
     setAccessToken: (state, action) => {
-      console.log("setAccessToken: accessToken", action.payload);
       state.accessToken = action.payload;
     },
     setRoles: (state, action) => {
-      // TODO: seller 관리자 승인시, 알림 줄때 사용
-      console.log("setRoles: roles", action.payload);
       state.roles = action.payload;
     },
   },
