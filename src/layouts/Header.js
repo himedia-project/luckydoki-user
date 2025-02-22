@@ -22,7 +22,7 @@ const Header = () => {
   const navigate = useNavigate();
   // current user email
   const { email } = useSelector((state) => state.loginSlice);
-  // const { notificationItems, email: notificationEmail } = useNotification();
+  const { notifications } = useNotification();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showHeaderTop, setShowHeaderTop] = useState(true);
@@ -32,23 +32,19 @@ const Header = () => {
   const { cartItems, email: cartEmail } = useSelector(
     (state) => state.cartSlice
   );
-  const { notificationItems, email: notificationEmail } = useSelector(
-    (state) => state.notificationSlice
-  );
+  // const { notificationItems, email: notificationEmail } = useSelector(
+  //   (state) => state.notificationSlice
+  // );
   const { updateToken } = useFCMToken();
 
   // 현재 로그인한 사용자의 데이터만 표시
-
+  const currentUserNotifications = notifications;
   const currentUserCartItems = email === cartEmail ? cartItems : [];
-
-  const currentUserNotifications =
-    email === notificationEmail ? notificationItems : [];
 
   console.log("email: ", email);
   console.log("cartEmail: ", cartEmail);
-  console.log("notificationEmail: ", notificationEmail);
-  console.log("currentUserCartItems: ", currentUserCartItems);
   console.log("currentUserNotifications: ", currentUserNotifications);
+  console.log("currentUserCartItems: ", currentUserCartItems);
 
   useEffect(() => {
     const fetchMainCategories = async () => {
