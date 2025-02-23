@@ -115,6 +115,78 @@ const ProductLink = styled.div`
   }
 `;
 
+const StyledText = styled.div`
+  line-height: 1.6;
+  white-space: pre-line;
+
+  h3 {
+    color: #6667ab;
+    margin: 15px 0 10px 0;
+    font-size: 16px;
+  }
+
+  strong {
+    color: #333;
+    font-weight: 600;
+  }
+
+  ul {
+    margin: 10px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin: 5px 0;
+  }
+
+  .product-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #6667ab;
+    margin: 10px 0;
+  }
+
+  .product-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+
+    p {
+      margin: 5px 0;
+    }
+  }
+
+  .highlight {
+    color: #ff6b6b;
+    font-weight: 600;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0 5px;
+
+    &.best {
+      background: #ffd43b;
+      color: #e67700;
+    }
+
+    &.new {
+      background: #d3f9d8;
+      color: #2b8a3e;
+    }
+
+    &.event {
+      background: #fff5f5;
+      color: #e03131;
+    }
+  }
+`;
+
 const ChatbotWindow = ({ onClose }) => {
   const [messages, setMessages] = useState([
     {
@@ -189,7 +261,24 @@ const ChatbotWindow = ({ onClose }) => {
       return `<div class="product-link" data-url="${url}" data-text="${text}"></div>`;
     });
 
-    return processedText;
+    // 텍스트 포맷팅
+    let formattedText = processedText
+      // 제목 포맷팅
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      // 뱃지 포맷팅
+      .replace(/🏆BEST🏆/g, '<span class="badge best">BEST</span>')
+      .replace(/✨NEW✨/g, '<span class="badge new">NEW</span>')
+      .replace(/🎉EVENT🎉/g, '<span class="badge event">EVENT</span>')
+      // 상품 정보 섹션 포맷팅
+      .replace(
+        /\*\*상품 정보:\*\*([\s\S]*?)(?=\*\*|$)/g,
+        '<div class="product-info">$1</div>'
+      )
+      // 줄바꿈 처리
+      .replace(/\n\n/g, "</p><p>")
+      .replace(/\n/g, "<br/>");
+
+    return formattedText;
   };
 
   const handleKeyPress = (e) => {
@@ -203,11 +292,9 @@ const ChatbotWindow = ({ onClose }) => {
       return <Message isUser={true}>{message.text}</Message>;
     }
 
-    // AI 메시지에서 이미지와 링크 처리
     const messageContainer = document.createElement("div");
     messageContainer.innerHTML = message.text;
 
-    // 이미지와 링크 요소 추출
     const images = messageContainer.getElementsByClassName("product-image");
     const links = messageContainer.getElementsByClassName("product-link");
 
@@ -220,10 +307,10 @@ const ChatbotWindow = ({ onClose }) => {
 
     return (
       <Message isUser={false}>
-        {/* 일반 텍스트 먼저 렌더링 */}
-        <div style={{ marginBottom: "10px" }}>{textContent}</div>
+        {/* 텍스트 렌더링 */}
+        <StyledText dangerouslySetInnerHTML={{ __html: textContent }} />
 
-        {/* 이미지와 링크 쌍으로 렌더링 */}
+        {/* 이미지와 링크 렌더링 */}
         {Array.from(images).map((img, index) => {
           const link = links[index];
           if (!link) return null;
