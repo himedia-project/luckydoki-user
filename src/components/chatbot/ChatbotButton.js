@@ -9,19 +9,19 @@ const FloatingButton = styled.button`
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #6667ab; // 쇼핑몰의 메인 컬러
+  background-color: #00b574; // 메인 컬러보다 진한 색상
   border: none;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background-color 0.2s;
   z-index: 1000;
 
   &:hover {
     transform: scale(1.1);
-    background-color: #5556a0;
+    background-color: #009a62; // 호버 시 더 진한 색상
   }
 
   svg {

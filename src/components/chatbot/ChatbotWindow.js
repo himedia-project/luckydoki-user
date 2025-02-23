@@ -21,7 +21,7 @@ const ChatWindow = styled.div`
 `;
 
 const ChatHeader = styled.div`
-  background-color: #6667ab;
+  background-color: #00de90;
   color: white;
   padding: 15px 20px;
   display: flex;
@@ -58,7 +58,7 @@ const Message = styled.div`
   padding: 10px 15px;
   border-radius: 15px;
   margin: ${(props) => (props.isUser ? "0 0 0 auto" : "0")};
-  background-color: ${(props) => (props.isUser ? "#6667AB" : "#f0f0f0")};
+  background-color: ${(props) => (props.isUser ? "#00DE90" : "#f0f0f0")};
   color: ${(props) => (props.isUser ? "white" : "black")};
 `;
 
@@ -77,12 +77,12 @@ const Input = styled.input`
   outline: none;
 
   &:focus {
-    border-color: #6667ab;
+    border-color: #00de90;
   }
 `;
 
 const SendButton = styled.button`
-  background-color: #6667ab;
+  background-color: #00de90;
   color: white;
   border: none;
   border-radius: 20px;
@@ -90,7 +90,7 @@ const SendButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #5556a0;
+    background-color: #00c580;
   }
 `;
 
@@ -109,7 +109,7 @@ const ProductLink = styled.div`
   }
 
   .link-text {
-    color: #6667ab;
+    color: #00de90;
     font-weight: 500;
     text-align: center;
     padding: 5px 0;
@@ -135,7 +135,7 @@ const StyledText = styled.div`
   white-space: pre-line;
 
   h3 {
-    color: #6667ab;
+    color: #00de90;
     margin: 15px 0 10px 0;
     font-size: 16px;
   }
@@ -157,7 +157,7 @@ const StyledText = styled.div`
   .product-title {
     font-size: 15px;
     font-weight: 600;
-    color: #6667ab;
+    color: #00de90;
     margin: 10px 0;
   }
 
@@ -230,7 +230,7 @@ const LoadingIndicator = styled.div`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: #6667ab;
+    background-color: #00de90;
     opacity: 0.3;
     animation: pulse 1s infinite;
 
