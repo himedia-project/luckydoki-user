@@ -1,4 +1,3 @@
-import axiosInstance from "./axiosInstance";
 import axios from "axios";
 
 const host = process.env.REACT_APP_AI_API_URL;
@@ -9,5 +8,5 @@ export const getChatbotResponse = async (question) => {
   const response = await axios.get(
     `${host}/api/chatbot/ask?question=${encodedQuestion}`
   );
-  return response.data;
+  return response;
 };

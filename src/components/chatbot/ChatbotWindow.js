@@ -97,18 +97,28 @@ const SendButton = styled.button`
 const ProductLink = styled.div`
   cursor: pointer;
   margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f8f9fa;
+  transition: all 0.2s ease;
 
-  img {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 5px;
+  &:hover {
+    background: #f1f3f5;
+    transform: translateY(-2px);
+  }
+
+  .link-text {
+    color: #6667ab;
+    font-weight: 500;
+    text-align: center;
+    padding: 5px 0;
   }
 `;
 
 const ChatbotWindow = ({ onClose }) => {
   const [messages, setMessages] = useState([
     {
-      text: "안녕하세요! 럭키도키 쇼핑몰 AI 상담사입니다. 무엇을 도와드릴까요?",
+      text: "안녕하세요! Lukydoki 쇼핑몰 AI 상담사입니다. 무엇을 도와드릴까요?",
       isUser: false,
     },
   ]);
@@ -133,20 +143,24 @@ const ChatbotWindow = ({ onClose }) => {
     try {
       // AI 응답 요청
       const response = await getChatbotResponse(input);
-      const aiResponse = response.data;
 
-      // AI 응답 처리 및 링크/이미지 변환
-      const processedResponse = processAIResponse(aiResponse);
-      setMessages((prev) => [
-        ...prev,
-        { text: processedResponse, isUser: false },
-      ]);
+      // 응답 데이터가 있는지 확인
+      if (response && response.data) {
+        // AI 응답 처리 및 링크/이미지 변환
+        const processedResponse = processAIResponse(response.data);
+        setMessages((prev) => [
+          ...prev,
+          { text: processedResponse, isUser: false },
+        ]);
+      } else {
+        throw new Error("Invalid response format");
+      }
     } catch (error) {
       console.error("챗봇 응답 에러:", error);
       setMessages((prev) => [
         ...prev,
         {
-          text: "죄송합니다. 일시적인 오류가 발생했습니다.",
+          text: "죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
           isUser: false,
         },
       ]);
@@ -160,20 +174,22 @@ const ChatbotWindow = ({ onClose }) => {
     const imageRegex = /!\[([^\]]*)\]\(([^)]*)\)/g;
     const linkRegex = /👉 \[([^\]]*)\]\(([^)]*)\)/g;
 
-    // HTML로 변환
-    let processedResponse = response
-      .replace(
-        imageRegex,
-        (match, alt, url) =>
-          `<div class="product-image" data-url="${url}">${alt}</div>`
-      )
-      .replace(
-        linkRegex,
-        (match, text, url) =>
-          `<div class="product-link" data-url="${url}">${text}</div>`
-      );
+    // 이미지 경로 처리
+    let processedText = response.replace(imageRegex, (match, alt, url) => {
+      // 전체 URL에서 파일명만 추출
+      const imageName = url
+        .split("/")
+        .pop()
+        .replace(/^.*?s_/, "s_");
+      return `<div class="product-image" data-image="${imageName}" data-alt="${alt}"></div>`;
+    });
 
-    return processedResponse;
+    // 링크 처리
+    processedText = processedText.replace(linkRegex, (match, text, url) => {
+      return `<div class="product-link" data-url="${url}" data-text="${text}"></div>`;
+    });
+
+    return processedText;
   };
 
   const handleKeyPress = (e) => {
@@ -191,21 +207,47 @@ const ChatbotWindow = ({ onClose }) => {
     const messageContainer = document.createElement("div");
     messageContainer.innerHTML = message.text;
 
+    // 이미지와 링크 요소 추출
     const images = messageContainer.getElementsByClassName("product-image");
     const links = messageContainer.getElementsByClassName("product-link");
 
+    // 일반 텍스트 추출 (이미지와 링크 태그 제외)
+    const textContent = message.text
+      .replace(/<div class="product-image".*?<\/div>/g, "")
+      .replace(/<div class="product-link".*?<\/div>/g, "")
+      .replace(/!\[.*?\]\(.*?\)/g, "")
+      .replace(/👉 \[.*?\]\(.*?\)/g, "");
+
     return (
       <Message isUser={false}>
-        {Array.from(images).map((img, index) => (
-          <ProductLink
-            key={`img-${index}`}
-            onClick={() => navigate(links[index].dataset.url)}
-          >
-            <ImageLoader imagePath={img.dataset.url} alt={img.textContent} />
-            <div>{links[index].textContent}</div>
-          </ProductLink>
-        ))}
-        {messageContainer.textContent}
+        {/* 일반 텍스트 먼저 렌더링 */}
+        <div style={{ marginBottom: "10px" }}>{textContent}</div>
+
+        {/* 이미지와 링크 쌍으로 렌더링 */}
+        {Array.from(images).map((img, index) => {
+          const link = links[index];
+          if (!link) return null;
+
+          const url = link.dataset.url;
+          // 상품 또는 셀러 페이지로 이동하는 링크 처리
+          const handleClick = () => {
+            if (url.startsWith("/product/")) {
+              navigate(`/product/${url.split("/").pop()}`);
+            } else if (url.startsWith("/shop/")) {
+              navigate(`/shop/${url.split("/").pop()}`);
+            }
+          };
+
+          return (
+            <ProductLink key={`product-${index}`} onClick={handleClick}>
+              <ImageLoader
+                imagePath={img.dataset.image}
+                alt={img.dataset.alt}
+              />
+              <div className="link-text">{link.dataset.text}</div>
+            </ProductLink>
+          );
+        })}
       </Message>
     );
   };
