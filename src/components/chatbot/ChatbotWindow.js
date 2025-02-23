@@ -187,6 +187,55 @@ const StyledText = styled.div`
   }
 `;
 
+// 기존 LoadingDots 대신 새로운 로딩 인디케이터
+const LoadingIndicator = styled.div`
+  display: flex;
+  gap: 4px;
+  padding: 2px;
+
+  span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #6667ab;
+    opacity: 0.3;
+    animation: pulse 1s infinite;
+
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+`;
+
+const LoadingMessage = styled(Message)`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #666;
+  background-color: #f8f9fa;
+  max-width: 200px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+`;
+
 const ChatbotWindow = ({ onClose }) => {
   const [messages, setMessages] = useState([
     {
@@ -195,6 +244,7 @@ const ChatbotWindow = ({ onClose }) => {
     },
   ]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
 
@@ -207,10 +257,11 @@ const ChatbotWindow = ({ onClose }) => {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     // 사용자 메시지 추가
     setMessages((prev) => [...prev, { text: input, isUser: true }]);
+    setIsLoading(true);
 
     try {
       // AI 응답 요청
@@ -236,9 +287,10 @@ const ChatbotWindow = ({ onClose }) => {
           isUser: false,
         },
       ]);
+    } finally {
+      setIsLoading(false);
+      setInput("");
     }
-
-    setInput("");
   };
 
   const processAIResponse = (response) => {
@@ -351,6 +403,16 @@ const ChatbotWindow = ({ onClose }) => {
         {messages.map((message, index) => (
           <div key={index}>{renderMessage(message)}</div>
         ))}
+        {isLoading && (
+          <LoadingMessage>
+            <span>AI 응답 생성중</span>
+            <LoadingIndicator>
+              <span />
+              <span />
+              <span />
+            </LoadingIndicator>
+          </LoadingMessage>
+        )}
         <div ref={messagesEndRef} />
       </ChatMessages>
       <InputArea>
@@ -359,8 +421,15 @@ const ChatbotWindow = ({ onClose }) => {
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="메시지를 입력하세요..."
+          disabled={isLoading}
         />
-        <SendButton onClick={handleSend}>전송</SendButton>
+        <SendButton
+          onClick={handleSend}
+          disabled={isLoading}
+          style={{ opacity: isLoading ? 0.6 : 1 }}
+        >
+          전송
+        </SendButton>
       </InputArea>
     </ChatWindow>
   );
