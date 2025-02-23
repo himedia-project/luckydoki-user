@@ -101,6 +101,7 @@ const ProductLink = styled.div`
   border-radius: 8px;
   background: #f8f9fa;
   transition: all 0.2s ease;
+  width: 200px;
 
   &:hover {
     background: #f1f3f5;
@@ -112,6 +113,20 @@ const ProductLink = styled.div`
     font-weight: 500;
     text-align: center;
     padding: 5px 0;
+    font-size: 13px;
+  }
+`;
+
+const ImageContainer = styled.div`
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 8px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 `;
 
@@ -150,11 +165,29 @@ const StyledText = styled.div`
     background: #f8f9fa;
     padding: 15px;
     border-radius: 8px;
-    margin: 10px 0;
+    margin: 20px 0;
 
     p {
-      margin: 5px 0;
+      margin: 8px 0;
     }
+
+    p:has(+ p:first-of-type:before) {
+      margin-bottom: 16px;
+    }
+
+    p:before {
+      content: "";
+      margin-right: 8px;
+    }
+  }
+
+  p + .product-info {
+    margin-top: 20px;
+  }
+
+  .badge + strong,
+  strong + .badge {
+    margin-left: 8px;
   }
 
   .highlight {
@@ -298,9 +331,24 @@ const ChatbotWindow = ({ onClose }) => {
     const imageRegex = /!\[([^\]]*)\]\(([^)]*)\)/g;
     const linkRegex = /👉 \[([^\]]*)\]\(([^)]*)\)/g;
 
+    // 이미지 관련 텍스트 제거를 위한 정규식 수정
+    const imageTextRegex = /(?:상품|셀러) 이미지:?\s*\n*/g; // 수정된 부분
+    const imageAndLinkTextRegex =
+      /\*\*(?:상품|셀러) 이미지 및 링크:\*\*\s*\n*/g;
+
+    // 이미지 관련 텍스트 제거
+    let cleanedText = response
+      // "상품 이미지:" 또는 "셀러 이미지:" 텍스트 제거
+      .replace(imageTextRegex, "")
+      // "상품 이미지 및 링크:" 또는 "셀러 이미지 및 링크:" 텍스트 제거
+      .replace(imageAndLinkTextRegex, "")
+      // 이미지와 링크 텍스트 사이의 빈 줄 제거
+      .replace(/\n\n+/g, "\n\n")
+      // 줄 시작 부분의 불필요한 공백 제거
+      .replace(/^\s+/gm, "");
+
     // 이미지 경로 처리
-    let processedText = response.replace(imageRegex, (match, alt, url) => {
-      // 전체 URL에서 파일명만 추출
+    let processedText = cleanedText.replace(imageRegex, (match, alt, url) => {
       const imageName = url
         .split("/")
         .pop()
@@ -322,13 +370,18 @@ const ChatbotWindow = ({ onClose }) => {
       .replace(/✨NEW✨/g, '<span class="badge new">NEW</span>')
       .replace(/🎉EVENT🎉/g, '<span class="badge event">EVENT</span>')
       // 상품 정보 섹션 포맷팅
-      .replace(
-        /\*\*상품 정보:\*\*([\s\S]*?)(?=\*\*|$)/g,
-        '<div class="product-info">$1</div>'
-      )
+      .replace(/\*\*상품 정보:\*\*([\s\S]*?)(?=\*\*|$)/g, (match, content) => {
+        // • 로 시작하는 줄 앞에 추가 여백
+        const formattedContent = content
+          .replace(/^•/gm, '<span class="bullet">•</span>')
+          .trim();
+        return `<div class="product-info">${formattedContent}</div>`;
+      })
       // 줄바꿈 처리
       .replace(/\n\n/g, "</p><p>")
-      .replace(/\n/g, "<br/>");
+      .replace(/\n/g, "<br/>")
+      // 연속된 빈 줄 제거
+      .replace(/<br\/>\s*<br\/>/g, "<br/>");
 
     return formattedText;
   };
@@ -379,10 +432,12 @@ const ChatbotWindow = ({ onClose }) => {
 
           return (
             <ProductLink key={`product-${index}`} onClick={handleClick}>
-              <ImageLoader
-                imagePath={img.dataset.image}
-                alt={img.dataset.alt}
-              />
+              <ImageContainer>
+                <ImageLoader
+                  imagePath={img.dataset.image}
+                  alt={img.dataset.alt}
+                />
+              </ImageContainer>
               <div className="link-text">{link.dataset.text}</div>
             </ProductLink>
           );
