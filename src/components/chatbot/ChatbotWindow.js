@@ -394,7 +394,7 @@ const ChatbotWindow = ({ onClose }) => {
   return (
     <ChatWindow>
       <ChatHeader>
-        <h3>럭키도키 AI 상담사</h3>
+        <h3>Luckydoki AI 챗봇</h3>
         <CloseButton onClick={onClose}>
           <IoClose />
         </CloseButton>
