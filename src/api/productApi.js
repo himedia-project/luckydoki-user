@@ -12,6 +12,11 @@ export const getProductList = async (
   });
 };
 
+// 추천 상품 리스트
+export const getRecommendProductList = async () => {
+  return await axiosInstance.get(`/product/recommend/list`);
+};
+
 // 상품 정보 가져오기(detail)
 export const getProductInfo = async (productId) => {
   return await axiosInstance.get(`/product/${productId}/detail`);
