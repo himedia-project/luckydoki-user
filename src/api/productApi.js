@@ -4,10 +4,10 @@ import axiosInstance from "../api/axiosInstance";
 export const getProductList = async (
   searchKeyword = "",
   tagIdList = "",
-  excludeId = 0
+  excludeIdList = ""
 ) => {
   return await axiosInstance.get(`/product/list`, {
-    params: { searchKeyword, tagIdList, excludeId },
+    params: { searchKeyword, tagIdList, excludeIdList },
     withCredentials: true,
   });
 };

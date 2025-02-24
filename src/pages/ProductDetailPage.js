@@ -85,8 +85,8 @@ export default function ProductDetail() {
 
       try {
         const tagIdList = product.tagList.map((tag) => tag.id).join(",");
-        const excludeId = product.id;
-        const response = await getProductList("", tagIdList, excludeId);
+        const excludeIdList = product.id;
+        const response = await getProductList("", tagIdList, excludeIdList);
         console.log("API 응답 데이터 구조:", response.data);
         setProductList(response.data);
       } catch (error) {
