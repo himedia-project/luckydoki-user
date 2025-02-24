@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import style from "../../styles/UserInfoPage.module.css";
-import axiosInstance from "../../api/axiosInstance";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getMyProfile, updateMyProfile } from "../../api/memberApi";
 import { quitMember } from "../../api/loginApi";

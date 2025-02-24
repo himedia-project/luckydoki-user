@@ -1,0 +1,23 @@
+.skeletonSection {
+  margin-top: 40px;
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+  width: 100%;
+}
+
+.skeletonGrid {
+  display: flex;
+  gap: 16px;
+  overflow: visible;
+  width: 100%;
+}

@@ -9,8 +9,6 @@ import ProductCard from "../card/ProductCard";
 
 const ProductSwiper = ({ title, items }) => {
   const swiperRef = useRef(null);
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
   const [swiperId] = useState(
     () => `swiper-${Math.random().toString(36).substr(2, 9)}`
   );

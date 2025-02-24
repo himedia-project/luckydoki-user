@@ -6,6 +6,8 @@ import ProductCard from "../components/card/ProductCard";
 import CommunityCard from "../components/card/CommunityCard";
 import { IoSearchSharp } from "react-icons/io5";
 import RecentSearchDropdown from "../components/dropdown/RecentSearchDropdown"; // 추가
+import { getProductList } from "../api/productApi";
+import ProductSwiper from "../components/swiper/ProductSwiper";
 
 export default function SearchPage() {
   const [keyword, setKeyword] = useState("");
@@ -13,9 +15,11 @@ export default function SearchPage() {
   const [communityResults, setCommunityResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [activeTab, setActiveTab] = useState("product");
-
+  const [products, setProducts] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // 최근 검색어 드롭다운 상태
+  const [randomProducts, setRandomProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!searchParams.get("searchKeyword")) {
@@ -31,6 +35,7 @@ export default function SearchPage() {
     if (e.key === "Enter") {
       if (keyword.trim() === "") return;
       setSearchParams({ searchKeyword: keyword });
+      setIsLoading(true);
 
       try {
         const productResponse = await searchProduct(keyword);
@@ -51,10 +56,33 @@ export default function SearchPage() {
         setIsDropdownOpen(false);
       } catch (error) {
         console.error("검색 실패:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
   let blurTimeout; // 🔥 마우스 벗어날 때 닫는 타이머 변수
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const productRes = await getProductList();
+        const allProducts = productRes.data;
+
+        setProducts(allProducts);
+        setRandomProducts(
+          allProducts.sort(() => 0.5 - Math.random()).slice(0, 20)
+        );
+      } catch (error) {
+        console.error("🚨 데이터 가져오기 실패:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData(); // 🔥 버그 수정: useEffect 내에서 fetchData 호출
+  }, []);
 
   const handleBlur = (e) => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
@@ -195,6 +223,7 @@ export default function SearchPage() {
                     best={item.best}
                     reviewAverage={item.reviewAverage}
                     reviewCount={item.reviewCount}
+                    isLoading={isLoading}
                   />
                 ))
               )}
@@ -249,6 +278,15 @@ export default function SearchPage() {
           )}
         </div>
       )}
+      <section className={styles.relatedContainer}>
+        {!searchParams.get("searchKeyword") && (
+          <ProductSwiper
+            title="혹시 이 상품을 찾으시나요?"
+            items={randomProducts}
+            isLoading={isLoading}
+          />
+        )}
+      </section>
     </div>
   );
 }
