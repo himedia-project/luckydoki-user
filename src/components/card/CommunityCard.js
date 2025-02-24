@@ -40,6 +40,17 @@ const CommunityCard = ({
     event.stopPropagation();
 
     if (shopId === null || shopId === undefined) {
+      navigate(`/community/${id}`, {
+        state: {
+          id,
+          content,
+          createdAt,
+          nickName,
+          uploadFileNames,
+          sellerImage,
+          productDTOs,
+        },
+      });
       return;
     }
 
