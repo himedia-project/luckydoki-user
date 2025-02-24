@@ -1,7 +1,7 @@
 .container {
   display: flex;
   max-width: 1280px;
-  margin: 20px auto;
+  margin: 20px auto 80px;
   gap: 30px;
 }
 
@@ -286,4 +286,7 @@
   border: none;
   font-size: 18px;
   cursor: pointer;
+}
+
+.relatedContainer {
 }

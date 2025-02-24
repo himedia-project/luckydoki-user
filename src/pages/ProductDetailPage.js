@@ -4,7 +4,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { addCartItem } from "../api/cartApi";
 import { getOrderList } from "../api/orderApi";
-import { getProductInfo, validateCount } from "../api/productApi";
+import {
+  getProductInfo,
+  getProductList,
+  validateCount,
+} from "../api/productApi";
 import { getReviewByProduct } from "../api/reviewApi";
 import LikeButton from "../components/button/LikeButton";
 import MessageButton from "../components/button/MessageButton";
@@ -13,6 +17,7 @@ import ReviewCard from "../components/card/ReviewCard";
 import ReviewRating from "../components/ReviewRating";
 import style from "../styles/ProductDetail.module.css";
 import { addCartItems } from "../api/redux/cartSlice";
+import ProductSwiper from "../components/swiper/ProductSwiper";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
@@ -20,6 +25,7 @@ export default function ProductDetail() {
   const dispatch = useDispatch();
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
+  const [productList, setProductList] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState("");
@@ -57,9 +63,19 @@ export default function ProductDetail() {
       }
     };
 
+    const fetchProductList = async () => {
+      try {
+        const response = await getProductList();
+        setProductList(response.data);
+      } catch (error) {
+        console.error("상품 리스트 불러오는 데 실패했습니다.", error);
+      }
+    };
+
     fetchProduct();
     fetchReviews();
     fetchOrders();
+    fetchProductList();
   }, [productId]);
 
   // 가격 계산
@@ -223,167 +239,161 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className={style.container}>
-      {/* 왼쪽 섹션 */}
-      <section className={style.leftSection}>
-        <div className={style.imageContainer}>
-          {/* 상품 대표 이미지 */}
-          <ImageLoader
-            imagePath={mainImage}
-            alt={product?.name}
-            className={style.mainImage}
-          />
-          {/* 썸네일 이미지 리스트 */}
-          <div className={style.thumbnailContainer}>
-            {product?.uploadFileNames.map((img, index) => (
-              <ImageLoader
-                key={index}
-                imagePath={img}
-                alt={`상품 이미지 ${index + 1}`}
-                className={`${style.thumbnail} ${
-                  img === mainImage ? style.activeThumbnail : ""
-                }`}
-                onClick={() => setMainImage(img)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* 사이드바 */}
-        {/* <div className={style.sidebar}>
-          <button
-            className={style.sidebarButton}
-            onClick={() => handleScrollToSection(productInfoRef)}
-          >
-            상품정보
-          </button>
-          <button
-            className={style.sidebarButton}
-            onClick={() => handleScrollToSection(reviewSectionRef)}
-          >
-            상품리뷰
-          </button>
-        </div> */}
-
-        {/* 상품 정보 */}
-        <div className={style.productDescription} ref={productInfoRef}>
-          <p>{product?.description}</p>
-        </div>
-
-        {/* 리뷰 */}
-        <div className={style.reviewSection} ref={reviewSectionRef}>
-          <div className={style.review_top}>
-            <h3>상품 리뷰 ({reviews.length})</h3>
-            <p
-              className={style.review_add_button}
-              onClick={handleMoveReviewAdd}
-            >
-              리뷰 작성
-            </p>
-          </div>
-
-          {reviews.length > 0 ? (
-            <div className={style.reviewList}>
-              {reviews.map((review) => (
-                <ReviewCard key={review.id} review={review} />
+    <div className={style.detailContainer}>
+      <div className={style.container}>
+        {/* 왼쪽 섹션 */}
+        <section className={style.leftSection}>
+          <div className={style.imageContainer}>
+            {/* 상품 대표 이미지 */}
+            <ImageLoader
+              imagePath={mainImage}
+              alt={product?.name}
+              className={style.mainImage}
+            />
+            {/* 썸네일 이미지 리스트 */}
+            <div className={style.thumbnailContainer}>
+              {product?.uploadFileNames.map((img, index) => (
+                <ImageLoader
+                  key={index}
+                  imagePath={img}
+                  alt={`상품 이미지 ${index + 1}`}
+                  className={`${style.thumbnail} ${
+                    img === mainImage ? style.activeThumbnail : ""
+                  }`}
+                  onClick={() => setMainImage(img)}
+                />
               ))}
             </div>
-          ) : (
-            <p>등록된 리뷰가 없습니다.</p>
-          )}
-        </div>
-
-        {/* 태그 */}
-        <div className={style.tagSection}>
-          <h3>작품 키워드</h3>
-          <div className={style.tagList}>
-            {product?.tagStrList.map((tag, index) => (
-              <span key={index} className={style.tag}>
-                #{tag}
-              </span>
-            ))}
           </div>
-        </div>
-      </section>
-
-      {/* 오른쪽 섹션 */}
-      <section className={style.rightSection}>
-        <div className={style.shopInfo} onClick={handleMoveShop}>
-          <div className={style.sellerInfo}>
-            <ImageLoader
-              imagePath={product?.shopImage}
-              alt="샵 이미지"
-              className={style.shop_img}
-            />
-            <p>{product?.shopName} Shop</p>
-          </div>
-          <ReviewRating rating={product?.reviewAverage} />
-        </div>
-
-        {/* 좋아요 */}
-        <div className={style.title_container}>
-          <h2 className={style.productName}>{product?.name}</h2>
-          <LikeButton
-            initialLikeState={product?.likes}
-            itemId={productId}
-            isShop={false}
-            className={style.heart_img}
-            unlikedIcon="/heart.png"
-            likedIcon="/fillHeart.png"
-          />
-        </div>
-
-        {/* 할인 정보 */}
-        <div className={style.priceSection}>
-          <div className={style.discountBox}>
-            {isDiscounted && (
-              <span className={style.discountRate}>
-                {product?.discountRate}%
-              </span>
-            )}
-            {isDiscounted && (
-              <p className={style.originalPrice}>
-                {product?.price.toLocaleString()}원
-              </p>
-            )}
-          </div>
-          <p className={style.discountPrice}>
-            {product?.discountPrice.toLocaleString()}원
-          </p>
-        </div>
-
-        {/* 수량 선택 */}
-        <div className={style.quantitySelector}>
-          <p>수량</p>
-          <div className={style.quantity_button_container}>
-            <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-              -
+          {/* 사이드바 */}
+          {/* <div className={style.sidebar}>
+            <button
+              className={style.sidebarButton}
+              onClick={() => handleScrollToSection(productInfoRef)}
+            >
+              상품정보
             </button>
-            <span className={style.total_quantity}>{quantity}</span>
-            <button onClick={() => setQuantity(quantity + 1)}>+</button>
+            <button
+              className={style.sidebarButton}
+              onClick={() => handleScrollToSection(reviewSectionRef)}
+            >
+              상품리뷰
+            </button>
+          </div> */}
+          {/* 상품 정보 */}
+          <div className={style.productDescription} ref={productInfoRef}>
+            <p>{product?.description}</p>
           </div>
-        </div>
-
-        {/* 총 결제 금액 */}
-        <div className={style.totalPrice}>
-          총 결제금액: <strong>{totalPrice}원</strong>
-        </div>
-
-        {/* 버튼 */}
-        <div className={style.buttonContainer}>
-          <button className={style.cartButton} onClick={handleAddToCart}>
-            장바구니
-          </button>
-          <button className={style.buyButton} onClick={handleAddToPayment}>
-            구매하기
-          </button>
-        </div>
+          {/* 리뷰 */}
+          <div className={style.reviewSection} ref={reviewSectionRef}>
+            <div className={style.review_top}>
+              <h3>상품 리뷰 ({reviews.length})</h3>
+              <p
+                className={style.review_add_button}
+                onClick={handleMoveReviewAdd}
+              >
+                리뷰 작성
+              </p>
+            </div>
+            {reviews.length > 0 ? (
+              <div className={style.reviewList}>
+                {reviews.map((review) => (
+                  <ReviewCard key={review.id} review={review} />
+                ))}
+              </div>
+            ) : (
+              <p>등록된 리뷰가 없습니다.</p>
+            )}
+          </div>
+          {/* 태그 */}
+          <div className={style.tagSection}>
+            <h3>작품 키워드</h3>
+            <div className={style.tagList}>
+              {product?.tagStrList.map((tag, index) => (
+                <span key={index} className={style.tag}>
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+        {/* 오른쪽 섹션 */}
+        <section className={style.rightSection}>
+          <div className={style.shopInfo} onClick={handleMoveShop}>
+            <div className={style.sellerInfo}>
+              <ImageLoader
+                imagePath={product?.shopImage}
+                alt="샵 이미지"
+                className={style.shop_img}
+              />
+              <p>{product?.shopName} Shop</p>
+            </div>
+            <ReviewRating rating={product?.reviewAverage} />
+          </div>
+          {/* 좋아요 */}
+          <div className={style.title_container}>
+            <h2 className={style.productName}>{product?.name}</h2>
+            <LikeButton
+              initialLikeState={product?.likes}
+              itemId={productId}
+              isShop={false}
+              className={style.heart_img}
+              unlikedIcon="/heart.png"
+              likedIcon="/fillHeart.png"
+            />
+          </div>
+          {/* 할인 정보 */}
+          <div className={style.priceSection}>
+            <div className={style.discountBox}>
+              {isDiscounted && (
+                <span className={style.discountRate}>
+                  {product?.discountRate}%
+                </span>
+              )}
+              {isDiscounted && (
+                <p className={style.originalPrice}>
+                  {product?.price.toLocaleString()}원
+                </p>
+              )}
+            </div>
+            <p className={style.discountPrice}>
+              {product?.discountPrice.toLocaleString()}원
+            </p>
+          </div>
+          {/* 수량 선택 */}
+          <div className={style.quantitySelector}>
+            <p>수량</p>
+            <div className={style.quantity_button_container}>
+              <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+                -
+              </button>
+              <span className={style.total_quantity}>{quantity}</span>
+              <button onClick={() => setQuantity(quantity + 1)}>+</button>
+            </div>
+          </div>
+          {/* 총 결제 금액 */}
+          <div className={style.totalPrice}>
+            총 결제금액: <strong>{totalPrice}원</strong>
+          </div>
+          {/* 버튼 */}
+          <div className={style.buttonContainer}>
+            <button className={style.cartButton} onClick={handleAddToCart}>
+              장바구니
+            </button>
+            <button className={style.buyButton} onClick={handleAddToPayment}>
+              구매하기
+            </button>
+          </div>
+        </section>
+        <MessageButton
+          shopId={product?.shopId}
+          shopImage={product?.shopImage}
+          shopName={product?.shopName}
+        />
+      </div>
+      <section className={style.relatedContainer}>
+        <ProductSwiper title="이런 상품은 어떠세요?" items={productList} />
       </section>
-      <MessageButton
-        shopId={product?.shopId}
-        shopImage={product?.shopImage}
-        shopName={product?.shopName}
-      />
     </div>
   );
 }
