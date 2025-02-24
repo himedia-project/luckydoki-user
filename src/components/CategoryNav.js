@@ -2,10 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getSubCategories, getChildCategories } from "../api/categoryApi";
 import style from "../styles/CategoryNav.module.css";
+import { useDispatch } from "react-redux";
+import { setExpandedCategory } from "../api/redux/categorySlice";
 
-const CategoryNav = ({ activeCategory, isDropdownVisible }) => {
+const CategoryNav = ({
+  activeCategory,
+  isDropdownVisible,
+  setDropdownVisible,
+}) => {
   const [subCategories, setSubCategories] = useState([]);
   const [childCategories, setChildCategories] = useState({});
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!activeCategory) {
@@ -49,6 +56,11 @@ const CategoryNav = ({ activeCategory, isDropdownVisible }) => {
     fetchChildCategories();
   }, [subCategories]);
 
+  const handleCategoryClick = (subId) => {
+    dispatch(setExpandedCategory(subId));
+    setDropdownVisible(false); // 드롭박스 닫기
+  };
+
   return (
     <div
       className={`${style.category_wrapper} ${
@@ -66,12 +78,17 @@ const CategoryNav = ({ activeCategory, isDropdownVisible }) => {
                   <li
                     key={`${sub.categoryId}-all`}
                     className={style.child_item}
+                    onClick={() => handleCategoryClick(sub.categoryId)}
                   >
                     <Link to={`/category/${sub.categoryId}`}>전체</Link>
                   </li>
                   {/* 🔹 기존 자식 카테고리 리스트 */}
                   {(childCategories[sub.categoryId] || []).map((child) => (
-                    <li key={child.categoryId} className={style.child_item}>
+                    <li
+                      key={child.categoryId}
+                      className={style.child_item}
+                      onClick={() => handleCategoryClick(sub.categoryId)}
+                    >
                       <Link to={`/category/${child.categoryId}`}>
                         {child.name}
                       </Link>
