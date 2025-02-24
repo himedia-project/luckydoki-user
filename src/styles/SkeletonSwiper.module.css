@@ -1,0 +1,28 @@
+.skeletonSection {
+  margin-top: 40px;
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+}
+
+.skeletonGrid {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  overflow: visible; /* ✅ Swiper의 `overflow: hidden;` 영향 방지 */
+}
+
+.skeletonItem {
+  width: 243px;
+  height: 370px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

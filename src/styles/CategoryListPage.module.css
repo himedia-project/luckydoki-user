@@ -1,4 +1,10 @@
-.productListContainer {
+.productGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.skeletonGrid {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
