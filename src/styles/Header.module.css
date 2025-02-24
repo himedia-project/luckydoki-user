@@ -6,9 +6,34 @@
   flex-direction: column;
   align-items: center;
   position: fixed;
-  top: 0;
+  top: 0px;
   left: 0;
   z-index: 10;
+}
+.header {
+  width: 100%;
+  background-color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+.eventBanner {
+  background-color: #333;
+  color: #d9d9d9;
+  font-size: 12px;
+  padding: 7px;
+  width: 100vw;
+  height: 30px;
+  left: 0;
+  z-index: 20;
+  transition: transform 0.5s ease-in-out; /* ✅ 부드러운 이동 효과 */
+}
+
+.eventBanner.hidden {
+  transform: translateY(-100%); /* ✅ 위로 자연스럽게 사라짐 */
+  pointer-events: none;
 }
 
 .header_top {
@@ -128,13 +153,11 @@
   gap: 30px;
 }
 
-/* ✅ 네비게이션 스타일 */
 .category_nav li {
   position: relative;
   transition: color 0.2s ease-in-out;
 }
 
-/* ✅ 활성화된 카테고리만 스타일 적용 */
 .category_nav li.active,
 .category_nav li:hover {
   color: #333;
@@ -144,7 +167,6 @@
   text-decoration-color: #666;
 }
 
-/* ✅ 드롭다운이 활성화된 상태일 때도 카테고리 스타일 유지 */
 .header_bottom:hover .category_nav li.active {
   color: #333;
   text-decoration: underline;
@@ -153,7 +175,6 @@
   text-decoration-color: #666;
 }
 
-/* ✅ 드롭다운 내부에 있어도 호버 상태 유지 */
 .header_bottom:hover .category_dropdown,
 .category_dropdown:hover {
   opacity: 1;
@@ -161,25 +182,20 @@
   transform: translateY(0);
 }
 
-/* ✅ 드롭다운 메뉴 스타일 */
 .category_dropdown {
   position: absolute;
   top: 100%;
   left: 0;
-  width: 100%;
+  width: 100vw;
   background: white;
-  z-index: 999;
-  opacity: 0;
-  visibility: hidden;
+  display: none;
   transform: translateY(-10px);
   border-top: 1px solid #ddd;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* ✅ 드롭다운이 활성화된 상태 */
 .category_dropdown.visible {
-  opacity: 1;
-  visibility: visible;
+  display: block;
   transform: translateY(0);
 }
 

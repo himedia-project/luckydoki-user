@@ -7,6 +7,7 @@ import TopButton from "../components/button/TopButton";
 import style from "../styles/MainLayout.module.css";
 import Footer from "./Footer";
 import Header from "./Header";
+import EventBanner from "../components/EventBanner";
 
 const MainLayout = () => {
   const dispatch = useDispatch();
