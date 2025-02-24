@@ -16,6 +16,7 @@
 .shopImage {
   width: 30px;
   height: 30px;
+  cursor: pointer;
 }
 
 .infoBox {
@@ -26,11 +27,13 @@
 
 .author {
   font-weight: 700;
+  cursor: pointer;
 }
 
 .date {
   font-size: 12px;
   color: #666;
+  cursor: pointer;
 }
 
 .section {

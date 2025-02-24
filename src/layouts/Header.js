@@ -16,6 +16,7 @@ import {
   setNotificationEmail,
 } from "../api/redux/notificationSlice";
 import { clearInfo } from "../api/redux/infoSlice";
+import { logoutPost } from "../api/loginApi";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -125,7 +126,6 @@ const Header = () => {
       return;
     }
 
-    // ✅ 드롭다운 내부로 이동한 경우 상태 유지
     if (
       relatedTarget.closest(`.${style.category_dropdown}`) ||
       relatedTarget.closest(`.${style.category_nav}`)
@@ -133,7 +133,6 @@ const Header = () => {
       return;
     }
 
-    // ✅ 드롭다운 영역을 벗어난 경우 닫기
     setIsDropdownVisible(false);
     setActiveCategory(null);
   };
@@ -157,6 +156,9 @@ const Header = () => {
         dispatch(clearCartItems());
         dispatch(clearNotificationItems());
         dispatch(clearInfo());
+
+        const response = logoutPost();
+        console.log("logoutPost response: ", response);
 
         Swal.fire({
           title: "로그아웃되었습니다.",
@@ -314,6 +316,7 @@ const Header = () => {
             <CategoryNav
               activeCategory={activeCategory}
               isDropdownVisible={isDropdownVisible}
+              setDropdownVisible={setIsDropdownVisible}
             />
           )}
         </div>
