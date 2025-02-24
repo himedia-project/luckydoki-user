@@ -28,11 +28,11 @@
   height: 30px;
   left: 0;
   z-index: 20;
-  transition: transform 0.5s ease-in-out; /* ✅ 부드러운 이동 효과 */
+  transition: transform 0.5s ease-in-out;
 }
 
 .eventBanner.hidden {
-  transform: translateY(-100%); /* ✅ 위로 자연스럽게 사라짐 */
+  transform: translateY(-100%);
   pointer-events: none;
 }
 
