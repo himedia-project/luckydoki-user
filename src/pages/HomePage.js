@@ -14,11 +14,13 @@ const HomePage = () => {
   const [newProducts, setNewProducts] = useState([]);
   const [bestProducts, setBestProducts] = useState([]);
   const [discountedProducts, setDiscountedProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const accessToken = useSelector((state) => state.loginSlice.accessToken);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         // ✅ 이벤트 데이터 가져오기
         const eventRes = await axiosInstance.get(`/event/list`);
@@ -39,6 +41,8 @@ const HomePage = () => {
         );
       } catch (error) {
         console.error("🚨 데이터 가져오기 실패:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -53,18 +57,31 @@ const HomePage = () => {
       </div>
 
       <section className={styles.section}>
-        <ProductSwiper title="이 상품을 찾으시나요?" items={randomProducts} />
+        <ProductSwiper
+          title="이 상품을 찾으시나요?"
+          items={randomProducts}
+          isLoading={isLoading}
+        />
       </section>
       <section className={styles.section}>
-        <ProductSwiper title="신규 상품" items={newProducts} />
+        <ProductSwiper
+          title="신규 상품"
+          items={newProducts}
+          isLoading={isLoading}
+        />
       </section>
       <section className={styles.section}>
-        <ProductSwiper title="베스트 상품" items={bestProducts} />
+        <ProductSwiper
+          title="베스트 상품"
+          items={bestProducts}
+          isLoading={isLoading}
+        />
       </section>
       <section className={styles.section}>
         <ProductSwiper
           title="사장님이 미쳤어요! 대폭 할인 상품"
           items={discountedProducts}
+          isLoading={isLoading}
         />
       </section>
     </div>

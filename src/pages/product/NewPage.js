@@ -8,10 +8,12 @@ import TopButton from "../../components/button/TopButton";
 
 const NewPage = () => {
   const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchNewProducts = async () => {
       try {
+        setIsLoading(true);
         const response = await getProductList("");
 
         // ✅ isNew === "Y" 인 상품들만 필터링
@@ -22,6 +24,8 @@ const NewPage = () => {
         setProducts(newProducts);
       } catch (error) {
         console.error("신규 상품 불러오기 실패:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -34,7 +38,7 @@ const NewPage = () => {
 
       <div className={style.productListContainer}>
         <h2 className={style.pageTitle}>최신상품</h2>
-        {products.length > 0 ? (
+        {
           <div className={style.productGrid}>
             {products.map((product) => (
               <ProductCard
@@ -55,12 +59,11 @@ const NewPage = () => {
                 best={product.best}
                 reviewAverage={product.reviewAverage}
                 reviewCount={product.reviewCount}
+                isLoading={isLoading}
               />
             ))}
           </div>
-        ) : (
-          <p className={style.noProduct}>⚠️ 상품을 불러오고 있습니다.</p>
-        )}
+        }
         <TopButton />
       </div>
 

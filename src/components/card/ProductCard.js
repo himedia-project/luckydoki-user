@@ -5,6 +5,8 @@ import LikeButton from "../button/LikeButton";
 import ImageLoader from "./ImageLoader";
 import ReviewRating from "../ReviewRating";
 import { getProductInfo } from "../../api/productApi";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const ProductCard = ({
   id,
@@ -20,13 +22,48 @@ const ProductCard = ({
   onUnlike,
   reviewAverage,
   reviewCount,
+  isLoading,
 }) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
     navigate(`/product/${id}`);
   };
+  if (isLoading) {
+    return (
+      <div className={styles.productCard}>
+        {/* ✅ 이미지 스켈레톤 */}
+        <div className={styles.imageContainer}>
+          <Skeleton height={160} width="100%" />
+          <div className={styles.likeButton}>
+            <Skeleton circle width={24} height={24} />
+          </div>
+        </div>
 
+        {/* ✅ 상품 이름 */}
+        <p className={styles.productName}>
+          <Skeleton width="80%" />
+        </p>
+
+        {/* ✅ 가격 */}
+        <div className={styles.productPrice}>
+          <Skeleton width="40%" />
+          <Skeleton width="60%" />
+        </div>
+
+        {/* ✅ 태그 */}
+        <div className={styles.tagContainer}>
+          <Skeleton width={40} height={20} />
+          <Skeleton width={40} height={20} />
+        </div>
+
+        {/* ✅ 별점 */}
+        <div className={styles.rating}>
+          <Skeleton width={60} height={20} />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className={styles.productCard} onClick={handleCardClick}>
       {/* ✅ 이미지 컨테이너 */}

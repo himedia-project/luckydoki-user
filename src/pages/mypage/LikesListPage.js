@@ -20,7 +20,7 @@ export default function LikesListPage() {
     if (location.state?.tab) {
       setSelectedTab(location.state.tab);
     }
-  }, [location.state]);
+  }, [location.state, setSelectedTab]);
 
   return (
     <div className={style.wish_container}>

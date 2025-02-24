@@ -4,15 +4,16 @@ import ProductCard from "../../components/card/ProductCard";
 import Footer from "../../layouts/Footer";
 import Header from "../../layouts/Header";
 import style from "../../styles/ProductListPage.module.css";
-import QuickButtonNav from "../../components/QuickButtonNav";
 import TopButton from "../../components/button/TopButton";
 
 const PopularPage = () => {
   const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchPopularProducts = async () => {
       try {
+        setIsLoading(true);
         const response = (await getProductList()) || []; // ✅ undefined 방지
         console.log("📌 전체 응답 데이터:", response);
 
@@ -25,6 +26,8 @@ const PopularPage = () => {
         setProducts(bestProducts);
       } catch (error) {
         console.error("인기 상품 불러오기 실패:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -36,7 +39,7 @@ const PopularPage = () => {
       <Header />
       <div className={style.productListContainer}>
         <h2 className={style.pageTitle}>인기상품</h2>
-        {products.length > 0 ? (
+        {
           <div className={style.productGrid}>
             {products.map((product) => (
               <ProductCard
@@ -57,12 +60,11 @@ const PopularPage = () => {
                 best={product.best}
                 reviewAverage={product.reviewAverage}
                 reviewCount={product.reviewCount}
+                isLoading={isLoading}
               />
             ))}
           </div>
-        ) : (
-          <p className={style.noProduct}>⚠️ 상품을 불러오고 있습니다.</p>
-        )}
+        }
         <TopButton />
       </div>
       <Footer />
