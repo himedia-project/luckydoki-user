@@ -30,6 +30,8 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState("");
   const [orders, setOrders] = useState([]);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isLongText, setIsLongText] = useState(false);
   const productInfoRef = useRef(null);
   const reviewSectionRef = useRef(null);
 
@@ -77,6 +79,15 @@ export default function ProductDetail() {
     fetchOrders();
     fetchProductList();
   }, [productId]);
+
+  useEffect(() => {
+    if (productInfoRef.current) {
+      const element = productInfoRef.current;
+      if (element.scrollHeight > element.clientHeight) {
+        setIsLongText(true);
+      }
+    }
+  }, [product?.description]);
 
   // 가격 계산
   const totalPrice = (product?.discountPrice * quantity).toLocaleString();
@@ -281,9 +292,44 @@ export default function ProductDetail() {
             </button>
           </div> */}
           {/* 상품 정보 */}
-          <div className={style.productDescription} ref={productInfoRef}>
-            <p>{product?.description}</p>
+          <div className={style.productDescriptionContainer}>
+            {/* ✅ 글이 길 경우에만 hasGradient 클래스 추가 */}
+            <div
+              className={`${style.productDescription} ${
+                isExpanded ? style.expanded : ""
+              } ${isLongText ? style.hasGradient : ""}`}
+              ref={productInfoRef}
+            >
+              <p>{product?.description}</p>
+            </div>
+
+            {/* ✅ 버튼이 항상 일정한 위치에 배치되도록 visibility 조정 */}
+            <button
+              className={`${style.moreButton} ${
+                !isLongText ? style.hidden : ""
+              }`}
+              onClick={() => setIsExpanded(!isExpanded)}
+              disabled={!isLongText} /* ✅ 설명이 짧으면 버튼이 비활성화 */
+            >
+              {isExpanded ? "접기 " : "더보기 "}
+              <svg
+                className={`${style.moreIcon} ${
+                  isExpanded ? style.rotate : ""
+                }`}
+                width="18"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
           </div>
+
           {/* 리뷰 */}
           <div className={style.reviewSection} ref={reviewSectionRef}>
             <div className={style.review_top}>

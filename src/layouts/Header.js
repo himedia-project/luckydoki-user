@@ -18,6 +18,7 @@ import {
 import { clearInfo } from "../api/redux/infoSlice";
 import { logoutPost } from "../api/loginApi";
 import EventBanner from "../components/EventBanner";
+import DarkModeToggle from "../components/button/DarkModeToggle";
 
 const Header = () => {
   const dispatch = useDispatch();
