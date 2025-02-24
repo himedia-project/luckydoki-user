@@ -222,6 +222,7 @@ const CartPage = () => {
     try {
       const fetchProductList = async () => {
         const tagIdList = cartItems
+          .filter((item) => item.tagList && Array.isArray(item.tagList)) // tagList가 존재하고 배열인 경우만 필터
           .map((item) => item.tagList.map((tag) => tag.id))
           .join(",");
         const excludeIdList = cartItems.map((item) => item.productId).join(",");
