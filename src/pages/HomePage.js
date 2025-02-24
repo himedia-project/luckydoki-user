@@ -7,6 +7,7 @@ import ProductSwiper from "../components/swiper/ProductSwiper";
 import styles from "../styles/HomePage.module.css";
 import { getProductList } from "../api/productApi";
 import SkeletonSwiper from "../components/skeleton/SkeletonSwiper";
+import SkeletonEventSwiper from "../components/skeleton/SkeletonEventSwiper";
 
 const HomePage = () => {
   const [events, setEvents] = useState([]);
@@ -52,7 +53,11 @@ const HomePage = () => {
 
   return (
     <div className={styles.container}>
-      <EventSwiper events={events} />
+      {isLoading ? (
+        <SkeletonEventSwiper title="이 상품을 찾으시나요?" />
+      ) : (
+        <EventSwiper events={events} />
+      )}
       <div className={styles.quickButton}>
         <QuickButtonNav />
       </div>
