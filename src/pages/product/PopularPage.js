@@ -5,6 +5,7 @@ import Footer from "../../layouts/Footer";
 import Header from "../../layouts/Header";
 import style from "../../styles/ProductListPage.module.css";
 import QuickButtonNav from "../../components/QuickButtonNav";
+import TopButton from "../../components/button/TopButton";
 
 const PopularPage = () => {
   const [products, setProducts] = useState([]);
@@ -62,6 +63,7 @@ const PopularPage = () => {
         ) : (
           <p className={style.noProduct}>⚠️ 상품을 불러오고 있습니다.</p>
         )}
+        <TopButton />
       </div>
       <Footer />
     </>

@@ -37,7 +37,7 @@ const ReviewRating = ({ rating }) => {
   return (
     <StarSection>
       {ratingStarHandler()}
-      <span className="score">{rating}</span>
+      <span className="score">{rating?.toFixed(1)}</span>
     </StarSection>
   );
 };

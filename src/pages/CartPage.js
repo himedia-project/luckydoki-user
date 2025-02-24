@@ -11,6 +11,8 @@ import style from "../styles/CartPage.module.css";
 import ImageLoader from "../components/card/ImageLoader";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { getProductList } from "../api/productApi";
+import ProductSwiper from "../components/swiper/ProductSwiper";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -20,6 +22,7 @@ const CartPage = () => {
     totalDiscountPrice: 0,
   };
   const [selectedItems, setSelectedItems] = useState([]);
+  const [productList, setProductList] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -212,6 +215,16 @@ const CartPage = () => {
         console.error("장바구니 조회 실패:", error);
       }
     };
+    const fetchProductList = async () => {
+      try {
+        const response = await getProductList();
+        setProductList(response.data);
+      } catch (error) {
+        console.error("상품 리스트 불러오는 데 실패했습니다.", error);
+      }
+    };
+
+    fetchProductList();
     fetchCartItems();
   }, [dispatch]);
 
@@ -238,123 +251,131 @@ const CartPage = () => {
             </button>
           </div>
         </div>
+        <section className={style.containContainer}>
+          <ProductSwiper title="이런 상품은 어떠세요?" items={productList} />
+        </section>
       </div>
     );
   }
 
   return (
-    <div className={style.cart_container}>
-      <div className={style.cart_header}>
-        <h2>장바구니</h2>
-        <div className={style.cart_steps}>
-          <span className={`${style.active} ${style.steps_first}`}>
-            01 장바구니
-          </span>
-          <span className={`${style.steps_second}`}>02 주문 결제</span>
-          <span>03 주문 완료</span>
-        </div>
-      </div>
-      <div
-        className={`${style.cart_content} ${
-          cartItems.length > 0 ? style.has_items : ""
-        }`}
-      >
-        <div className={style.cart_items}>
-          <div className={style.cart_item_header}>
-            <div className={style.select_all_wrapper}>
-              <input
-                type="checkbox"
-                checked={isAllSelected}
-                onChange={handleSelectAll}
-                className={style.all_select_box}
-              />
-              <span>전체선택</span>
-            </div>
-            <button
-              className={style.delete_selected_btn}
-              onClick={handleDeleteSelected}
-            >
-              선택삭제
-            </button>
+    <>
+      <div className={style.cart_container}>
+        <div className={style.cart_header}>
+          <h2>장바구니</h2>
+          <div className={style.cart_steps}>
+            <span className={`${style.active} ${style.steps_first}`}>
+              01 장바구니
+            </span>
+            <span className={`${style.steps_second}`}>02 주문 결제</span>
+            <span>03 주문 완료</span>
           </div>
-          {cartItems.map((item) => (
-            <div key={item.cartItemId} className={style.cart_item}>
-              <input
-                type="checkbox"
-                checked={selectedItems.includes(item.cartItemId)}
-                onChange={() => handleSelectItem(item.cartItemId)}
-                className={style.one_select_box}
-              />
-              <div className={style.cartLeft}>
-                <div
-                  onClick={() => handleProductClick(item.productId)}
-                  className={style.productInfoBox}
-                >
-                  <ImageLoader
-                    imagePath={item.imageName}
-                    alt={item.productName}
-                    className={style.product_image}
-                  />
-                  <div className={style.product_info}>
-                    <h3>{item.productName}</h3>
-                    <div className={style.price_info}>
-                      <span className={style.discount_price}>
-                        {calculateItemTotal(item).toLocaleString()}원
-                      </span>
-                      <span className={style.original_price}>
-                        {(item.price * item.qty).toLocaleString()}원
-                      </span>
-                      <span className={style.discount_rate}>
-                        {item.discountRate}%
-                      </span>
+        </div>
+        <div
+          className={`${style.cart_content} ${
+            cartItems.length > 0 ? style.has_items : ""
+          }`}
+        >
+          <div className={style.cart_items}>
+            <div className={style.cart_item_header}>
+              <div className={style.select_all_wrapper}>
+                <input
+                  type="checkbox"
+                  checked={isAllSelected}
+                  onChange={handleSelectAll}
+                  className={style.all_select_box}
+                />
+                <span>전체선택</span>
+              </div>
+              <button
+                className={style.delete_selected_btn}
+                onClick={handleDeleteSelected}
+              >
+                선택삭제
+              </button>
+            </div>
+            {cartItems.map((item) => (
+              <div key={item.cartItemId} className={style.cart_item}>
+                <input
+                  type="checkbox"
+                  checked={selectedItems.includes(item.cartItemId)}
+                  onChange={() => handleSelectItem(item.cartItemId)}
+                  className={style.one_select_box}
+                />
+                <div className={style.cartLeft}>
+                  <div
+                    onClick={() => handleProductClick(item.productId)}
+                    className={style.productInfoBox}
+                  >
+                    <ImageLoader
+                      imagePath={item.imageName}
+                      alt={item.productName}
+                      className={style.product_image}
+                    />
+                    <div className={style.product_info}>
+                      <h3>{item.productName}</h3>
+                      <div className={style.price_info}>
+                        <span className={style.discount_price}>
+                          {calculateItemTotal(item).toLocaleString()}원
+                        </span>
+                        <span className={style.original_price}>
+                          {(item.price * item.qty).toLocaleString()}원
+                        </span>
+                        <span className={style.discount_rate}>
+                          {item.discountRate}%
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className={style.controlNav}>
-                  <div className={style.quantity_control}>
+                  <div className={style.controlNav}>
+                    <div className={style.quantity_control}>
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.cartItemId, item.qty, -1)
+                        }
+                      >
+                        -
+                      </button>
+                      <span>{item.qty}</span>
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.cartItemId, item.qty, 1)
+                        }
+                      >
+                        +
+                      </button>
+                    </div>
                     <button
-                      onClick={() =>
-                        handleQuantityChange(item.cartItemId, item.qty, -1)
-                      }
+                      className={style.delete_btn}
+                      onClick={() => handleDeleteItem(item.cartItemId)}
                     >
-                      -
-                    </button>
-                    <span>{item.qty}</span>
-                    <button
-                      onClick={() =>
-                        handleQuantityChange(item.cartItemId, item.qty, 1)
-                      }
-                    >
-                      +
+                      삭제
                     </button>
                   </div>
-                  <button
-                    className={style.delete_btn}
-                    onClick={() => handleDeleteItem(item.cartItemId)}
-                  >
-                    삭제
-                  </button>
                 </div>
               </div>
+            ))}
+          </div>
+          <div className={style.cart_summary}>
+            <h3>주문 예상 금액</h3>
+            <div className={style.summary_row}>
+              <span>상품금액</span>
+              <span>{calculateTotalAmount().toLocaleString()}원</span>
             </div>
-          ))}
-        </div>
-        <div className={style.cart_summary}>
-          <h3>주문 예상 금액</h3>
-          <div className={style.summary_row}>
-            <span>상품금액</span>
-            <span>{calculateTotalAmount().toLocaleString()}원</span>
+            <div className={style.total}>
+              <span>총 결제금액</span>
+              <span>{calculateTotalAmount().toLocaleString()}원</span>
+            </div>
+            <button className={style.order_btn} onClick={handleOrderClick}>
+              주문하기
+            </button>
           </div>
-          <div className={style.total}>
-            <span>총 결제금액</span>
-            <span>{calculateTotalAmount().toLocaleString()}원</span>
-          </div>
-          <button className={style.order_btn} onClick={handleOrderClick}>
-            주문하기
-          </button>
         </div>
+        <section className={style.containContainer}>
+          <ProductSwiper title="이런 상품은 어떠세요?" items={productList} />
+        </section>
       </div>
-    </div>
+    </>
   );
 };
 

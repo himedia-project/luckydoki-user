@@ -1,7 +1,7 @@
 .container {
   display: flex;
   max-width: 1280px;
-  margin: 20px auto;
+  margin: 20px auto 80px;
   gap: 30px;
 }
 
@@ -74,10 +74,68 @@
   justify-content: space-between;
 }
 
+.productDescriptionContainer {
+  position: relative;
+  max-width: 100%;
+}
+
+.productDescriptionContainer {
+  position: relative;
+  max-width: 100%;
+}
+
 .productDescription {
-  margin-top: 30px;
-  min-height: 200px;
+  min-height: 50px;
+  max-height: 140px;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
   white-space: pre-line;
+  position: relative;
+}
+
+.productDescription.expanded {
+  max-height: none;
+}
+
+.productDescription.hasGradient:not(.expanded)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    #ffffff 100%
+  );
+  pointer-events: none;
+}
+
+.moreButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 20px auto;
+  background: none;
+  border: none;
+  padding: 15px;
+  border: 1px solid #d9d9d9;
+  color: #00de90;
+  cursor: pointer;
+  font-size: 14px;
+  gap: 5px;
+  visibility: visible;
+}
+
+.moreButton.hidden {
+  visibility: hidden;
+  cursor: default;
+}
+
+.rotate {
+  transform: rotate(180deg);
 }
 
 .sellerInfo {
@@ -286,4 +344,7 @@
   border: none;
   font-size: 18px;
   cursor: pointer;
+}
+
+.relatedContainer {
 }

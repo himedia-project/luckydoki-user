@@ -17,6 +17,8 @@ import {
 } from "../api/redux/notificationSlice";
 import { clearInfo } from "../api/redux/infoSlice";
 import { logoutPost } from "../api/loginApi";
+import EventBanner from "../components/EventBanner";
+import DarkModeToggle from "../components/button/DarkModeToggle";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -30,6 +32,7 @@ const Header = () => {
   const [mainCategories, setMainCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isBannerVisible, setIsBannerVisible] = useState(true);
   const { cartItems, email: cartEmail } = useSelector(
     (state) => state.cartSlice
   );
@@ -62,6 +65,11 @@ const Header = () => {
   useEffect(() => {
     const handleScroll = () => {
       setShowHeaderTop(window.scrollY === 0 || window.scrollY <= 99);
+      if (window.scrollY > 100) {
+        setIsBannerVisible(false);
+      } else {
+        setIsBannerVisible(true);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -172,7 +180,18 @@ const Header = () => {
   };
 
   return (
-    <div className={style.header}>
+    <div
+      className={`${style.header} ${
+        isBannerVisible ? style.withBanner : style.noBanner
+      }`}
+    >
+      <div
+        className={`${style.eventBanner} ${
+          isBannerVisible ? "" : style.hidden
+        }`}
+      >
+        <EventBanner />
+      </div>
       <div className={style.inner}>
         <div
           className={`${style.header_top} ${showHeaderTop ? "" : style.hidden}`}

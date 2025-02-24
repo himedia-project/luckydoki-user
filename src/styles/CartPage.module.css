@@ -1,7 +1,7 @@
 .cart_container {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 40px 0;
 }
 
 .cart_header {
@@ -52,6 +52,7 @@
 .cart_content {
   min-height: 400px;
   margin-top: 30px;
+  margin-bottom: 60px;
   position: relative;
 }
 
@@ -100,7 +101,7 @@
   border-radius: 4px;
   padding: 20px;
   overflow-y: scroll;
-  height: 70vh;
+  height: 50vh;
 }
 
 .cart_item_header {

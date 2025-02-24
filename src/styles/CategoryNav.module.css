@@ -1,33 +1,29 @@
 /* 전체 네비게이션 드롭다운 스타일 */
 .category_wrapper {
   position: absolute;
-  top: 100%; /* 헤더 바로 아래 위치 */
-  left: 0;
-  width: 100%;
+  top: 100%;
+  left: -320px;
+  width: 100vw; /* 🔹 화면 전체 너비 */
   background: white;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
+  display: none;
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 20px 30px; /* 🔹 좌우 여백 조정 */
+  padding: 20px 0; /* 🔹 좌우 패딩 제거 */
 }
 
 /* 드롭다운이 활성화되었을 때 */
 .category_wrapper.visible {
-  opacity: 1;
-  visibility: visible;
+  display: block;
 }
 
-/* 드롭다운 내부 스타일 */
 .dropdown {
   display: flex;
-  justify-content: flex-start; /* 🔹 왼쪽 정렬 */
-  gap: 50px; /* 🔹 카테고리 간격 조정 */
+  justify-content: center; /* ✅ 왼쪽 정렬 */
+  gap: 50px;
   min-height: 316px;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
+  /* width: 100vw; ✅ 전체 화면을 차지하도록 설정 */
+  margin: 0;
+  padding-left: 320px; /* ✅ 왼쪽 여백 추가 */
 }
 
 /* 서브 카테고리 스타일 */
@@ -39,6 +35,8 @@
   font-weight: 800;
   display: flex;
   gap: 40px;
+  width: 100%;
+  justify-content: flex-start; /* 🔹 왼쪽 정렬 적용 */
 }
 
 /* 서브 카테고리 개별 아이템 */

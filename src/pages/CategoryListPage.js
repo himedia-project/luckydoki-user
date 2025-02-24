@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { getProductsByCategoryId } from "../api/categoryApi";
 import ProductCard from "../components/card/ProductCard";
 import style from "../styles/CategoryListPage.module.css";
-import QuickButtonNav from "../components/QuickButtonNav";
 
 const CategoryListPage = () => {
   const { categoryId } = useParams();
