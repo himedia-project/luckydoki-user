@@ -16,6 +16,7 @@ import {
   setNotificationEmail,
 } from "../api/redux/notificationSlice";
 import { clearInfo } from "../api/redux/infoSlice";
+import { logoutPost } from "../api/loginApi";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -157,6 +158,9 @@ const Header = () => {
         dispatch(clearCartItems());
         dispatch(clearNotificationItems());
         dispatch(clearInfo());
+
+        const response = logoutPost();
+        console.log("logoutPost response: ", response);
 
         Swal.fire({
           title: "로그아웃되었습니다.",
