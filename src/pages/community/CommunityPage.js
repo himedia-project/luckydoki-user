@@ -37,6 +37,7 @@ export default function CommunityPage() {
                 uploadFileNames={post?.uploadFileNames}
                 productDTOs={post?.productDTOs}
                 sellerImage={post?.shopImage}
+                shopId={post?.shopId}
               />
             ))}
           </div>
@@ -53,6 +54,7 @@ export default function CommunityPage() {
                 productDTOs={post?.productDTOs}
                 sellerImage={post?.shopImage}
                 hideSwiper={true}
+                shopId={post?.shopId}
               />
             ))}
           </div>
