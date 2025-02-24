@@ -6,8 +6,7 @@ export const useFCMToken = () => {
   const updateToken = async (email) => {
     try {
       const token = await getToken(messaging, {
-        vapidKey:
-          "BC-j0Yeoggc9GXdnEiAT1_bFTUMeMl2aS5Ucy4W_jhfprqW43TCjVAZm462rsQBr3wctC5OvSs1CNne39q7kVEw",
+        vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
       });
       console.log("FCM token obtained:", token);
       await fcmApi.updateFCMToken(token, email);

@@ -32,53 +32,57 @@ import PopularPage from "./pages/product/PopularPage";
 import NewPage from "./pages/product/NewPage";
 import ShopPage from "./pages/ShopPage";
 import AiSuggestPage from "./pages/AiSuggestPage";
+import ChatbotContainer from "./components/chatbot/ChatbotContainer";
 import MessagePage from "./pages/MessagePage";
 
 function App() {
   return (
-    <Routes>
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/message" element={<MessagePage />} />
-        <Route path="/shop/:shopId" element={<ShopPage />} />
-        <Route path="/community" element={<CommunityPage />} />
-        <Route path="/community/:id" element={<CommunityDetailPage />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/payment/success" element={<PaymentSuccessPage />} />
-        <Route path="/payment/fail" element={<PaymentFailPage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/product/:productId" element={<ProductDetailPage />} />
-        <Route path="/ai_suggest" element={<AiSuggestPage />} />
+    <>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/message" />
+          <Route path="/shop/:shopId" element={<ShopPage />} />
+          <Route path="/community" element={<CommunityPage />} />
+          <Route path="/community/:id" element={<CommunityDetailPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment/success" element={<PaymentSuccessPage />} />
+          <Route path="/payment/fail" element={<PaymentFailPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/product/:productId" element={<ProductDetailPage />} />
+          <Route path="/ai_suggest" element={<AiSuggestPage />} />
 
-        <Route path="/review_add" element={<ReviewAddPage />} />
-        <Route path="/product_add" element={<ProductAddPage />} />
-        <Route path="/community_add" element={<CommunityAddPage />} />
-        <Route path="/seller_add" element={<SellerAddPage />} />
-      </Route>
+          <Route path="/review_add" element={<ReviewAddPage />} />
+          <Route path="/product_add" element={<ProductAddPage />} />
+          <Route path="/community_add" element={<CommunityAddPage />} />
+          <Route path="/seller_add" element={<SellerAddPage />} />
+        </Route>
 
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/member/kakao" element={<KakaoRedirectPage />} />
-      <Route path="/join" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/member/kakao" element={<KakaoRedirectPage />} />
+        <Route path="/join" element={<RegisterPage />} />
 
-      <Route element={<MyPageLayout />}>
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/order" element={<OrderPage />} />
-        <Route path="/notification" element={<NotificationPage />} />
-        <Route path="/my_review" element={<MyReviewPage />} />
-        <Route path="/likeslist" element={<LikesListPage />} />
-        <Route path="/coupon" element={<CouponPage />} />
-        <Route path="/userinfo" element={<UserInfoPage />} />
-      </Route>
-      <Route path="/category/:categoryId" element={<CategoryLayout />}>
-        <Route index element={<CategoryListPage />} />
-      </Route>
-      <Route path="/popular" element={<PopularPage />} />
-      <Route path="/new" element={<NewPage />} />
+        <Route element={<MyPageLayout />}>
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/order" element={<OrderPage />} />
+          <Route path="/notification" element={<NotificationPage />} />
+          <Route path="/my_review" element={<MyReviewPage />} />
+          <Route path="/likeslist" element={<LikesListPage />} />
+          <Route path="/coupon" element={<CouponPage />} />
+          <Route path="/userinfo" element={<UserInfoPage />} />
+        </Route>
+        <Route path="/category/:categoryId" element={<CategoryLayout />}>
+          <Route index element={<CategoryListPage />} />
+        </Route>
+        <Route path="/popular" element={<PopularPage />} />
+        <Route path="/new" element={<NewPage />} />
 
-      {/* 404 */}
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+        {/* 404 */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+      <ChatbotContainer />
+    </>
   );
 }
 

@@ -10,20 +10,41 @@ import CategoryNav from "../components/CategoryNav";
 import Swal from "sweetalert2";
 import { useNotification } from "../hooks/useNotification";
 import { useFCMToken } from "../hooks/useFCMToken";
+import { clearCartItems, setCartEmail } from "../api/redux/cartSlice";
+import {
+  clearNotificationItems,
+  setNotificationEmail,
+} from "../api/redux/notificationSlice";
+import { clearInfo } from "../api/redux/infoSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // current user email
   const { email } = useSelector((state) => state.loginSlice);
-  const { notifications, clearNotifications } = useNotification();
+  const { notifications } = useNotification();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showHeaderTop, setShowHeaderTop] = useState(true);
   const [mainCategories, setMainCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const { cartItems } = useSelector((state) => state.cartSlice);
+  const { cartItems, email: cartEmail } = useSelector(
+    (state) => state.cartSlice
+  );
+  // const { notificationItems, email: notificationEmail } = useSelector(
+  //   (state) => state.notificationSlice
+  // );
   const { updateToken } = useFCMToken();
+
+  // 현재 로그인한 사용자의 데이터만 표시
+  const currentUserNotifications = notifications;
+  const currentUserCartItems = email === cartEmail ? cartItems : [];
+
+  console.log("email: ", email);
+  console.log("cartEmail: ", cartEmail);
+  console.log("currentUserNotifications: ", currentUserNotifications);
+  console.log("currentUserCartItems: ", currentUserCartItems);
 
   useEffect(() => {
     const fetchMainCategories = async () => {
@@ -49,9 +70,11 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
+    // 현재 로그인한 사용자의 이메일이 있으면 FCM 초기화
     const initializeFCM = async () => {
       if (email) {
         try {
+          // 알림 권한 요청
           const permission = await Notification.requestPermission();
           if (permission === "granted") {
             await updateToken(email);
@@ -127,9 +150,14 @@ const Header = () => {
       cancelButtonColor: "#d33",
     }).then((result) => {
       if (result.isConfirmed) {
+        // 로그아웃 시 모든 상태 초기화
         dispatch(logout());
-        // dispatch(clearCartItems());
-        // dispatch(clearNotificationItems());
+        dispatch(setCartEmail(""));
+        dispatch(setNotificationEmail(""));
+        dispatch(clearCartItems());
+        dispatch(clearNotificationItems());
+        dispatch(clearInfo());
+
         Swal.fire({
           title: "로그아웃되었습니다.",
           icon: "success",
@@ -183,9 +211,9 @@ const Header = () => {
               <img src="/notification.png" alt="알림" />
               <Link>
                 알림
-                {email && notifications.length > 0 && (
+                {email && currentUserNotifications.length > 0 && (
                   <span className={style.notification_count}>
-                    {notifications.length}
+                    {currentUserNotifications.length}
                   </span>
                 )}
               </Link>
@@ -234,8 +262,10 @@ const Header = () => {
                 onClick={(e) => handleProtectedRoute(e, "/cart")}
               >
                 <img src="/cart.png" alt="장바구니" />
-                {email && cartItems.length > 0 && (
-                  <span className={style.cart_count}>{cartItems.length}</span>
+                {email && currentUserCartItems.length > 0 && (
+                  <span className={style.cart_count}>
+                    {currentUserCartItems.length}
+                  </span>
                 )}
               </Link>
             </li>

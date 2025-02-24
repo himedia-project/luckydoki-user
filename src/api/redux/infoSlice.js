@@ -11,8 +11,11 @@ const infoSlice = createSlice({
     setShopId: (state, action) => {
       state.shopId = action.payload;
     },
+    clearInfo: (state) => {
+      return { ...initialState };
+    },
   },
 });
 
-export const { setShopId } = infoSlice.actions;
+export const { setShopId, clearInfo } = infoSlice.actions;
 export default infoSlice.reducer;

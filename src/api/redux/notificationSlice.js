@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initState = {
+  email: "",
   notificationItems: [],
 };
 
@@ -8,6 +9,9 @@ const notificationSlice = createSlice({
   name: "notificationSlice",
   initialState: initState,
   reducers: {
+    setNotificationEmail: (state, action) => {
+      state.email = action.payload;
+    },
     setNotificationItems: (state, action) => {
       if (typeof action.payload === "function") {
         state.notificationItems = action.payload(state.notificationItems);
@@ -21,6 +25,9 @@ const notificationSlice = createSlice({
   },
 });
 
-export const { setNotificationItems, clearNotificationItems } =
-  notificationSlice.actions;
+export const {
+  setNotificationItems,
+  clearNotificationItems,
+  setNotificationEmail,
+} = notificationSlice.actions;
 export default notificationSlice.reducer;

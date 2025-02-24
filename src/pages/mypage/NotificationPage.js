@@ -43,7 +43,7 @@ export default function NotificationPage() {
                     {notification.title}
                   </span>
                   <span className={style.notification_time}>
-                    {notification.createdAt}
+                    {notification.timestamp}
                   </span>
                 </div>
                 <p className={style.notification_body}>{notification.body}</p>
