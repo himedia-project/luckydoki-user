@@ -7,7 +7,7 @@ const SkeletonSwiper = ({ title }) => {
 
   return (
     <div className={styles.skeletonSection}>
-      <h2>{title}</h2>
+      <h2 className={styles.sectionTitle}>{title}</h2>
       <div className={styles.skeletonGrid}>
         {Array(5)
           .fill()
