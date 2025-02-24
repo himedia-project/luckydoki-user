@@ -4,6 +4,7 @@ import ProductCard from "../../components/card/ProductCard";
 import ShopCard from "../../components/card/ShopCard";
 import { useLikedItems } from "../../hooks/useLikedItems";
 import style from "../../styles/MyPage.module.css";
+import ImageLoader from "../../components/card/ImageLoader";
 
 export default function MyPage() {
   const { userInfo } = useOutletContext();
@@ -23,7 +24,7 @@ export default function MyPage() {
         </div>
         <div className={style.userinfo_middle}>
           <div className={style.user_data}>
-            <img src="profile.png" />
+            <ImageLoader imagePath={userInfo?.profileImage} />
             <div className={style.userinfo}>
               <p>{userInfo?.email}</p>
               <Link to="/userinfo">내 정보 변경</Link>
