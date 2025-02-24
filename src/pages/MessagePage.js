@@ -8,7 +8,7 @@ import {
   createChattingRoom,
   getMessageHistory,
   getChatRooms,
-} from "../api/ChatApi";
+} from "../api/chatApi";
 import { API_URL } from "../config/apiConfig";
 import MessageDropdown from "../components/dropdown/MessageDropdown";
 import axiosInstance from "../api/axiosInstance";
@@ -332,11 +332,12 @@ export default function MessagePage() {
           // 채팅룸이 없으면 selectedShopId 로 채팅룸 생성
           const chatRoomData = {
             id: null,
-            member: userEmail,
+            sender: userEmail,
             shopId: selectedShopId,
             shopImage: routeShopData?.shopImage,
             shopName: routeShopData?.shopName,
             lastMessage: null,
+            lastMessageTime: new Date().toISOString(),
             createdAt: new Date().toISOString(),
           };
 
@@ -407,7 +408,7 @@ export default function MessagePage() {
                     />
                   </div>
                   <div className={styles.roomInfo}>
-                    <h3>{room.shopName || "상점"}</h3>
+                    <h3>{room.sender}</h3>
                     <p className={styles.lastMessage}>
                       {room.lastMessage || "메시지가 없습니다"}
                     </p>

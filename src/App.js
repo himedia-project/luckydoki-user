@@ -41,7 +41,7 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/message" />
+          <Route path="/message" element={<MessagePage />} />
           <Route path="/shop/:shopId" element={<ShopPage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/community/:id" element={<CommunityDetailPage />} />

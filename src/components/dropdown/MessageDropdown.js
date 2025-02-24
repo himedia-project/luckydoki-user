@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Dropdown.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { getChatRooms } from "../../api/ChatApi";
+import { getChatRooms } from "../../api/chatApi";
 
 const MessageDropdown = () => {
   const navigate = useNavigate();
