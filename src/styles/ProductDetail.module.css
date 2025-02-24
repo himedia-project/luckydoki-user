@@ -116,13 +116,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 30%;
   margin: 20px auto;
   background: none;
   border: none;
+  padding: 15px;
+  border: 1px solid #d9d9d9;
   color: #00de90;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   gap: 5px;
   visibility: visible;
 }
