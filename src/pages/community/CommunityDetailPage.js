@@ -55,14 +55,28 @@ export default function CommunityDetailPage() {
     navigate(`/product/${productId}`);
   };
 
+  const handleShopClick = (event, shopId) => {
+    event.stopPropagation();
+
+    if (shopId === null || shopId === undefined) {
+      return;
+    }
+
+    navigate(`/shop/${shopId}`);
+  };
+
   return (
     <div className={styles.detailContainer}>
       <div className={styles.userInfoBox}>
         <ImageLoader
           imagePath={postInfo?.shopImage}
           className={styles.shopImage}
+          onClick={(event) => handleShopClick(event, postInfo?.shopId)}
         />
-        <div className={styles.infoBox}>
+        <div
+          className={styles.infoBox}
+          onClick={(event) => handleShopClick(event, postInfo?.shopId)}
+        >
           <p className={styles.author}>{postInfo?.nickName}</p>
           <p className={styles.date}>
             {new Date(postInfo?.createdAt).toLocaleDateString()}
