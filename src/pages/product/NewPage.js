@@ -4,6 +4,7 @@ import ProductCard from "../../components/card/ProductCard";
 import Footer from "../../layouts/Footer";
 import Header from "../../layouts/Header";
 import style from "../../styles/ProductListPage.module.css";
+import TopButton from "../../components/button/TopButton";
 
 const NewPage = () => {
   const [products, setProducts] = useState([]);
@@ -60,6 +61,7 @@ const NewPage = () => {
         ) : (
           <p className={style.noProduct}>⚠️ 상품을 불러오고 있습니다.</p>
         )}
+        <TopButton />
       </div>
 
       <Footer />

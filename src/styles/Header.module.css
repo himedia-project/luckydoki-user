@@ -32,7 +32,7 @@
 }
 
 .eventBanner.hidden {
-  transform: translateY(-100%);
+  transform: translateY(-100%); /* ✅ 위로 자연스럽게 사라짐 */
   pointer-events: none;
 }
 
