@@ -166,11 +166,9 @@
   position: absolute;
   top: 100%;
   left: 0;
-  width: 100%;
+  width: 100vw;
   background: white;
-  z-index: 999;
-  opacity: 0;
-  visibility: hidden;
+  display: none;
   transform: translateY(-10px);
   border-top: 1px solid #ddd;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -178,8 +176,7 @@
 
 /* ✅ 드롭다운이 활성화된 상태 */
 .category_dropdown.visible {
-  opacity: 1;
-  visibility: visible;
+  display: block;
   transform: translateY(0);
 }
 
