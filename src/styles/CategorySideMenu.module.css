@@ -10,21 +10,18 @@
   border-radius: 8px;
 }
 
-/* 🔹 리스트 스타일 */
 .sideMenu ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-/* 🔹 각 카테고리 항목 스타일 */
 .sideMenu li {
   margin-bottom: 5px;
   cursor: pointer;
   transition: background 0.2s ease-in-out;
 }
 
-/* 🔹 서브 카테고리 컨테이너 */
 .subCategory {
   width: 100%;
   min-width: 171px;
@@ -38,13 +35,11 @@
   transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
-/* 🔹 서브 카테고리 hover 효과 */
 .subCategory:hover {
   color: #00de90;
   text-decoration: underline;
 }
 
-/* 🔹 토글 버튼 (화살표) */
 .toggleButton {
   background: none;
   border: none;
@@ -56,13 +51,11 @@
   transition: transform 0.3s ease-in-out;
 }
 
-/* 🔹 화살표 회전 효과 */
 .expanded .toggleButton svg {
   transform: rotate(180deg);
   transition: transform 0.2s ease-in-out;
 }
 
-/* 🔹 자식 카테고리 목록 */
 .childCategoryList {
   width: 100%;
   max-height: 0;
@@ -71,14 +64,12 @@
   opacity: 0;
 }
 
-/* 🔹 펼쳐진 상태의 자식 카테고리 목록 */
 .childCategoryList.expanded {
   max-height: 500px;
   opacity: 1;
   transition: max-height 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
 
-/* 🔹 자식 카테고리 항목 */
 .childCategoryItem {
   padding: 8px 12px 0 20px;
   color: #666;
@@ -87,20 +78,17 @@
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
-/* 🔹 자식 카테고리 hover 효과 */
 .childCategoryItem:hover {
   color: #00de90;
   text-decoration: underline;
 }
 
-/* 🔹 활성화된 자식 카테고리 스타일 */
 .childCategoryItem.active {
   color: #00de90;
   font-weight: 500;
   text-decoration: underline;
 }
 
-/* 🔹 로딩 상태 */
 .loading {
   padding: 10px 20px;
   color: #888;

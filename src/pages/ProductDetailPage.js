@@ -293,7 +293,6 @@ export default function ProductDetail() {
           </div> */}
           {/* 상품 정보 */}
           <div className={style.productDescriptionContainer}>
-            {/* ✅ 글이 길 경우에만 hasGradient 클래스 추가 */}
             <div
               className={`${style.productDescription} ${
                 isExpanded ? style.expanded : ""
@@ -303,13 +302,12 @@ export default function ProductDetail() {
               <p>{product?.description}</p>
             </div>
 
-            {/* ✅ 버튼이 항상 일정한 위치에 배치되도록 visibility 조정 */}
             <button
               className={`${style.moreButton} ${
                 !isLongText ? style.hidden : ""
               }`}
               onClick={() => setIsExpanded(!isExpanded)}
-              disabled={!isLongText} /* ✅ 설명이 짧으면 버튼이 비활성화 */
+              disabled={!isLongText}
             >
               {isExpanded ? "접기 " : "더보기 "}
               <svg
