@@ -193,6 +193,8 @@ export default function SearchPage() {
                     isNew={item.isNew}
                     event={item.event}
                     best={item.best}
+                    reviewAverage={item.reviewAverage}
+                    reviewCount={item.reviewCount}
                   />
                 ))
               )}

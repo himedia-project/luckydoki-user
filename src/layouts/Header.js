@@ -126,7 +126,6 @@ const Header = () => {
       return;
     }
 
-    // ✅ 드롭다운 내부로 이동한 경우 상태 유지
     if (
       relatedTarget.closest(`.${style.category_dropdown}`) ||
       relatedTarget.closest(`.${style.category_nav}`)
@@ -134,7 +133,6 @@ const Header = () => {
       return;
     }
 
-    // ✅ 드롭다운 영역을 벗어난 경우 닫기
     setIsDropdownVisible(false);
     setActiveCategory(null);
   };
@@ -318,6 +316,7 @@ const Header = () => {
             <CategoryNav
               activeCategory={activeCategory}
               isDropdownVisible={isDropdownVisible}
+              setDropdownVisible={setIsDropdownVisible}
             />
           )}
         </div>

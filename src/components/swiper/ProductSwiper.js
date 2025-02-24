@@ -41,9 +41,11 @@ const ProductSwiper = ({ title, items }) => {
     );
   }
 
+  const maxItems = 20;
+  const limitedItems = items.slice(0, maxItems);
   const groupedItems = [];
-  for (let i = 0; i < items.length; i += 10) {
-    const group = items.slice(i, i + 10);
+  for (let i = 0; i < limitedItems.length; i += 10) {
+    const group = limitedItems.slice(i, i + 10);
     while (group.length < 10) {
       group.push(null);
     }
