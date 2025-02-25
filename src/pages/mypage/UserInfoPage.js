@@ -12,16 +12,18 @@ export default function UserInfo() {
     nickname: "",
     email: "",
     phone: "",
+    profileImage: "",
   });
 
   useEffect(() => {
     getMyProfile()
       .then((response) => {
-        const { nickName, email, phone } = response.data;
+        const { nickName, email, phone, profileImage } = response.data;
         setUserInfo({
           nickname: nickName || "",
           email: email || "",
           phone: phone || "",
+          profileImage: profileImage || "",
         });
       })
       .catch((error) => {
@@ -57,6 +59,7 @@ export default function UserInfo() {
       const updateData = {
         nickName: userInfo.nickname,
         phone: userInfo.phone,
+        profileImage: userInfo.profileImage,
       };
 
       const response = await updateMyProfile(updateData);
