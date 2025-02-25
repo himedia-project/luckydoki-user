@@ -11,8 +11,10 @@ export const useChatRoom = (userEmail, routeShopData) => {
   const [roomId, setRoomId] = useState(null);
   const [realtimeMessages, setRealTimeMessage] = useState([]);
 
+  // 채팅방 초기화
   const initializeChat = async () => {
     try {
+      // 채팅방 목록 조회
       const response = await getChatRooms();
       setChatRooms(response.data);
 
@@ -21,9 +23,12 @@ export const useChatRoom = (userEmail, routeShopData) => {
           (room) => parseInt(room.shopId) === parseInt(routeShopData.shopId)
         );
 
+        // 기존 채팅방이 있으면 선택, 없으면 생성
         if (existingRoom) {
+          // 채팅방 선택
           await handleRoomSelect(existingRoom);
         } else {
+          // 채팅방 생성
           await createNewRoom(routeShopData);
         }
       }
@@ -32,14 +37,17 @@ export const useChatRoom = (userEmail, routeShopData) => {
     }
   };
 
+  // 채팅방 선택
   const handleRoomSelect = async (room) => {
     setSelectedRoom(room);
     setRoomId(room.id);
+    // 채팅방 메시지 조회
     const historyResponse = await getMessageHistory(room.id);
     setRealTimeMessage(historyResponse.data);
     return room.id;
   };
 
+  // 새로운 채팅방 생성
   const createNewRoom = async (shopData) => {
     const chatRoomData = {
       member: userEmail,
