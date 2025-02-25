@@ -10,6 +10,8 @@
     "@reduxjs/toolkit": "^2.5.1",
     "@tinymce/tinymce-react": "^6.0.0",
     "@stomp/stompjs": "^7.0.0",
+    "@tinymce/tinymce-react": "^6.0.0",
+    "@stomp/stompjs": "^7.0.0",
     "@tosspayments/payment-sdk": "^1.9.1",
     "axios": "^1.7.9",
     "canvas-confetti": "^1.9.3",

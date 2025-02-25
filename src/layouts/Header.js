@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../api/redux/loginSlice";
 import style from "../styles/Header.module.css";
 import NotificationDropdown from "../components/dropdown/NotificationDropdown";
-import MessageDropdown from "../components/dropdown/MessageDropdown";
+// import MessageDropdown from "../components/dropdown/MessageDropdown";
 import { getMainCategories } from "../api/categoryApi";
 import CategoryNav from "../components/CategoryNav";
 import Swal from "sweetalert2";
@@ -210,7 +210,7 @@ const Header = () => {
               onMouseEnter={() => setShowMessages(true)}
               onMouseLeave={() => setShowMessages(false)}
             >
-              <MessageDropdown messages={[]} />
+              {/* <MessageDropdown messages={[]} /> */}
             </div>
           )}
 

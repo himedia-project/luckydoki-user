@@ -33,7 +33,7 @@ import NewPage from "./pages/product/NewPage";
 import ShopPage from "./pages/ShopPage";
 import AiSuggestPage from "./pages/AiSuggestPage";
 import ChatbotContainer from "./components/chatbot/ChatbotContainer";
-import MessagePage from "./pages/MessagePage";
+import MessagePage from "./pages/mypage/MessagePage";
 
 function App() {
   return (
