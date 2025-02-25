@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styles from "../../styles/MessagePage.module.css";
-import MessageDropdown from "../../components/dropdown/MessageDropdown";
-import { useChatRoom } from "../../hooks/useChatRoom";
-import { useWebSocket } from "../../hooks/useWebSocket";
 
 import { API_URL } from "../../config/apiConfig";
+import MessageDropdown from "../../components/dropdown/MessageDropdown";
 import {
   createChattingRoom,
   getChatRooms,
@@ -16,136 +16,371 @@ import {
 export default function MessagePage() {
   const location = useLocation();
   const routeShopData = location.state;
-  const messagesEndRef = useRef(null);
 
-  const [message, setMessage] = useState("");
   const [selectedShopId, setSelectedShopId] = useState(
     routeShopData?.shopId || null
   );
-  const [unreadMessages, setUnreadMessages] = useState({});
-  const [dropdownMessages, setDropdownMessages] = useState([]);
+  const [realtimeMessages, setRealTimeMessage] = useState([]);
+  const [stompClient, setStompClient] = useState(null);
+  const [message, setMessage] = useState("");
+  const [connected, setConnected] = useState(false);
+  const [roomId, setRoomId] = useState(null);
+  const messagesEndRef = useRef(null);
 
   const userEmail = useSelector((state) => state.loginSlice.email);
   const accessToken = useSelector((state) => state.loginSlice.accessToken);
+  const [chatRooms, setChatRooms] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [unreadMessages, setUnreadMessages] = useState({}); // 읽지 않은 메시지 수 관리
 
-  // 커스텀 훅 사용
-  const {
-    chatRooms,
-    selectedRoom,
-    roomId,
-    realtimeMessages,
-    setRealTimeMessage,
-    handleRoomSelect,
-    initializeChat,
-  } = useChatRoom(userEmail, routeShopData);
+  const [dropdownMessages, setDropdownMessages] = useState([]);
 
-  const { stompClient, connected, connect } = useWebSocket(
-    userEmail,
-    accessToken
-  );
-
-  // 웹소켓 자동 연결
-  useEffect(() => {
-    if (userEmail && accessToken && !connected) {
-      connect({ preventDefault: () => {} }); // connect 함수가 e.preventDefault()를 사용하므로 더미 객체 전달
-    }
-  }, [userEmail, accessToken, connected]);
-
-  // 알림 권한 요청
+  // 알림 권한 요청 useEffect
   useEffect(() => {
     if (Notification.permission === "default") {
       Notification.requestPermission();
     }
   }, []);
 
-  // 채팅방 초기화
+  // 드롭다운 메시지 생성 useEffect 추가
   useEffect(() => {
+    // 읽지 않은 메시지가 있는 채팅방을 기반으로 드롭다운 메시지 생성
+    const newDropdownMessages = Object.entries(unreadMessages)
+      .filter(([roomId, count]) => count > 0)
+      .map(([roomId, count]) => {
+        // 해당 roomId의 채팅방 찾기
+        const room = chatRooms.find((r) => r.id === parseInt(roomId));
+
+        return {
+          sender: room ? room.shopName : "알 수 없는 상점",
+          date: new Date().toLocaleDateString(),
+          content: `${count}개의 새 메시지가 있습니다.`,
+          lastMessage: room ? room.lastMessage : "새 메시지",
+        };
+      });
+
+    setDropdownMessages(newDropdownMessages);
+  }, [unreadMessages, chatRooms]);
+
+  // 기존의 다른 useEffect, 함수들은 그대로 유지
+
+  useEffect(() => {
+    const initializeChat = async () => {
+      try {
+        // 먼저 모든 채팅방 목록을 가져옴
+
+        console.log("routeShopData:", routeShopData); // 데이터 확인
+        console.log("shopId:", routeShopData?.shopId); // shopId 확인
+
+        const response = await getChatRooms();
+        console.log("채팅방 목록:", response.data); // 채팅방 목록 확인
+        setChatRooms(response.data);
+
+        // route로 shopId를 전달받은 경우만 채팅방 생성/조회 로직 실행
+        if (routeShopData?.shopId) {
+          setSelectedShopId(routeShopData.shopId);
+          // 이미 존재하는 채팅방인지 채팅방 목록에서 확인
+          const existingRoom = response.data.find((room) => {
+            console.log("비교:", room.shopId, routeShopData.shopId); // 비교 값 확인
+            return parseInt(room.shopId) === parseInt(routeShopData.shopId);
+          });
+
+          console.log("찾은 채팅방:", existingRoom); // 찾은 채팅방 확인
+
+          if (existingRoom) {
+            // 기존 채팅방이 있는 경우
+            setRoomId(existingRoom.id);
+            setSelectedRoom(existingRoom);
+            const historyResponse = await getMessageHistory(existingRoom.id);
+            setRealTimeMessage(historyResponse.data);
+          } else {
+            // 새로운 채팅방 생성
+            const chatRoomData = {
+              id: null,
+              member: userEmail,
+              shopId: routeShopData.shopId,
+              shopImage: routeShopData.shopImage,
+              shopName: routeShopData.shopName,
+              lastMessage: null,
+              createdAt: new Date().toISOString(),
+            };
+
+            const newRoomResponse = await createChattingRoom(chatRoomData);
+            const newRoom = newRoomResponse.data;
+            setRoomId(newRoom.id);
+            setSelectedRoom(newRoom);
+            setRealTimeMessage([]);
+            setChatRooms((prev) => [...prev, newRoom]);
+          }
+
+          // routeShopData가 있는 경우에만 자동 연결
+          const event = { preventDefault: () => {} };
+          connect(event);
+        }
+        // routeShopData가 없는 경우(마이페이지에서 진입)는
+        // 채팅방 목록만 표시하고 사용자가 선택하기를 기다림
+      } catch (error) {
+        console.error("채팅방 초기화 실패:", error);
+      }
+    };
+
     initializeChat();
   }, [routeShopData, userEmail]);
 
-  // 웹소켓 구독
+  //////////구독시저ㅁ/////
   useEffect(() => {
     if (roomId && stompClient) {
+      console.log("구독 시작 - roomId:", roomId);
       const subscription = stompClient.subscribe(
         `/topic/chat/message/${roomId}`,
-        handleNewMessage
+        (message) => {
+          const receivedMessage = JSON.parse(message.body);
+          // 기존 메시지 목록에 새 메시지 추가
+          console.log("받은 메세지 : ", receivedMessage);
+          // 자신이 보낸 메시지가 아닐 때만 알림 표시
+          if (receivedMessage.email !== userEmail) {
+            if (Notification.permission === "granted") {
+              new Notification("새 메시지 도착", {
+                body: receivedMessage.message,
+              });
+            } else if (Notification.permission !== "denied") {
+              Notification.requestPermission().then((permission) => {
+                if (permission === "granted") {
+                  new Notification("새 메시지 도착", {
+                    body: receivedMessage.message,
+                  });
+                }
+              });
+            }
+
+            // 읽지 않은 메시지 카운트 증가
+            setUnreadMessages((prev) => ({
+              ...prev,
+              [roomId]: (prev[roomId] || 0) + 1,
+            }));
+          }
+
+          // 메시지 목록 업데이트
+          setRealTimeMessage((prevMessages) => [
+            ...prevMessages,
+            receivedMessage,
+          ]);
+        }
       );
 
+      // 알림 구독
       const notificationSubscription = stompClient.subscribe(
         `/user/queue/notifications/`,
-        handleNotification
+        (notification) => {
+          // 알림 처리 로직
+          const notificationMessage = JSON.parse(notification.body);
+          console.log("새 알림: ", notificationMessage);
+          // 드롭다운 메시지에 실시간 알림 추가
+          setDropdownMessages((prev) => [
+            {
+              sender: "새 메시지 알림",
+              date: new Date(
+                notificationMessage.timestamp
+              ).toLocaleDateString(),
+              content: notificationMessage.notificationMessage,
+              roomId: notificationMessage.roomId,
+              isRead: notificationMessage.isRead,
+              recipientEmail: notificationMessage.email,
+            },
+            ...prev,
+          ]);
+
+          // 읽지 않은 메시지 상태 업데이트 (isRead 상태 활용)
+          if (!notificationMessage.isRead) {
+            setUnreadMessages((prev) => ({
+              ...prev,
+              [notificationMessage.roomId]:
+                (prev[notificationMessage.roomId] || 0) + 1,
+            }));
+          }
+
+          // 브라우저 알림 표시
+          if (
+            !notificationMessage.isRead &&
+            notificationMessage.email === userEmail && // 현재 사용자에게 온 알림인지 확인
+            Notification.permission === "granted"
+          ) {
+            new Notification("새 메시지 알림", {
+              body: notificationMessage.notificationMessage,
+              timestamp: notificationMessage.timestamp,
+            });
+          }
+        }
       );
 
+      // cleanup 함수
       return () => {
         subscription.unsubscribe();
         notificationSubscription.unsubscribe();
       };
     }
   }, [roomId, stompClient, userEmail]);
+  /////////채팅방 선택/////////////
 
-  // 새 메시지 처리 함수
-  const handleNewMessage = (message) => {
-    const newMessage = JSON.parse(message.body);
-    setRealTimeMessage((prevMessages) => [...prevMessages, newMessage]);
+  const handleRoomSelect = async (room) => {
+    setSelectedRoom(room);
+    setSelectedShopId(room.shopId);
+    setRoomId(room.id);
 
-    // 메시지가 다른 사용자로부터 왔을 때만 알림
-    if (newMessage.email !== userEmail) {
-      // 브라우저 알림
-      if (Notification.permission === "granted" && document.hidden) {
-        new Notification("새 메시지가 도착했습니다", {
-          body: newMessage.message,
-        });
-      }
+    setUnreadMessages((prev) => ({
+      ...prev,
+      [room.id]: 0, // 해당 채팅방의 읽지 않은 메시지 초기화
+    }));
 
-      // 읽지 않은 메시지 카운트 업데이트
-      setUnreadMessages((prev) => ({
-        ...prev,
-        [roomId]: (prev[roomId] || 0) + 1,
-      }));
-    }
-
-    // 자동 스크롤
-    scrollToBottom();
-  };
-
-  // 알림 처리 함수
-  const handleNotification = (notification) => {
-    const newNotification = JSON.parse(notification.body);
-    setDropdownMessages((prev) => [...prev, newNotification]);
-
-    // 브라우저 알림
-    if (Notification.permission === "granted" && document.hidden) {
-      new Notification("새 알림이 도착했습니다", {
-        body: newNotification.message,
-      });
+    ///////채팅메세지 기록 불러오는 api/////////
+    try {
+      const historyResponse = await getMessageHistory(room.id);
+      setRealTimeMessage(historyResponse.data);
+      console.log("채팅기록 response:", historyResponse.data);
+      const event = { preventDefault: () => {} };
+      connect(event);
+    } catch (error) {
+      console.error("채팅 기록 불러오기 실패:", error);
     }
   };
 
-  // 스크롤 자동 이동
+  ////////스크롤 이벤트 (좀 과하게 내려감)//////
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // 메시지 전송 함수
+  useEffect(() => {
+    scrollToBottom();
+  }, [realtimeMessages]);
+
+  useEffect(() => {
+    return () => {
+      //연결 종료 및 정리 함수
+      if (stompClient && typeof stompClient.deactivate === "function") {
+        try {
+          stompClient.deactivate();
+          setStompClient(null);
+          setConnected(false);
+        } catch (error) {
+          console.error("연결종료 에러 발생", error);
+        }
+      }
+    };
+  }, [stompClient]);
+
+  //소캣 연결 함수
+  const connect = (e) => {
+    e.preventDefault();
+    if (userEmail && !stompClient) {
+      const client = new Client({
+        webSocketFactory: () => new SockJS(`${API_URL}/ws-stomp`),
+        connectHeaders: {
+          "X-Authorization": `Bearer ${accessToken}`,
+        },
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+        onConnect: () => {
+          console.log("socket 연결 완료 ");
+          setConnected(true);
+          setStompClient(client);
+        },
+        onDisconnect: () => {
+          console.log("Disconnected from STOMP");
+          setConnected(false);
+          setStompClient(null);
+        },
+        onStompError: (frame) => {
+          console.error("Broker reported error:", frame.headers["message"]);
+          console.error("Additional details:", frame.body);
+        },
+      });
+
+      try {
+        client.activate();
+        console.log("Attempting to connect...");
+      } catch (error) {
+        console.error("Error activating STOMP client:", error);
+      }
+    }
+  };
+  //메세지 전송 함수
   const sendMessage = async (e) => {
     e.preventDefault();
-    if (!message.trim() || !stompClient || !connected) return;
 
-    const chatMessage = {
-      roomId: roomId,
-      email: userEmail,
-      shopId: selectedShopId,
-      message: message.trim(),
-      sendTime: new Date().toISOString(),
-    };
+    if (!stompClient || !selectedShopId) {
+      console.error("STOMP 클라이언트 또는 ShopId가 없습니다.");
+      return;
+    }
 
-    stompClient.publish({
-      destination: "/app/message",
-      headers: { "X-Authorization": `Bearer ${accessToken}` },
-      body: JSON.stringify(chatMessage),
-    });
+    if (!message.trim()) {
+      return;
+    }
 
-    setMessage("");
+    try {
+      // roomId가 없는 경우, 채팅방 생성 필요
+      if (!roomId) {
+        // 먼저 기존 채팅방이 있는지 확인
+        const existingRoom = chatRooms.find(
+          (room) => room.shopId === selectedShopId
+        );
+
+        if (existingRoom) {
+          setRoomId(existingRoom.id);
+          setSelectedRoom(existingRoom);
+        } else {
+          // 채팅룸이 없으면 selectedShopId 로 채팅룸 생성
+          const chatRoomData = {
+            id: null,
+            sender: userEmail,
+            shopId: selectedShopId,
+            shopImage: routeShopData?.shopImage,
+            shopName: routeShopData?.shopName,
+            lastMessage: null,
+            lastMessageTime: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+          };
+
+          const newRoomResponse = await createChattingRoom(chatRoomData);
+          const newRoom = newRoomResponse.data;
+          setRoomId(newRoom.id);
+          setSelectedRoom(newRoom);
+          setChatRooms((prev) => [...prev, newRoom]);
+        }
+      }
+
+      /////전송 메세지 폼 //////
+      const chatMessage = {
+        roomId: roomId || selectedRoom?.id,
+        sender: null, //보내는 사람의 이메일
+        email: userEmail,
+        shopId: selectedShopId,
+        message: message.trim(),
+        sendTime: new Date().toISOString(),
+      };
+
+      console.log("전송 메세지:", chatMessage);
+
+      if (!stompClient.connected) {
+        console.error("STOMP 연결이 끊어졌습니다. 재연결을 시도합니다.");
+        connect(e);
+        return;
+      }
+
+      // FormData를 사용하여 메시지와 이미지를 함께 전송
+
+      stompClient.publish({
+        destination: "/app/message",
+        headers: {
+          "X-Authorization": `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(chatMessage),
+      });
+
+      setMessage("");
+    } catch (error) {
+      console.error("메시지 전송 중 에러 발생:", error);
+    }
   };
 
   return (
