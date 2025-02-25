@@ -28,7 +28,7 @@ export default function UserInfo() {
           phone: phone || "",
           profileImage: profileImage || "",
         });
-        setImage(profileImage || "https://placehold.co/100");
+        setImage(userInfo.profileImage);
       })
       .catch((error) => {
         console.error("내 정보 불러오기 실패:", error);
