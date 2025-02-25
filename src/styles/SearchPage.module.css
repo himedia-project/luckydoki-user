@@ -15,6 +15,16 @@
   align-items: center;
 }
 
+.relatedContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 35vw;
+}
+
+.relatedContainer.searched {
+  margin-top: 5vw;
+}
+
 .searchIcon {
   width: 20px;
   height: 20px;

@@ -18,7 +18,7 @@ export default function SearchPage() {
   const [activeTab, setActiveTab] = useState("product");
   const [products, setProducts] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // 최근 검색어 드롭다운 상태
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [randomProducts, setRandomProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -279,7 +279,11 @@ export default function SearchPage() {
           )}
         </div>
       )}
-      <section className={styles.relatedContainer}>
+      <section
+        className={`${styles.relatedContainer} ${
+          hasSearched && productResults.length > 0 ? styles.searched : ""
+        }`}
+      >
         {!searchParams.get("searchKeyword") && isLoading ? (
           <SkeletonSwiper title="이 상품을 찾으시나요?" />
         ) : (

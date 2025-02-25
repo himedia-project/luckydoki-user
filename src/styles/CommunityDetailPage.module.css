@@ -64,6 +64,28 @@
   height: 626px;
 }
 
+.tagSection {
+  display: flex;
+  align-items: center;
+  min-height: 61px;
+  margin-top: 24px;
+  width: 100%;
+  max-width: 626px;
+}
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  border: 1px solid #d9d9d9;
+  color: #666;
+  padding: 8px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+}
+
 .imageSwiper img {
   width: 100%;
   height: 100%;

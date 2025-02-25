@@ -23,10 +23,12 @@ const ImageLoader = ({
         .catch(() => {
           setImageSrc(DEFAULT_IMAGE);
           setIsLoading(false);
+
         });
     } else {
       setImageSrc(DEFAULT_IMAGE);
       setIsLoading(false);
+
     }
   }, [imagePath]);
 
