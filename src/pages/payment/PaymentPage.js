@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import style from "../../styles/PaymentPage.module.css";
 import ImageLoader from "../../components/card/ImageLoader";
@@ -9,7 +9,7 @@ import { order, getOrderList } from "../../api/orderApi";
 
 const PaymentPage = () => {
   const location = useLocation();
-  const { selectedProducts, totalAmount } = location.state || {
+  const { selectedProducts } = location.state || {
     selectedProducts: [],
     totalAmount: 0,
   };

@@ -1,10 +1,121 @@
 .productContainer {
-  padding: 0 0 0 10px;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 .title {
-  margin-bottom: 30px;
+  font-size: 2rem;
+  font-weight: bold;
+  background: linear-gradient(45deg, #2196f3, #e91e63);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
-.contentBox {
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #2196f3, #e91e63);
+  transition: width 1s ease;
+  position: relative;
+}
+
+.progressFill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+.analysisBox {
+  width: 80%;
+  max-width: 600px;
+  padding: 2rem;
+  text-align: center;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.progressText {
+  font-size: 1.2rem;
+  color: #2196f3;
+  margin-bottom: 1.5rem;
+}
+
+.analysisSteps {
+  color: #666;
+  margin-top: 1rem;
+  min-height: 24px;
+  transition: all 0.5s ease;
+}
+
+.productItem {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s forwards;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .productContainer {
+    padding: 1rem;
+  }
+
+  .productGrid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
 }

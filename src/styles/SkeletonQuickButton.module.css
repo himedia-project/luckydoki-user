@@ -1,0 +1,40 @@
+.skeletonContainer {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .skeletonNav {
+    width: 664px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .skeletonItem {
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+  }
+  
+  .imageContainer {
+    width: 120px;
+    height: 120px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .skeletonImage {
+    width: 75px;
+    height: 75px;
+  }
+  
+  .skeletonText {
+    width: 60%;
+    height: 14px;
+  }
+  

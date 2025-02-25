@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles/ProductCard.module.css";
 import LikeButton from "../button/LikeButton";
 import ImageLoader from "./ImageLoader";
 import ReviewRating from "../ReviewRating";
-import { getProductInfo } from "../../api/productApi";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const ProductCard = ({
   id,
@@ -26,7 +26,6 @@ const ProductCard = ({
   const handleCardClick = () => {
     navigate(`/product/${id}`);
   };
-
   return (
     <div className={styles.productCard} onClick={handleCardClick}>
       {/* ✅ 이미지 컨테이너 */}
