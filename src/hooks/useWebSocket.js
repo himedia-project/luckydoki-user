@@ -19,12 +19,12 @@ export const useWebSocket = (userEmail, accessToken) => {
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
         onConnect: () => {
+          console.log("WebSocket Connected!");
           setConnected(true);
-          setStompClient(client);
         },
         onDisconnect: () => {
+          console.log("WebSocket Disconnected!");
           setConnected(false);
-          setStompClient(null);
         },
         onStompError: (frame) => {
           console.error("Broker reported error:", frame.headers["message"]);
@@ -33,6 +33,7 @@ export const useWebSocket = (userEmail, accessToken) => {
 
       try {
         client.activate();
+        setStompClient(client);
       } catch (error) {
         console.error("Error activating STOMP client:", error);
       }
@@ -41,7 +42,7 @@ export const useWebSocket = (userEmail, accessToken) => {
 
   useEffect(() => {
     return () => {
-      if (stompClient?.deactivate) {
+      if (stompClient) {
         try {
           stompClient.deactivate();
           setStompClient(null);
