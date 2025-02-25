@@ -79,12 +79,20 @@ export default function UserInfo() {
       formData.append("file", file);
 
       const response = await updateMyProfile(formData);
-      alert("회원정보가 수정되었습니다!");
-      console.log("수정 성공:", response.data);
-      navigate("/mypage");
+      Swal.fire({
+        title: "회원정보가 수정되었습니다!",
+        icon: "success",
+        confirmButtonText: "확인",
+      }).then(() => {
+        navigate("/mypage");
+      });
     } catch (error) {
       console.error("회원정보 수정 실패:", error);
-      alert("회원정보 수정 중 오류가 발생했습니다.");
+      Swal.fire({
+        title: "회원정보 수정 중 오류가 발생했습니다.",
+        icon: "error",
+        confirmButtonText: "확인",
+      });
     }
   };
 
