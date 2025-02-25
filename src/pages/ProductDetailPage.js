@@ -169,7 +169,7 @@ export default function ProductDetail() {
         text: "장바구니로 이동하시겠습니까?",
         icon: "success",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
+        confirmButtonColor: "#00de90",
         cancelButtonColor: "#d33",
         confirmButtonText: "확인",
         cancelButtonText: "아니요",
@@ -271,7 +271,7 @@ export default function ProductDetail() {
             />
             {/* 썸네일 이미지 리스트 */}
             <div className={style.thumbnailContainer}>
-              {product?.uploadFileNames.map((img, index) => (
+              {product?.uploadFileNames?.map((img, index) => (
                 <ImageLoader
                   key={index}
                   imagePath={img}
@@ -361,7 +361,7 @@ export default function ProductDetail() {
           <div className={style.tagSection}>
             <h3>작품 키워드</h3>
             <div className={style.tagList}>
-              {product?.tagList.map((tag) => (
+              {product?.tagList?.map((tag) => (
                 <span key={tag?.id} className={style.tag}>
                   #{tag?.name}
                 </span>

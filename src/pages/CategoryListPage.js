@@ -32,7 +32,7 @@ const CategoryListPage = () => {
       } finally {
         setTimeout(() => {
           setIsLoading(false);
-        }, 300); // 🔥 최소 300ms 동안 스켈레톤 유지 후 데이터 전환
+        }, 500);
       }
     };
 

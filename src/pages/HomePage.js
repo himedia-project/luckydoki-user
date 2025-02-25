@@ -44,7 +44,7 @@ const HomePage = () => {
       } catch (error) {
         console.error("🚨 데이터 가져오기 실패:", error);
       } finally {
-        setIsLoading(false);
+        setTimeout(() => setIsLoading(false), 300);
       }
     };
 
@@ -53,11 +53,7 @@ const HomePage = () => {
 
   return (
     <div className={styles.container}>
-      {isLoading ? (
-        <SkeletonEventSwiper title="이 상품을 찾으시나요?" />
-      ) : (
-        <EventSwiper events={events} />
-      )}
+      <EventSwiper events={events} />
       <div className={styles.quickButton}>
         <QuickButtonNav />
       </div>

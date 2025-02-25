@@ -123,3 +123,42 @@
   margin-top: 100px;
   cursor: pointer;
 }
+
+.input_tag {
+  width: 760px;
+  height: 45px;
+  padding: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.tag_section {
+  margin-bottom: 20px;
+}
+
+.tag_list {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  border: 1px solid #d9d9d9;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  font-size: 14px;
+  display: flex;
+  color: #666;
+}
+
+.tag_remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
