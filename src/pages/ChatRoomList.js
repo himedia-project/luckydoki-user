@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../styles/ChatRoomList.module.css";
-import MessagePage from "./MessagePage";
+// import MessagePage from "./MessagePage";
 
 const ChatRoomList = ({ onRoomSelect, selectedRoom, chatRooms }) => {
   return (
