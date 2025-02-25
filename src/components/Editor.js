@@ -8,7 +8,7 @@ export default function TinyMCEEditor({ content, setContent }) {
 
   return (
     <Editor
-      apiKey="svz1f43wct6cxgc5t71nrtx8asz10z1k9hm6t8z70iork014"
+      apiKey="{process.env.REACT_APP_EDITOR_KEY}"
       value={content}
       onEditorChange={handleEditorChange}
       init={{
