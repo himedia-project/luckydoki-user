@@ -6,6 +6,7 @@ import { getShopProducts } from "../../api/shopApi";
 import ProductSelect from "../../components/ProductSelect";
 import SelectedProducts from "../../components/SelectedProducts";
 import style from "../../styles/CommunityAdd.module.css";
+import TinyMCEEditor from "../../components/Editor";
 
 export default function CommunityAddPage() {
   const shopId = useSelector((state) => state.infoSlice?.shopId);
@@ -89,7 +90,22 @@ export default function CommunityAddPage() {
     setSelectedProducts(selectedProducts.filter((p) => p.id !== productId));
   };
 
+  const decodeHTMLEntities = (text) => {
+    const doc = new DOMParser().parseFromString(text, "text/html");
+    return doc.body.textContent || "";
+  };
+
+  const getPlainText = (html) => {
+    return decodeHTMLEntities(
+      html
+        .replace(/<\/p>/gi, "\n")
+        .replace(/<br\s*\/?>/gi, "\n")
+        .replace(/<\/?[^>]+(>|$)/g, "")
+    );
+  };
+
   const handleRegister = async () => {
+    const plainTextContent = getPlainText(content);
     if (!title.trim() || !content.trim()) {
       Swal.fire({
         toast: true,
@@ -115,7 +131,7 @@ export default function CommunityAddPage() {
 
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("content", content);
+    formData.append("content", plainTextContent);
 
     selectedProducts.forEach((product) => {
       formData.append("productIds", product.id);
@@ -172,13 +188,7 @@ export default function CommunityAddPage() {
       {/* 내용 */}
       <div>
         <p>글 내용</p>
-        <textarea
-          name="desc"
-          placeholder="내용을 입력하세요."
-          className={style.input_area}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
+        <TinyMCEEditor content={content} setContent={setContent} />
       </div>
 
       {/* 이미지 업로드 */}

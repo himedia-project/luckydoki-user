@@ -7,6 +7,7 @@ import {
 } from "../../api/categoryApi";
 import { createProduct } from "../../api/registerApi";
 import Swal from "sweetalert2";
+import TinyMCEEditor from "../../components/Editor";
 
 export default function ProductAddPage() {
   const [formData, setFormData] = useState({
@@ -131,12 +132,28 @@ export default function ProductAddPage() {
     }));
   };
 
+  const decodeHTMLEntities = (text) => {
+    const doc = new DOMParser().parseFromString(text, "text/html");
+    return doc.body.textContent || "";
+  };
+
+  const getPlainText = (html) => {
+    return decodeHTMLEntities(
+      html
+        .replace(/<\/p>/gi, "\n")
+        .replace(/<br\s*\/?>/gi, "\n")
+        .replace(/<\/?[^>]+(>|$)/g, "")
+    );
+  };
+
   const handleSubmit = async () => {
     if (
-      !formData.title ||
-      !formData.content ||
+      !formData.title.trim() ||
+      !formData.content.trim() ||
       !formData.price ||
-      !formData.stock
+      !formData.stock ||
+      !formData.childCategory ||
+      formData.imageFiles.length === 0
     ) {
       Swal.fire({
         toast: true,
@@ -159,6 +176,7 @@ export default function ProductAddPage() {
       });
       return;
     }
+    const plainTextContent = getPlainText(formData.content || "");
 
     const multipartFormData = new FormData();
     multipartFormData.append(
@@ -171,7 +189,7 @@ export default function ProductAddPage() {
       "discountPrice",
       parseInt(formData.discountPrice, 10) || 0
     );
-    multipartFormData.append("description", formData.content);
+    multipartFormData.append("description", plainTextContent);
     multipartFormData.append("stockNumber", parseInt(formData.stock, 10));
 
     formData.imageFiles.forEach((file) => {
@@ -353,12 +371,11 @@ export default function ProductAddPage() {
       {/* 상품 설명 */}
       <div>
         <p>상품 설명</p>
-        <textarea
-          name="content"
-          placeholder="내용을 입력하세요."
-          className={style.input_area}
-          value={formData.content}
-          onChange={handleChange}
+        <TinyMCEEditor
+          content={formData.content}
+          setContent={(newContent) =>
+            setFormData((prev) => ({ ...prev, content: newContent }))
+          }
         />
       </div>
 

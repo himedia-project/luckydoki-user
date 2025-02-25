@@ -24,7 +24,12 @@ export default function MyPage() {
         </div>
         <div className={style.userinfo_middle}>
           <div className={style.user_data}>
-            <ImageLoader imagePath={userInfo?.profileImage} />
+            <div className={style.imageContainer}>
+              <ImageLoader
+                imagePath={userInfo?.profileImage}
+                className={style.profileImg}
+              />
+            </div>
             <div className={style.userinfo}>
               <p>{userInfo?.email}</p>
               <Link to="/userinfo">내 정보 변경</Link>

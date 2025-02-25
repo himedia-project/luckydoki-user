@@ -12,7 +12,6 @@ const CategoryLayout = () => {
       <Header />
       <main className={style.layoutContainer}>
         <CategorySideMenu />
-        {/* ✅ Outlet을 div로 감싸서 스타일 적용 */}
         <div className={style.mainContents}>
           <Outlet />
           <TopButton />

@@ -215,18 +215,25 @@ const CartPage = () => {
         console.error("장바구니 조회 실패:", error);
       }
     };
-    const fetchProductList = async () => {
-      try {
-        const response = await getProductList();
-        setProductList(response.data);
-      } catch (error) {
-        console.error("상품 리스트 불러오는 데 실패했습니다.", error);
-      }
-    };
-
-    fetchProductList();
     fetchCartItems();
   }, [dispatch]);
+
+  useEffect(() => {
+    try {
+      const fetchProductList = async () => {
+        const tagIdList = cartItems
+          .filter((item) => item.tagList && Array.isArray(item.tagList)) // tagList가 존재하고 배열인 경우만 필터
+          .map((item) => item.tagList.map((tag) => tag.id))
+          .join(",");
+        const excludeIdList = cartItems.map((item) => item.productId).join(",");
+        const response = await getProductList("", tagIdList, excludeIdList);
+        setProductList(response.data);
+      };
+      fetchProductList();
+    } catch (error) {
+      console.error("상품 리스트 불러오는 데 실패했습니다.", error);
+    }
+  }, [cartItems]);
 
   if (cartItems.length === 0) {
     return (

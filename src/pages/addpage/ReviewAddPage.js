@@ -39,7 +39,22 @@ export default function ReviewAddPage() {
     setImageFile(null);
   };
 
+  const decodeHTMLEntities = (text) => {
+    const doc = new DOMParser().parseFromString(text, "text/html");
+    return doc.body.textContent || "";
+  };
+
+  const getPlainText = (html) => {
+    return decodeHTMLEntities(
+      html
+        .replace(/<\/p>/gi, "\n")
+        .replace(/<br\s*\/?>/gi, "\n")
+        .replace(/<\/?[^>]+(>|$)/g, "")
+    );
+  };
+
   const handleSubmit = async () => {
+    const plainTextContent = getPlainText(content || "");
     if (!rating || !content.trim()) {
       Swal.fire({
         toast: true,
@@ -54,7 +69,7 @@ export default function ReviewAddPage() {
 
     const formData = new FormData();
     formData.append("rating", rating);
-    formData.append("content", content);
+    formData.append("content", plainTextContent);
     formData.append("productId", productId);
 
     if (imageFile) {

@@ -1,11 +1,20 @@
 import axiosInstance from "../api/axiosInstance";
 
 // 상품 리스트(searchPage에도 사용)
-export const getProductList = async (searchKeyword = "") => {
+export const getProductList = async (
+  searchKeyword = "",
+  tagIdList = "",
+  excludeIdList = ""
+) => {
   return await axiosInstance.get(`/product/list`, {
-    params: { searchKeyword },
+    params: { searchKeyword, tagIdList, excludeIdList },
     withCredentials: true,
   });
+};
+
+// 추천 상품 리스트
+export const getRecommendProductList = async () => {
+  return await axiosInstance.get(`/product/recommend/list`);
 };
 
 // 상품 정보 가져오기(detail)
