@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getImageUrl } from "../../api/imageApi";
-import Skeleton from "../../components/skeleton/SkeletonImage"; // 스켈레톤 컴포넌트 추가
+import Skeleton from "../../components/skeleton/SkeletonImage";
 
 const DEFAULT_IMAGE = "/profile.png";
 
