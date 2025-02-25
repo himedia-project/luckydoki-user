@@ -44,8 +44,10 @@ export default function MessagePage() {
 
   // 메시지 구독
   useEffect(() => {
+    let subscription;
+    // 채팅방 선택 후 구독 시작
     if (roomId && stompClient) {
-      const subscription = stompClient.subscribe(
+      subscription = stompClient.subscribe(
         `/topic/chat/message/${roomId}`,
         (message) => {
           const receivedMessage = JSON.parse(message.body);
@@ -53,6 +55,14 @@ export default function MessagePage() {
         }
       );
     }
+
+    // Cleanup function -> 자원해제 : 이전 구독이 자동해제, 메모리누수 방지
+    // cleanup 함수는 useEffect의 의존성이 변경되거나 컴포넌트가 언마운트될 때 자동으로 실행
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
   }, [roomId, stompClient]);
 
   // ... 나머지 필요한 함수들 (sendMessage, handleNewMessage 등)
