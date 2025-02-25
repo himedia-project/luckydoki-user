@@ -73,11 +73,7 @@ const KakaoRedirectPage = () => {
     });
   }, [authCode]);
 
-  return (
-    <div>
-      <div>Kakao Login Redirect</div>
-    </div>
-  );
+  return <div>{/* <div>Kakao Login Redirect</div> */}</div>;
 };
 
 export default KakaoRedirectPage;
