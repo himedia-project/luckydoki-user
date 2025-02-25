@@ -8,6 +8,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import RecentSearchDropdown from "../components/dropdown/RecentSearchDropdown"; // 추가
 import { getProductList } from "../api/productApi";
 import ProductSwiper from "../components/swiper/ProductSwiper";
+import SkeletonSwiper from "../components/skeleton/SkeletonSwiper";
 
 export default function SearchPage() {
   const [keyword, setKeyword] = useState("");
@@ -279,9 +280,11 @@ export default function SearchPage() {
         </div>
       )}
       <section className={styles.relatedContainer}>
-        {!searchParams.get("searchKeyword") && (
+        {!searchParams.get("searchKeyword") && isLoading ? (
+          <SkeletonSwiper title="이 상품을 찾으시나요?" />
+        ) : (
           <ProductSwiper
-            title="혹시 이 상품을 찾으시나요?"
+            title="이 상품을 찾으시나요?"
             items={randomProducts}
             isLoading={isLoading}
           />

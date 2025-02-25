@@ -153,7 +153,7 @@ const Header = () => {
       showCancelButton: true,
       confirmButtonText: "확인",
       cancelButtonText: "취소",
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "#00de90",
       cancelButtonColor: "#d33",
     }).then((result) => {
       if (result.isConfirmed) {

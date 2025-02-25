@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getImageUrl } from "../../api/imageApi";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import Skeleton from "../../components/skeleton/SkeletonImage"; // 스켈레톤 컴포넌트 추가
 
 const DEFAULT_IMAGE = "/profile.png";
 
@@ -11,8 +10,8 @@ const ImageLoader = ({
   className = "",
   onClick,
 }) => {
-  const [imageSrc, setImageSrc] = useState(null); // 🔥 초기값 `null`
-  const [isLoading, setIsLoading] = useState(true); // 🔥 로딩 상태 추가
+  const [imageSrc, setImageSrc] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (imagePath) {
@@ -34,14 +33,14 @@ const ImageLoader = ({
   return (
     <>
       {isLoading ? (
-        <Skeleton height={160} width="100%" className={className} />
+        <Skeleton className={className} />
       ) : (
         <img
           src={imageSrc}
           alt={alt}
           className={className}
           onClick={onClick}
-          onError={() => setImageSrc(DEFAULT_IMAGE)}
+          onLoad={() => setIsLoading(false)}
         />
       )}
     </>
