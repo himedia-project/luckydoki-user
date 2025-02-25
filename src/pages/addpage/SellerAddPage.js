@@ -4,6 +4,7 @@ import { upgradeToSeller } from "../../api/registerApi";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import TinyMCEEditor from "../../components/Editor";
 
 export default function SellerAddPage() {
   const navigate = useNavigate();
@@ -21,7 +22,32 @@ export default function SellerAddPage() {
     }
   };
 
+  const decodeHTMLEntities = (text) => {
+    const doc = new DOMParser().parseFromString(text, "text/html");
+    return doc.body.textContent || "";
+  };
+
+  const getPlainText = (html) => {
+    return decodeHTMLEntities(
+      html
+        .replace(/<\/p>/gi, "\n")
+        .replace(/<br\s*\/?>/gi, "\n")
+        .replace(/<\/?[^>]+(>|$)/g, "")
+    );
+  };
+
   const handleSubmit = async () => {
+    const plainTextContent = getPlainText(content);
+
+    if (!plainTextContent.trim()) {
+      Swal.fire({
+        title: "오류",
+        text: "샵 소개글을 입력해주세요.",
+        icon: "warning",
+      });
+      return;
+    }
+
     if (!content.trim()) {
       Swal.fire({
         title: "오류",
@@ -41,7 +67,7 @@ export default function SellerAddPage() {
 
     try {
       const formData = new FormData();
-      formData.append("introduction", content);
+      formData.append("introduction", plainTextContent);
       formData.append("profileImage", file);
       await upgradeToSeller(formData);
 
@@ -80,16 +106,9 @@ export default function SellerAddPage() {
           className={style["hidden-input"]}
         />
       </div>
-      <div>
+      <div className={style.editor}>
         <p>샵 소개글(최대100자)</p>
-        <textarea
-          name="introduction"
-          placeholder="내용을 입력하세요."
-          className={style.input_area}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          maxLength={100}
-        />
+        <TinyMCEEditor content={content} setContent={setContent} />
       </div>
       <button className={style.register_button} onClick={handleSubmit}>
         등록하기

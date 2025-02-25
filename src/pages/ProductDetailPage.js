@@ -84,11 +84,11 @@ export default function ProductDetail() {
       if (!product?.tagList) return;
 
       try {
-        const tagIdList = product.tagList.map((tag) => tag.id).join(",");
-        const excludeIdList = product.id;
+        const tagIdList = product?.tagList.map((tag) => tag.id).join(",");
+        const excludeIdList = product?.id;
         const response = await getProductList("", tagIdList, excludeIdList);
         console.log("API 응답 데이터 구조:", response.data);
-        setProductList(response.data);
+        setProductList(response?.data);
       } catch (error) {
         console.error("상품 리스트 조회 실패:", error.response?.data || error);
       }
@@ -211,17 +211,17 @@ export default function ProductDetail() {
 
       const selectedProducts = [
         {
-          productId: product.id,
-          productName: product.name,
-          imageName: product.uploadFileNames[0],
-          price: product.price,
-          discountPrice: product.discountPrice,
-          discountRate: product.discountRate,
+          productId: product?.id,
+          productName: product?.name,
+          imageName: product?.uploadFileNames[0],
+          price: product?.price,
+          discountPrice: product?.discountPrice,
+          discountRate: product?.discountRate,
           qty: quantity,
         },
       ];
 
-      const totalAmount = product.discountPrice * quantity;
+      const totalAmount = product?.discountPrice * quantity;
 
       navigate("/payment", {
         state: {
@@ -339,7 +339,7 @@ export default function ProductDetail() {
           {/* 리뷰 */}
           <div className={style.reviewSection} ref={reviewSectionRef}>
             <div className={style.review_top}>
-              <h3>상품 리뷰 ({reviews.length})</h3>
+              <h3>상품 리뷰 ({reviews?.length})</h3>
               <p
                 className={style.review_add_button}
                 onClick={handleMoveReviewAdd}
@@ -350,7 +350,7 @@ export default function ProductDetail() {
             {reviews.length > 0 ? (
               <div className={style.reviewList}>
                 {reviews.map((review) => (
-                  <ReviewCard key={review.id} review={review} />
+                  <ReviewCard key={review?.id} review={review} />
                 ))}
               </div>
             ) : (
@@ -362,8 +362,8 @@ export default function ProductDetail() {
             <h3>작품 키워드</h3>
             <div className={style.tagList}>
               {product?.tagList.map((tag) => (
-                <span key={tag.id} className={style.tag}>
-                  #{tag.name}
+                <span key={tag?.id} className={style.tag}>
+                  #{tag?.name}
                 </span>
               ))}
             </div>

@@ -19,7 +19,7 @@ const NewPage = () => {
 
         // ✅ isNew === "Y" 인 상품들만 필터링
         const newProducts = response.data.filter(
-          (product) => product.isNew === "Y"
+          (product) => product?.isNew === "Y"
         );
 
         setProducts(newProducts);
@@ -47,23 +47,23 @@ const NewPage = () => {
                 .map((_, index) => <SkeletonCard key={index} />)
             : products.map((product) => (
                 <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  name={product.name}
-                  price={product.price}
-                  discountRate={product.discountRate}
-                  discountPrice={product.discountPrice}
+                  key={product?.id}
+                  id={product?.id}
+                  name={product?.name}
+                  price={product?.price}
+                  discountRate={product?.discountRate}
+                  discountPrice={product?.discountPrice}
                   productImageUrl={
                     product.uploadFileNames?.length > 0
                       ? product.uploadFileNames[0]
                       : null
                   }
-                  isNew={product.isNew}
-                  event={product.event}
-                  likes={product.likes}
-                  best={product.best}
-                  reviewAverage={product.reviewAverage}
-                  reviewCount={product.reviewCount}
+                  isNew={product?.isNew}
+                  event={product?.event}
+                  likes={product?.likes}
+                  best={product?.best}
+                  reviewAverage={product?.reviewAverage}
+                  reviewCount={product?.reviewCount}
                 />
               ))}
         </div>

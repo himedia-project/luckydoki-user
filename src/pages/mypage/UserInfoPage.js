@@ -4,25 +4,31 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getMyProfile, updateMyProfile } from "../../api/memberApi";
 import { quitMember } from "../../api/loginApi";
+import ImageLoader from "../../components/card/ImageLoader";
 
 export default function UserInfo() {
   const navigate = useNavigate();
+  const [image, setImage] = useState(null);
+  const [file, setFile] = useState(null);
 
   const [userInfo, setUserInfo] = useState({
     nickname: "",
     email: "",
     phone: "",
+    profileImage: null,
   });
 
   useEffect(() => {
     getMyProfile()
       .then((response) => {
-        const { nickName, email, phone } = response.data;
+        const { nickName, email, phone, profileImage } = response.data;
         setUserInfo({
           nickname: nickName || "",
           email: email || "",
           phone: phone || "",
+          profileImage: profileImage || "",
         });
+        setImage(userInfo.profileImage);
       })
       .catch((error) => {
         console.error("내 정보 불러오기 실패:", error);
@@ -52,20 +58,41 @@ export default function UserInfo() {
     }));
   };
 
+  const handleImageChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const imagePreviewUrl = URL.createObjectURL(selectedFile);
+      setImage(imagePreviewUrl);
+      setFile(selectedFile);
+    }
+  };
+
   const handleSave = async () => {
     try {
-      const updateData = {
-        nickName: userInfo.nickname,
-        phone: userInfo.phone,
-      };
+      // const updateData = {
+      //   nickName: userInfo.nickname,
+      //   phone: userInfo.phone,
+      // };
+      const formData = new FormData();
+      formData.append("nickName", userInfo.nickname);
+      formData.append("phone", userInfo.phone);
+      formData.append("file", file);
 
-      const response = await updateMyProfile(updateData);
-      alert("회원정보가 수정되었습니다!");
-      console.log("수정 성공:", response.data);
-      navigate("/mypage");
+      const response = await updateMyProfile(formData);
+      Swal.fire({
+        title: "회원정보가 수정되었습니다!",
+        icon: "success",
+        confirmButtonText: "확인",
+      }).then(() => {
+        navigate("/mypage");
+      });
     } catch (error) {
       console.error("회원정보 수정 실패:", error);
-      alert("회원정보 수정 중 오류가 발생했습니다.");
+      Swal.fire({
+        title: "회원정보 수정 중 오류가 발생했습니다.",
+        icon: "error",
+        confirmButtonText: "확인",
+      });
     }
   };
 
@@ -99,6 +126,30 @@ export default function UserInfo() {
   return (
     <div className={style.container}>
       <h2 className={style.title}>회원정보</h2>
+
+      {/* 프로필 이미지 */}
+      <div
+        className={style.profile_container}
+        onClick={() => document.getElementById("fileInput").click()}
+      >
+        {image ? (
+          <img src={image} alt="프로필" className={style.profile_image} />
+        ) : (
+          <ImageLoader
+            imagePath={userInfo.profileImage}
+            alt="프로필"
+            className={style.profile_image}
+          />
+        )}
+        <div className={style.overlay}>수정</div>
+        <input
+          id="fileInput"
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className={style["hidden-input"]}
+        />
+      </div>
 
       {/* 닉네임 */}
       <div className={style.inputGroup}>

@@ -36,7 +36,13 @@ const ImageLoader = ({
       {isLoading ? (
         <Skeleton height={160} width="100%" className={className} />
       ) : (
-        <img src={imageSrc} alt={alt} className={className} onClick={onClick} />
+        <img
+          src={imageSrc}
+          alt={alt}
+          className={className}
+          onClick={onClick}
+          onError={() => setImageSrc(DEFAULT_IMAGE)}
+        />
       )}
     </>
   );
