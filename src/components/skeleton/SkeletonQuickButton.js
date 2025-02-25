@@ -12,12 +12,7 @@ const SkeletonQuickButton = () => {
           .map((_, index) => (
             <li key={index} className={styles.skeletonItem}>
               <div className={styles.imageContainer}>
-                <Skeleton
-                  circle
-                  width={75}
-                  height={75}
-                  className={styles.skeletonImage}
-                />{" "}
+                <Skeleton className={styles.skeletonImage} />{" "}
                 {/* ✅ 아이콘 크기 조정 */}
               </div>
               <Skeleton

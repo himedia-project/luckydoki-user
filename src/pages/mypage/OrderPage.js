@@ -30,8 +30,8 @@ export default function OrderPage() {
         text: "한 번 취소하면 되돌릴 수 없습니다.",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
+        confirmButtonColor: "#00de90",
+        cancelButtonColor: "#d33",
         confirmButtonText: "네",
         cancelButtonText: "아니요",
       });

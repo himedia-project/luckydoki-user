@@ -18,7 +18,7 @@ export default function CommunityPage() {
       } catch (error) {
         console.error("커뮤니티 글 조회 실패:", error);
       } finally {
-        setTimeout(() => setIsLoading(false), 500); // ✅ 최소 500ms 로딩 유지 (부드러운 전환)
+        setTimeout(() => setIsLoading(false), 500);
       }
     };
 
@@ -30,7 +30,6 @@ export default function CommunityPage() {
       <h2>커뮤니티</h2>
 
       {isLoading ? (
-        // ✅ 로딩 중일 때 스켈레톤 표시
         <div className={style.community_grid_wrapper}>
           <div className={style.community_grid_left}>
             {Array(3)
