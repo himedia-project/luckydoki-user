@@ -20,6 +20,7 @@ import { logoutPost } from "../api/loginApi";
 import EventBanner from "../components/EventBanner";
 import DarkModeToggle from "../components/button/DarkModeToggle";
 import { setMessageEmail } from "../api/redux/messageSlice";
+import { getUnReadMessages } from "../api/chatApi";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const Header = () => {
   //   (state) => state.notificationSlice
   // );
   const { updateToken } = useFCMToken();
+  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
 
   // 현재 로그인한 사용자의 데이터만 표시
   const currentUserNotifications = notifications;
@@ -99,6 +101,21 @@ const Header = () => {
     };
 
     initializeFCM();
+  }, [email]);
+
+  useEffect(() => {
+    const fetchUnreadMessages = async () => {
+      if (email) {
+        try {
+          const response = await getUnReadMessages();
+          setUnreadMessageCount(response.data.length);
+        } catch (error) {
+          console.error("Failed to fetch unread messages:", error);
+        }
+      }
+    };
+
+    fetchUnreadMessages();
   }, [email]);
 
   const handleProtectedRoute = (event, path) => {
@@ -253,9 +270,9 @@ const Header = () => {
               <img src="/chat.png" alt="메시지" />
               <Link>
                 메시지
-                {email && currentUserMessages?.length > 0 && (
+                {email && unreadMessageCount > 0 && (
                   <span className={style.message_count}>
-                    {currentUserMessages?.length}
+                    {unreadMessageCount}
                   </span>
                 )}
               </Link>
