@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import styles from "../styles/LoginPage.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { getKakaoLoginLink } from "../api/kakaoApi";
+import axios from "axios"; // ✅ 기본 axios 사용
 import { useDispatch } from "react-redux";
-import { login } from "../api/redux/loginSlice";
+import { login, setAccessToken } from "../api/redux/loginSlice";
 import { setCartEmail } from "../api/redux/cartSlice";
 import { setNotificationEmail } from "../api/redux/notificationSlice";
 import { loginPost } from "../api/loginApi";
