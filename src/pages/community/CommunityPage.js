@@ -27,37 +27,41 @@ export default function CommunityPage() {
       {posts.length > 0 ? (
         <div className={style.community_grid_wrapper}>
           <div className={style.community_grid_left}>
-            {posts.slice(0, Math.ceil(posts.length / 2)).map((post) => (
-              <CommunityCard
-                key={post?.id}
-                id={post?.id}
-                title={post?.title}
-                content={post?.content}
-                createdAt={post?.createdAt}
-                nickName={post?.nickName}
-                uploadFileNames={post?.uploadFileNames}
-                productDTOs={post?.productDTOs}
-                sellerImage={post?.shopImage}
-                shopId={post?.shopId}
-              />
-            ))}
+            {posts
+              .filter((_, index) => index % 2 === 0)
+              .map((post) => (
+                <CommunityCard
+                  key={post?.id}
+                  id={post?.id}
+                  title={post?.title}
+                  content={post?.content}
+                  createdAt={post?.createdAt}
+                  nickName={post?.nickName}
+                  uploadFileNames={post?.uploadFileNames}
+                  productDTOs={post?.productDTOs}
+                  sellerImage={post?.shopImage}
+                  shopId={post?.shopId}
+                />
+              ))}
           </div>
           <div className={style.community_grid_right}>
-            {posts.slice(Math.ceil(posts.length / 2)).map((post) => (
-              <CommunityCard
-                key={post?.id}
-                id={post?.id}
-                title={post?.title}
-                content={post?.content}
-                createdAt={post?.createdAt}
-                nickName={post?.nickName}
-                uploadFileNames={post?.uploadFileNames}
-                productDTOs={post?.productDTOs}
-                sellerImage={post?.shopImage}
-                hideSwiper={true}
-                shopId={post?.shopId}
-              />
-            ))}
+            {posts
+              .filter((_, index) => index % 2 === 1)
+              .map((post) => (
+                <CommunityCard
+                  key={post?.id}
+                  id={post?.id}
+                  title={post?.title}
+                  content={post?.content}
+                  createdAt={post?.createdAt}
+                  nickName={post?.nickName}
+                  uploadFileNames={post?.uploadFileNames}
+                  productDTOs={post?.productDTOs}
+                  sellerImage={post?.shopImage}
+                  hideSwiper={true}
+                  shopId={post?.shopId}
+                />
+              ))}
           </div>
         </div>
       ) : (

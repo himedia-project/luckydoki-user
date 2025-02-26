@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import KakaoRedirectPage from "./components/auth/KakaoRedirectPage";
 import MainLayout from "./layouts/MainLayout";
@@ -35,6 +35,10 @@ import AiSuggestPage from "./pages/AiSuggestPage";
 import ChatbotContainer from "./components/chatbot/ChatbotContainer";
 
 function App() {
+  const location = useLocation();
+  const hideChatbotRoutes = ["/login", "/join", "/member/kakao"];
+  const shouldShowChatbot = !hideChatbotRoutes.includes(location.pathname);
+
   return (
     <>
       <Routes>
@@ -80,7 +84,7 @@ function App() {
         {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-      <ChatbotContainer />
+      {shouldShowChatbot && <ChatbotContainer />}
     </>
   );
 }
