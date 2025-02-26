@@ -3,15 +3,15 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import styles from "../../styles/MessagePage.module.css";
-
-import { API_URL } from "../../config/apiConfig";
-import MessageDropdown from "../../components/dropdown/MessageDropdown";
+import styles from "../styles/MessagePage.module.css";
 import {
   createChattingRoom,
-  getChatRooms,
   getMessageHistory,
-} from "../../api/chatApi";
+  getChatRooms,
+} from "../api/chatApi";
+import { API_URL } from "../config/apiConfig";
+import MessageDropdown from "../components/dropdown/MessageDropdown";
+import axiosInstance from "../api/axiosInstance";
 
 export default function MessagePage() {
   const location = useLocation();
@@ -167,57 +167,6 @@ export default function MessagePage() {
           ]);
         }
       );
-
-      // 알림 구독
-      const notificationSubscription = stompClient.subscribe(
-        `/user/queue/notifications/`,
-        (notification) => {
-          // 알림 처리 로직
-          const notificationMessage = JSON.parse(notification.body);
-          console.log("새 알림: ", notificationMessage);
-          // 드롭다운 메시지에 실시간 알림 추가
-          setDropdownMessages((prev) => [
-            {
-              sender: "새 메시지 알림",
-              date: new Date(
-                notificationMessage.timestamp
-              ).toLocaleDateString(),
-              content: notificationMessage.notificationMessage,
-              roomId: notificationMessage.roomId,
-              isRead: notificationMessage.isRead,
-              recipientEmail: notificationMessage.email,
-            },
-            ...prev,
-          ]);
-
-          // 읽지 않은 메시지 상태 업데이트 (isRead 상태 활용)
-          if (!notificationMessage.isRead) {
-            setUnreadMessages((prev) => ({
-              ...prev,
-              [notificationMessage.roomId]:
-                (prev[notificationMessage.roomId] || 0) + 1,
-            }));
-          }
-
-          // 브라우저 알림 표시
-          if (
-            !notificationMessage.isRead &&
-            notificationMessage.email === userEmail && // 현재 사용자에게 온 알림인지 확인
-            Notification.permission === "granted"
-          ) {
-            new Notification("새 메시지 알림", {
-              body: notificationMessage.notificationMessage,
-              timestamp: notificationMessage.timestamp,
-            });
-          }
-        }
-      );
-
-      // cleanup 함수
-      return () => {
-        subscription.unsubscribe();
-        notificationSubscription.unsubscribe();
-      };
     }
   }, [roomId, stompClient, userEmail]);
   /////////채팅방 선택/////////////
@@ -321,9 +270,23 @@ export default function MessagePage() {
       // roomId가 없는 경우, 채팅방 생성 필요
       if (!roomId) {
         // 먼저 기존 채팅방이 있는지 확인
-        const existingRoom = chatRooms.find(
-          (room) => room.shopId === selectedShopId
-        );
+        const existingRoom = chatRooms.find((room) => {
+          console.log(
+            "room.shopId 타입:",
+            typeof room.shopId,
+            "값:",
+            room.shopId
+          );
+          console.log(
+            "routeShopData.shopId 타입:",
+            typeof routeShopData.shopId,
+            "값:",
+            routeShopData.shopId
+          );
+
+          // 문자열로 변환 후 비교
+          return String(room.shopId) === String(routeShopData.shopId);
+        });
 
         if (existingRoom) {
           setRoomId(existingRoom.id);
@@ -366,8 +329,6 @@ export default function MessagePage() {
         connect(e);
         return;
       }
-
-      // FormData를 사용하여 메시지와 이미지를 함께 전송
 
       stompClient.publish({
         destination: "/app/message",
