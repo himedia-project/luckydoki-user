@@ -231,7 +231,7 @@ export default function CommunityAddPage() {
 
       {/* 내용 */}
       <div>
-        <p>글 내용</p>
+        <p className={style.inputTitle}>글 내용</p>
         <TinyMCEEditor content={content} setContent={setContent} />
       </div>
 
@@ -310,7 +310,6 @@ export default function CommunityAddPage() {
         </div>
       </div>
 
-      {/* 등록 버튼 */}
       <button className={style.register_button} onClick={handleRegister}>
         등록하기
       </button>

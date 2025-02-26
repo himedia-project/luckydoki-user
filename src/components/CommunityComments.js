@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 function CommunityComments({ postId }) {
   const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const userNickName = useSelector((state) => state.loginSlice.nickName);
 
   useEffect(() => {
@@ -40,7 +41,12 @@ function CommunityComments({ postId }) {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // 기본 동작 방지
+
+    if (isSubmitting) return; // 이미 제출 중이면 중복 실행 방지
+    setIsSubmitting(true);
+
     if (!userNickName) {
       Swal.fire({
         toast: true,
@@ -50,6 +56,7 @@ function CommunityComments({ postId }) {
         showConfirmButton: false,
         timer: 1500,
       });
+      setIsSubmitting(false);
       return;
     }
 
@@ -62,6 +69,7 @@ function CommunityComments({ postId }) {
         showConfirmButton: false,
         timer: 1500,
       });
+      setIsSubmitting(false);
       return;
     }
 
@@ -79,19 +87,20 @@ function CommunityComments({ postId }) {
         showConfirmButton: false,
         timer: 1500,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !isSubmitting) {
       e.preventDefault();
-      handleSubmit();
+      handleSubmit(e);
     }
   };
 
   return (
     <div className={styles.commentsContainer}>
-      {/* 댓글 입력 영역 */}
       <h4 className={styles.commentTopHeader}>댓글</h4>
       <div className={styles.inputWrapper}>
         <input
