@@ -3,8 +3,6 @@ import SkeletonCard from "./SkeletonCard"; // ✅ 스켈레톤 카드 추가
 import styles from "../../styles/SkeletonSwiper.module.css";
 
 const SkeletonSwiper = ({ title }) => {
-  console.log("🔥 SkeletonSwiper 렌더링됨:", title);
-
   return (
     <div className={styles.skeletonSection}>
       <h2 className={styles.sectionTitle}>{title}</h2>

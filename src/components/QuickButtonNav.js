@@ -47,13 +47,13 @@ export default function QuickButtonNav() {
   return (
     <div className={style.buttonContainer}>
       {isLoading ? (
-        <SkeletonQuickButton /> 
+        <SkeletonQuickButton />
       ) : (
         <ul className={style.buttonNav}>
           {categories.slice(0, 3).flatMap((category) =>
-            category.subCategories.slice(0, 3).map((subCategory, index) => (
+            category.subCategories.slice(0, 3).map((subCategory) => (
               <li
-                key={index}
+                key={subCategory.categoryId}
                 className={style.LinkButton}
                 onClick={() => handleCategoryClick(subCategory.categoryId)}
               >
