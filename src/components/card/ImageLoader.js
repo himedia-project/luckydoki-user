@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { getImageUrl } from "../../api/imageApi";
-import Skeleton from "../../components/skeleton/SkeletonImage";
 
 const DEFAULT_IMAGE = "/profile.png";
 
@@ -10,42 +9,18 @@ const ImageLoader = ({
   className = "",
   onClick,
 }) => {
-  const [imageSrc, setImageSrc] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [imageSrc, setImageSrc] = useState(DEFAULT_IMAGE);
 
   useEffect(() => {
     if (imagePath) {
       getImageUrl(imagePath)
-        .then((url) => {
-          setImageSrc(url);
-          setIsLoading(false);
-        })
-        .catch(() => {
-          setImageSrc(DEFAULT_IMAGE);
-          setIsLoading(false);
-
-        });
-    } else {
-      setImageSrc(DEFAULT_IMAGE);
-      setIsLoading(false);
-
+        .then((url) => setImageSrc(url))
+        .catch(() => setImageSrc(DEFAULT_IMAGE));
     }
   }, [imagePath]);
 
   return (
-    <>
-      {isLoading ? (
-        <Skeleton className={className} />
-      ) : (
-        <img
-          src={imageSrc}
-          alt={alt}
-          className={className}
-          onClick={onClick}
-          onLoad={() => setIsLoading(false)}
-        />
-      )}
-    </>
+    <img src={imageSrc} alt={alt} className={className} onClick={onClick} />
   );
 };
 
