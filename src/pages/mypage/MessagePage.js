@@ -132,7 +132,7 @@ export default function MessagePage() {
 
   useEffect(() => {
     if (roomId && stompClient) {
-      console.log("구독 시작 - roomId:", roomId);
+      console.log("구독 시작 - roomId, stompClient :", roomId, stompClient);
       const subscription = stompClient.subscribe(
         `/topic/chat/message/${roomId}`,
         (message) => {
