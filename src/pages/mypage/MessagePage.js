@@ -137,8 +137,27 @@ export default function MessagePage() {
         `/topic/chat/message/${roomId}`,
         (message) => {
           const receivedMessage = JSON.parse(message.body);
-          // 기존 메시지 목록에 새 메시지 추가
           console.log("받은 메세지 : ", receivedMessage);
+
+          // 메시지 목록 업데이트
+          setRealTimeMessages((prevMessages) => [
+            ...prevMessages,
+            receivedMessage,
+          ]);
+
+          // 채팅방 목록 업데이트 추가
+          setChatRooms((prevRooms) =>
+            prevRooms.map((room) =>
+              room.id === roomId
+                ? {
+                    ...room,
+                    lastMessage: receivedMessage.message,
+                    lastMessageTime: receivedMessage.sendTime,
+                  }
+                : room
+            )
+          );
+
           // 자신이 보낸 메시지가 아닐 때만 알림 표시
           if (receivedMessage.email !== userEmail) {
             if (Notification.permission === "granted") {
@@ -161,14 +180,16 @@ export default function MessagePage() {
               [roomId]: (prev[roomId] || 0) + 1,
             }));
           }
-
-          // 메시지 목록 업데이트
-          setRealTimeMessages((prevMessages) => [
-            ...prevMessages,
-            receivedMessage,
-          ]);
         }
       );
+
+      // 구독 해제
+      return () => {
+        if (subscription) {
+          console.log("구독 해제");
+          subscription.unsubscribe();
+        }
+      };
     }
   }, [roomId, stompClient, userEmail]);
   /////////채팅방 선택/////////////
