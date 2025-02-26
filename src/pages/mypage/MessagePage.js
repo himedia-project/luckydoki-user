@@ -21,7 +21,7 @@ export default function MessagePage() {
   const [selectedShopId, setSelectedShopId] = useState(
     routeShopData?.shopId || null
   );
-  const [realtimeMessages, setRealTimeMessage] = useState([]);
+  const [realTimeMessages, setRealTimeMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
   const [message, setMessage] = useState("");
   const [connected, setConnected] = useState(false);
@@ -43,25 +43,25 @@ export default function MessagePage() {
     }
   }, []);
 
-  // 드롭다운 메시지 생성 useEffect 추가
-  useEffect(() => {
-    // 읽지 않은 메시지가 있는 채팅방을 기반으로 드롭다운 메시지 생성
-    const newDropdownMessages = Object.entries(unreadMessages)
-      .filter(([roomId, count]) => count > 0)
-      .map(([roomId, count]) => {
-        // 해당 roomId의 채팅방 찾기
-        const room = chatRooms.find((r) => r.id === parseInt(roomId));
+  // 드롭다운 메시지 생성 useEffect 추가,
+  // useEffect(() => {
+  //   // 읽지 않은 메시지가 있는 채팅방을 기반으로 드롭다운 메시지 생성
+  //   const newDropdownMessages = Object.entries(unreadMessages)
+  //     .filter(([roomId, count]) => count > 0)
+  //     .map(([roomId, count]) => {
+  //       // 해당 roomId의 채팅방 찾기
+  //       const room = chatRooms.find((r) => r.id === parseInt(roomId));
 
-        return {
-          sender: room ? room.shopName : "알 수 없는 상점",
-          date: new Date().toLocaleDateString(),
-          content: `${count}개의 새 메시지가 있습니다.`,
-          lastMessage: room ? room.lastMessage : "새 메시지",
-        };
-      });
+  //       return {
+  //         sender: room ? room.shopName : "알 수 없는 상점",
+  //         date: new Date().toLocaleDateString(),
+  //         content: `${count}개의 새 메시지가 있습니다.`,
+  //         lastMessage: room ? room.lastMessage : "새 메시지",
+  //       };
+  //     });
 
-    setDropdownMessages(newDropdownMessages);
-  }, [unreadMessages, chatRooms]);
+  //   setDropdownMessages(newDropdownMessages);
+  // }, [unreadMessages, chatRooms]);
 
   // 기존의 다른 useEffect, 함수들은 그대로 유지
 
@@ -69,7 +69,7 @@ export default function MessagePage() {
     const initializeChat = async () => {
       try {
         // 먼저 모든 채팅방 목록을 가져옴
-
+        // 1.
         console.log("routeShopData:", routeShopData); // 데이터 확인
         console.log("shopId:", routeShopData?.shopId); // shopId 확인
 
@@ -93,7 +93,7 @@ export default function MessagePage() {
             setRoomId(existingRoom.id);
             setSelectedRoom(existingRoom);
             const historyResponse = await getMessageHistory(existingRoom.id);
-            setRealTimeMessage(historyResponse.data);
+            setRealTimeMessages(historyResponse.data);
           } else {
             // 새로운 채팅방 생성
             const chatRoomData = {
@@ -110,7 +110,7 @@ export default function MessagePage() {
             const newRoom = newRoomResponse.data;
             setRoomId(newRoom.id);
             setSelectedRoom(newRoom);
-            setRealTimeMessage([]);
+            setRealTimeMessages([]);
             setChatRooms((prev) => [...prev, newRoom]);
           }
 
@@ -128,7 +128,8 @@ export default function MessagePage() {
     initializeChat();
   }, [routeShopData, userEmail]);
 
-  //////////구독시저ㅁ/////
+  //////////구독시저ㅁ///// 그방을 선택해서 들어갈 때 연결(구독)
+
   useEffect(() => {
     if (roomId && stompClient) {
       console.log("구독 시작 - roomId:", roomId);
@@ -162,7 +163,7 @@ export default function MessagePage() {
           }
 
           // 메시지 목록 업데이트
-          setRealTimeMessage((prevMessages) => [
+          setRealTimeMessages((prevMessages) => [
             ...prevMessages,
             receivedMessage,
           ]);
@@ -185,9 +186,13 @@ export default function MessagePage() {
     ///////채팅메세지 기록 불러오는 api/////////
     try {
       const historyResponse = await getMessageHistory(room.id);
-      setRealTimeMessage(historyResponse.data);
+      setRealTimeMessages(historyResponse.data);
       console.log("채팅기록 response:", historyResponse.data);
-      const event = { preventDefault: () => {} };
+      const event = {
+        preventDefault: () => {
+          // TODO webSocket 연결 ->
+        },
+      };
       connect(event);
     } catch (error) {
       console.error("채팅 기록 불러오기 실패:", error);
@@ -201,7 +206,7 @@ export default function MessagePage() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [realtimeMessages]);
+  }, [realTimeMessages]);
 
   useEffect(() => {
     return () => {
@@ -219,9 +224,11 @@ export default function MessagePage() {
   }, [stompClient]);
 
   //소캣 연결 함수
+  // 2. 소켓 연결 함수, 계속 유지 언제?
   const connect = (e) => {
     e.preventDefault();
     if (userEmail && !stompClient) {
+      console.log("소켓 연결 시작");
       const client = new Client({
         webSocketFactory: () => new SockJS(`${API_URL}/ws-stomp`),
         connectHeaders: {
@@ -254,7 +261,7 @@ export default function MessagePage() {
       }
     }
   };
-  //메세지 전송 함수
+  //메세지 전송 함수(connect 함수 호출 필요)
   const sendMessage = async (e) => {
     e.preventDefault();
 
@@ -267,6 +274,7 @@ export default function MessagePage() {
       return;
     }
 
+    // 확인용용
     try {
       // roomId가 없는 경우, 채팅방 생성 필요
       if (!roomId) {
@@ -331,6 +339,7 @@ export default function MessagePage() {
         return;
       }
 
+      // 메세지 전송
       stompClient.publish({
         destination: "/app/message",
         headers: {
@@ -348,7 +357,7 @@ export default function MessagePage() {
   return (
     <div className={styles.messagePageContainer}>
       {/* MessageDropdown 컴포넌트 추가 */}
-      <MessageDropdown messages={dropdownMessages} />
+      {/* <MessageDropdown messages={dropdownMessages} /> */}
 
       <div className={styles.messagePageContainer}>
         {/* 왼쪽 사이드바 - 채팅방 목록 */}
@@ -397,7 +406,7 @@ export default function MessagePage() {
           {selectedRoom || (routeShopData && roomId) ? (
             <>
               <div className={styles.messagesContainer}>
-                {realtimeMessages.map((msg, index) => (
+                {realTimeMessages.map((msg, index) => (
                   <div
                     key={`${msg.sendTime}-${index}`}
                     className={`${styles.messageItem} ${
