@@ -1,32 +1,37 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../styles/Dropdown.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getChatRooms } from "../../api/chatApi";
+import { clearMessageItems } from "../../api/redux/messageSlice";
 
-const MessageDropdown = () => {
+const MessageDropdown = ({ messages = [] }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
-  const email = useSelector((state) => state.loginSlice.email);
-  const [messages, setMessages] = useState([]);
+  // const [messages, setMessages] = useState([]);
+  const safeMessages = Array.isArray(messages) ? messages : [];
 
+  console.log("MessageDropdown messages: ", safeMessages);
+
+  const email = useSelector((state) => state.loginSlice.email);
   // 메시지 목록 갱신을 위한 상태
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await getChatRooms();
-        setMessages(response.data);
-      } catch (error) {
-        console.error("Failed to fetch unread messages:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchMessages = async () => {
+  //     try {
+  //       const response = await getChatRooms();
+  //       setMessages(response.data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch unread messages:", error);
+  //     }
+  //   };
 
-    if (email) {
-      fetchMessages();
-    }
-  }, [email, refreshTrigger]); // refreshTrigger 의존성 추가
+  //   if (email) {
+  //     fetchMessages();
+  //   }
+  // }, [email, refreshTrigger]); // refreshTrigger 의존성 추가
 
   // 메시지 페이지에서는 드롭다운 숨기기
   if (location.pathname === "/message") {
@@ -34,6 +39,10 @@ const MessageDropdown = () => {
   }
   const handleViewAllClick = () => {
     navigate("/message");
+  };
+
+  const handleClear = () => {
+    dispatch(clearMessageItems());
   };
 
   if (!email) {
@@ -51,13 +60,13 @@ const MessageDropdown = () => {
   return (
     <div className={styles.dropdown}>
       <h3 className={styles.title}>메시지</h3>
-      {messages.length > 0 ? (
+      {safeMessages.length > 0 ? (
         <div className={styles.notificationList}>
-          {messages.map((message, index) => (
+          {safeMessages.map((message, index) => (
             <div key={index} className={styles.item}>
               <img
-                src="/default-profile.png"
-                alt="프로필"
+                src="/profile.png"
+                alt="알림 아이콘"
                 className={styles.messageIcon}
               />
               <div className={styles.textBox}>

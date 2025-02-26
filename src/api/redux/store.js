@@ -7,19 +7,20 @@ import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
 import persistStore from "redux-persist/es/persistStore";
 import notificationSlice from "./notificationSlice";
-
+import messageSlice from "./messageSlice";
 const rootReducer = combineReducers({
   loginSlice,
   infoSlice,
   cartSlice,
   category: categorySlice, // ✅ 카테고리 슬라이스 추가 (키 명확히 설정)
   notificationSlice,
+  messageSlice,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["loginSlice", "cartSlice", "notificationSlice"], // ✅ 필요하면 특정 슬라이스만 영속 저장
+  whitelist: ["loginSlice", "cartSlice", "notificationSlice", "messageSlice"], // ✅ 필요하면 특정 슬라이스만 영속 저장
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

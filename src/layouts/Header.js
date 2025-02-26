@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../api/redux/loginSlice";
 import style from "../styles/Header.module.css";
 import NotificationDropdown from "../components/dropdown/NotificationDropdown";
-// import MessageDropdown from "../components/dropdown/MessageDropdown";
+import MessageDropdown from "../components/dropdown/MessageDropdown";
 import { getMainCategories } from "../api/categoryApi";
 import CategoryNav from "../components/CategoryNav";
 import Swal from "sweetalert2";
@@ -25,7 +25,7 @@ const Header = () => {
   const navigate = useNavigate();
   // current user email
   const { email } = useSelector((state) => state.loginSlice);
-  const { notifications } = useNotification();
+  const { notifications, messages } = useNotification();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showHeaderTop, setShowHeaderTop] = useState(true);
@@ -49,6 +49,9 @@ const Header = () => {
   console.log("cartEmail: ", cartEmail);
   console.log("currentUserNotifications: ", currentUserNotifications);
   console.log("currentUserCartItems: ", currentUserCartItems);
+
+  const currentUserMessages = messages;
+  console.log("currentUserMessages: ", currentUserMessages);
 
   useEffect(() => {
     const fetchMainCategories = async () => {
@@ -210,7 +213,7 @@ const Header = () => {
               onMouseEnter={() => setShowMessages(true)}
               onMouseLeave={() => setShowMessages(false)}
             >
-              {/* <MessageDropdown messages={[]} /> */}
+              <MessageDropdown messages={currentUserMessages || []} />
             </div>
           )}
 
@@ -246,7 +249,14 @@ const Header = () => {
               onMouseLeave={() => setShowMessages(false)}
             >
               <img src="/chat.png" alt="메시지" />
-              <Link>메시지</Link>
+              <Link>
+                메시지
+                {email && currentUserMessages.length > 0 && (
+                  <span className={style.message_count}>
+                    {currentUserMessages.length}
+                  </span>
+                )}
+              </Link>
             </li>
           </ul>
         </div>

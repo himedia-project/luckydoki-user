@@ -6,6 +6,7 @@ import {
   setNotificationItems,
   clearNotificationItems,
 } from "../api/redux/notificationSlice";
+import { clearMessageItems, setMessageItems } from "../api/redux/messageSlice";
 
 export const useNotification = () => {
   const dispatch = useDispatch();
@@ -14,9 +15,16 @@ export const useNotification = () => {
     (state) => state.notificationSlice
   );
 
+  const { email: messageEmail, messageItems } = useSelector(
+    (state) => state.messageSlice
+  );
+
   // 현재 로그인한 사용자의 알림만 필터링
   const currentUserNotifications =
     currentUserEmail === notificationEmail ? notificationItems : [];
+
+  const currentUserMessages =
+    currentUserEmail === messageEmail ? messageItems : [];
 
   useEffect(() => {
     // 브로드캐스트 채널 수신 설정
@@ -26,6 +34,11 @@ export const useNotification = () => {
       if (currentUserEmail === notificationEmail) {
         const newNotification = event.data;
         dispatch(setNotificationItems((prev) => [newNotification, ...prev]));
+      }
+      // 메시지 알림 추가
+      if (currentUserEmail === messageEmail) {
+        const newMessage = event.data;
+        dispatch(setMessageItems((prev) => [newMessage, ...prev]));
       }
     };
 
@@ -42,17 +55,30 @@ export const useNotification = () => {
         };
         dispatch(setNotificationItems((prev) => [newNotification, ...prev]));
       }
+      if (currentUserEmail === messageEmail) {
+        console.log("Foreground message received:", payload);
+        const newMessage = {
+          title: payload.notification?.title || payload.data?.title,
+          body: payload.notification?.body || payload.data?.body,
+          type: payload.data?.type,
+          timestamp: payload.data?.timestamp || new Date().toISOString(),
+        };
+        dispatch(setMessageItems((prev) => [newMessage, ...prev]));
+      }
     });
 
     return () => {
       unsubscribe();
       channel.close();
     };
-  }, [dispatch, currentUserEmail, notificationEmail]);
+  }, [dispatch, currentUserEmail, notificationEmail, messageEmail]);
 
   return {
     notifications: currentUserNotifications,
     clearNotifications: () => dispatch(clearNotificationItems()),
-    notificationCount: currentUserNotifications.length,
+    notificationCount: currentUserNotifications.length || 0,
+    messages: currentUserMessages,
+    clearMessages: () => dispatch(clearMessageItems()),
+    messageCount: currentUserMessages?.length || 0,
   };
 };
