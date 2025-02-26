@@ -46,6 +46,9 @@
   resize: none;
   margin: 20px 0 30px;
 }
+.inputTitle {
+  margin-bottom: 20px;
+}
 
 .upload_container {
   display: flex;
@@ -130,6 +133,7 @@
   padding: 10px;
   font-size: 14px;
   outline: none;
+  margin-top: 20px;
 }
 
 .tag_section {
