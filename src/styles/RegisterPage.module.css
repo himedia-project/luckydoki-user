@@ -12,6 +12,19 @@
   font-weight: bold;
   margin-bottom: 20px;
 }
+.homeButton {
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 30px;
+  margin-right: 210px;
+  width: 30px;
+  height: 33.75;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
 
 .inputGroup {
   display: flex;

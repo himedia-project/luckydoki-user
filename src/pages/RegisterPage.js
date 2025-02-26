@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { API_URL } from "../config/apiConfig";
 import styles from "../styles/RegisterPage.module.css";
+import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const [signupForm, setSignupForm] = useState({
@@ -16,6 +17,7 @@ const RegisterPage = () => {
   const [showVerification, setShowVerification] = useState(false);
   const [timer, setTimer] = useState(300);
   const [timerActive, setTimerActive] = useState(false);
+  const navigate = useNavigate();
 
   const REQUIRED_TEXT = <span className={styles.requiredText}>(필수)</span>;
 
@@ -139,9 +141,15 @@ const RegisterPage = () => {
     const s = seconds % 60;
     return `${m < 10 ? "0" + m : m}:${s < 10 ? "0" + s : s}`;
   };
+  const handleHomeClick = () => {
+    navigate("/");
+  };
 
   return (
     <div className={styles.container}>
+      <button className={styles.homeButton} onClick={handleHomeClick}>
+        <img src="home.png" alt="홈버튼" />
+      </button>
       <h1 className={styles.title}>회원가입</h1>
       <div className={styles.inputGroup}>
         <label className={styles.label}>이메일 {REQUIRED_TEXT}</label>

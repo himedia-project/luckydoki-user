@@ -27,7 +27,7 @@ export default function QuickButtonNav() {
       } catch (error) {
         console.error("카테고리 데이터를 가져오는 중 에러 발생:", error);
       } finally {
-        setTimeout(() => setIsLoading(false), 500); // ✅ 최소 500ms 유지하여 자연스럽게 전환
+        setTimeout(() => setIsLoading(false), 800);
       }
     };
 
@@ -47,7 +47,7 @@ export default function QuickButtonNav() {
   return (
     <div className={style.buttonContainer}>
       {isLoading ? (
-        <SkeletonQuickButton /> // ✅ 로딩 중이면 스켈레톤 표시
+        <SkeletonQuickButton /> 
       ) : (
         <ul className={style.buttonNav}>
           {categories.slice(0, 3).flatMap((category) =>

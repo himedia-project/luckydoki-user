@@ -153,17 +153,17 @@ export default function CommunityDetailPage() {
           )}
         </div>
       )}
-
-      {postInfo?.productDTOs && postInfo?.productDTOs.length > 0 && (
-        <div className={styles.TaggedProducts}>
-          <TaggedProducts
-            productDTOs={postInfo?.productDTOs}
-            handleProductClick={handleProductClick}
-          />
-        </div>
-      )}
-
       <div className={styles.content}>{postInfo?.content}</div>
+
+      <div className={styles.tagSection}>
+        <div className={styles.tagList}>
+          {postInfo?.tagList?.map((tag) => (
+            <span key={tag?.id} className={styles.tag}>
+              #{tag?.name}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* 댓글 */}
       <CommunityComments postId={id} />

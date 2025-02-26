@@ -18,6 +18,8 @@ export default function CommunityAddPage() {
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
+  const [tagList, setTagList] = useState([]);
+  const [tagInput, setTagInput] = useState(""); // 입력 중인 태그
 
   useEffect(() => {
     if (!shopId || roles !== "SELLER") return;
@@ -141,6 +143,10 @@ export default function CommunityAddPage() {
       formData.append("files", file);
     });
 
+    tagList.forEach((tag) => {
+      formData.append("tagStrList", tag);
+    });
+
     try {
       await createPost(formData);
       Swal.fire({
@@ -167,6 +173,44 @@ export default function CommunityAddPage() {
         timer: 1500,
       });
     }
+  };
+  const handleTagAdd = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      const trimmedInput = tagInput.trim();
+
+      if (trimmedInput === "") return;
+      if (tagList.length >= 5) {
+        Swal.fire({
+          toast: true,
+          position: "top",
+          icon: "warning",
+          title: "최대 5개의 태그만 추가할 수 있습니다.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        return;
+      }
+      if (tagList.includes(trimmedInput)) {
+        Swal.fire({
+          toast: true,
+          position: "top",
+          icon: "warning",
+          title: "이미 추가된 태그입니다.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        return;
+      }
+
+      setTagList((prevTags) => [...prevTags, trimmedInput]);
+      setTagInput("");
+    }
+  };
+
+  const handleTagRemove = (tagToRemove) => {
+    setTagList((prevTags) => prevTags.filter((tag) => tag !== tagToRemove));
   };
 
   return (
@@ -241,6 +285,30 @@ export default function CommunityAddPage() {
           />
         </>
       )}
+      <div className={style.tag_section}>
+        <p>키워드 (최대 5개)</p>
+        <input
+          type="text"
+          placeholder="태그를 입력하고 엔터를 누르세요."
+          className={style.input_tag}
+          value={tagInput}
+          onChange={(e) => setTagInput(e.target.value)}
+          onKeyPress={handleTagAdd}
+        />
+        <div className={style.tag_list}>
+          {tagList.map((tag, index) => (
+            <span key={index} className={style.tag}>
+              #{tag}
+              <button
+                className={style.tag_remove}
+                onClick={() => handleTagRemove(tag)}
+              >
+                ✕
+              </button>
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* 등록 버튼 */}
       <button className={style.register_button} onClick={handleRegister}>

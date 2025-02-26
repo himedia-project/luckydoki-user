@@ -27,6 +27,7 @@ const CommunityCard = ({
         uploadFileNames,
         sellerImage,
         productDTOs,
+        // tagList,
       },
     });
   };
@@ -49,6 +50,7 @@ const CommunityCard = ({
           uploadFileNames,
           sellerImage,
           productDTOs,
+          // tagList,
         },
       });
       return;

@@ -26,7 +26,7 @@ const NewPage = () => {
       } catch (error) {
         console.error("신규 상품 불러오기 실패:", error);
       } finally {
-        setIsLoading(false);
+        setTimeout(() => setIsLoading(false), 500);
       }
     };
 
