@@ -270,9 +270,23 @@ export default function MessagePage() {
       // roomId가 없는 경우, 채팅방 생성 필요
       if (!roomId) {
         // 먼저 기존 채팅방이 있는지 확인
-        const existingRoom = chatRooms.find(
-          (room) => room.shopId === selectedShopId
-        );
+        const existingRoom = chatRooms.find((room) => {
+          console.log(
+            "room.shopId 타입:",
+            typeof room.shopId,
+            "값:",
+            room.shopId
+          );
+          console.log(
+            "routeShopData.shopId 타입:",
+            typeof routeShopData.shopId,
+            "값:",
+            routeShopData.shopId
+          );
+
+          // 문자열로 변환 후 비교
+          return String(room.shopId) === String(routeShopData.shopId);
+        });
 
         if (existingRoom) {
           setRoomId(existingRoom.id);
@@ -315,8 +329,6 @@ export default function MessagePage() {
         connect(e);
         return;
       }
-
-      // FormData를 사용하여 메시지와 이미지를 함께 전송
 
       stompClient.publish({
         destination: "/app/message",
