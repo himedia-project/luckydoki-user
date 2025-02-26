@@ -139,13 +139,31 @@ export default function MessagePage() {
           const receivedMessage = JSON.parse(message.body);
           console.log("받은 메세지 : ", receivedMessage);
 
-          // 메시지 목록 업데이트
-          setRealTimeMessages((prevMessages) => [
-            ...prevMessages,
-            receivedMessage,
-          ]);
+          // 중복 메시지 방지를 위한 체크
+          setRealTimeMessages((prevMessages) => {
+            // 이미 같은 메시지가 있는지 확인
+            const isDuplicate = prevMessages.some(
+              (msg) =>
+                msg.sendTime === receivedMessage.sendTime &&
+                msg.message === receivedMessage.message &&
+                msg.email === receivedMessage.email
+            );
 
-          // 채팅방 목록 업데이트 추가
+            if (isDuplicate) {
+              return prevMessages;
+            }
+
+            const newMessages = [...prevMessages, receivedMessage];
+
+            // 메시지가 추가된 후 스크롤 조정
+            setTimeout(() => {
+              messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            }, 100);
+
+            return newMessages;
+          });
+
+          // 채팅방 목록 업데이트
           setChatRooms((prevRooms) =>
             prevRooms.map((room) =>
               room.id === roomId
@@ -163,14 +181,6 @@ export default function MessagePage() {
             if (Notification.permission === "granted") {
               new Notification("새 메시지 도착", {
                 body: receivedMessage.message,
-              });
-            } else if (Notification.permission !== "denied") {
-              Notification.requestPermission().then((permission) => {
-                if (permission === "granted") {
-                  new Notification("새 메시지 도착", {
-                    body: receivedMessage.message,
-                  });
-                }
               });
             }
 
