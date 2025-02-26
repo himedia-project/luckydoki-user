@@ -16,9 +16,12 @@
   font-weight: bold;
   padding-bottom: 8px;
   border-bottom: 1px solid #eee;
-  text-align: center;
   height: 48px;
   line-height: 48px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .item {
@@ -78,7 +81,7 @@
   transform: translate(-50%, -50%);
   text-align: center;
   justify-content: center;
-  padding: 20px;
+  padding: 10px;
   color: #888;
 }
 
@@ -100,4 +103,18 @@
   color: #007bff;
   cursor: pointer;
   border-top: 1px solid #d9d9d9;
+}
+
+.clearButton {
+  position: absolute;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.clearButton:hover {
+  color: #333;
 }

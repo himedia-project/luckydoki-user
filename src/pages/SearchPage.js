@@ -142,7 +142,11 @@ export default function SearchPage() {
   };
 
   return (
-    <div className={styles.container}>
+    <div
+      tabIndex={0}
+      onMouseLeave={handleMouseLeave} // 🔥 마우스가 떠나면 일정 시간 후 닫기
+      className={styles.container}
+    >
       {/* 검색어 입력 */}
       <div
         tabIndex={0}

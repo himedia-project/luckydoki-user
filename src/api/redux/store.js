@@ -7,13 +7,14 @@ import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
 import persistStore from "redux-persist/es/persistStore";
 import notificationSlice from "./notificationSlice";
-
+import messageSlice from "./messageSlice";
 const rootReducer = combineReducers({
   loginSlice,
   infoSlice,
   cartSlice,
   category: categorySlice,
   notificationSlice,
+  messageSlice,
 });
 
 const persistConfig = {

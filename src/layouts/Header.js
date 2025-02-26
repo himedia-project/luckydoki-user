@@ -19,13 +19,14 @@ import { clearInfo } from "../api/redux/infoSlice";
 import { logoutPost } from "../api/loginApi";
 import EventBanner from "../components/EventBanner";
 import DarkModeToggle from "../components/button/DarkModeToggle";
+import { setMessageEmail } from "../api/redux/messageSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // current user email
   const { email } = useSelector((state) => state.loginSlice);
-  const { notifications } = useNotification();
+  const { notifications, messages } = useNotification();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showHeaderTop, setShowHeaderTop] = useState(true);
@@ -40,10 +41,13 @@ const Header = () => {
   //   (state) => state.notificationSlice
   // );
   const { updateToken } = useFCMToken();
+  // const [unreadMessages, setUnreadMessages] = useState([]);
 
   // 현재 로그인한 사용자의 데이터만 표시
   const currentUserNotifications = notifications;
   const currentUserCartItems = email === cartEmail ? cartItems : [];
+
+  const currentUserMessages = messages;
 
   console.log("email: ", email);
   console.log("cartEmail: ", cartEmail);
@@ -161,6 +165,7 @@ const Header = () => {
         dispatch(logout());
         dispatch(setCartEmail(""));
         dispatch(setNotificationEmail(""));
+        dispatch(setMessageEmail(""));
         dispatch(clearCartItems());
         dispatch(clearNotificationItems());
         dispatch(clearInfo());
@@ -210,7 +215,7 @@ const Header = () => {
               onMouseEnter={() => setShowMessages(true)}
               onMouseLeave={() => setShowMessages(false)}
             >
-              <MessageDropdown messages={[]} />
+              <MessageDropdown />
             </div>
           )}
 
@@ -246,7 +251,14 @@ const Header = () => {
               onMouseLeave={() => setShowMessages(false)}
             >
               <img src="/chat.png" alt="메시지" />
-              <Link>메시지</Link>
+              <Link>
+                메시지
+                {email && currentUserMessages?.length > 0 && (
+                  <span className={style.message_count}>
+                    {currentUserMessages?.length}
+                  </span>
+                )}
+              </Link>
             </li>
           </ul>
         </div>

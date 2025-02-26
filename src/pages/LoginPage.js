@@ -13,6 +13,7 @@ import { getCartItemList } from "../api/cartApi";
 import { getNotificationList } from "../api/notificationApi";
 import { setCartItems } from "../api/redux/cartSlice";
 import { setNotificationItems } from "../api/redux/notificationSlice";
+import { setMessageEmail } from "../api/redux/messageSlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -68,6 +69,7 @@ const LoginPage = () => {
       // 새로운 사용자의 이메일로 상태 업데이트
       dispatch(setCartEmail(email));
       dispatch(setNotificationEmail(email));
+      dispatch(setMessageEmail(email));
 
       // 해당 사용자의 데이터 가져오기
       try {
