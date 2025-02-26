@@ -56,7 +56,7 @@ const LoginPage = () => {
 
     try {
       const response = await loginPost(loginForm.email, loginForm.password);
-      const { email, roles } = response.data;
+      const { email } = response.data;
 
       // 먼저 이전 데이터 초기화
       dispatch(clearCartItems());
@@ -80,8 +80,10 @@ const LoginPage = () => {
         console.error("Failed to fetch user data:", error);
       }
 
-      const isAdmin = roles.includes("ADMIN");
-      navigate(isAdmin ? "/admin" : "/");
+      navigate("/");
+      setTimeout(() => {
+        document.body.style.pointerEvents = "auto";
+      }, 100);
     } catch (error) {
       setErrorMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
