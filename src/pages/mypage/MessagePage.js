@@ -10,6 +10,7 @@ import {
   getMessageHistory,
   getChatRooms,
   deleteChatRooms,
+  changeIsRead,
 } from "../../api/chatApi";
 import { API_URL } from "../../config/apiConfig";
 import MessageDropdown from "../../components/dropdown/MessageDropdown";
@@ -220,6 +221,9 @@ export default function MessagePage() {
       const historyResponse = await getMessageHistory(room.id);
       setRealTimeMessages(historyResponse.data);
       console.log("채팅기록 response:", historyResponse.data);
+
+      // 읽기로 바꾸기
+      await changeIsRead(room.id);
 
       // 빈 preventDefault 대신 실제 이벤트 객체 생성
       const event = new Event("connect");
