@@ -13,6 +13,7 @@ import {
 import { API_URL } from "../../config/apiConfig";
 import MessageDropdown from "../../components/dropdown/MessageDropdown";
 import axiosInstance from "../../api/axiosInstance";
+import ImageLoader from "../../components/card/ImageLoader";
 
 export default function MessagePage() {
   const location = useLocation();
@@ -158,7 +159,7 @@ export default function MessagePage() {
             // 메시지가 추가된 후 스크롤 조정
             setTimeout(() => {
               messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-            }, 100);
+            }, 50);
 
             return newMessages;
           });
@@ -419,9 +420,9 @@ export default function MessagePage() {
                   onClick={() => handleRoomSelect(room)}
                 >
                   <div className={styles.shopImage}>
-                    <img
-                      src={room.shopImage || ""}
-                      alt={room.shopName || "상점 이미지"}
+                    <ImageLoader
+                      imagePath={room.shopImage}
+                      className={styles.shopImage}
                     />
                   </div>
                   <div className={styles.roomInfo}>
@@ -435,8 +436,9 @@ export default function MessagePage() {
                         : ""}
                     </span>
                     <span className={styles.unreadCount}>
-                      {unreadMessages[room.id] > 0 &&
-                        `(${unreadMessages[room.id]} 새 메시지)`}
+                      {unreadMessages[room.id] > 0
+                        ? `(${unreadMessages[room.id]} 새 메시지)`
+                        : 0}
                     </span>
                   </div>
                 </div>
