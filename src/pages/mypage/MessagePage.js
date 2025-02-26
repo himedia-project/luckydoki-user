@@ -136,7 +136,6 @@ export default function MessagePage() {
       const subscription = stompClient.subscribe(
         `/topic/chat/message/${roomId}`,
         (message) => {
-          console.log("구독 콜백 : ", message);
           const receivedMessage = JSON.parse(message.body);
           console.log("받은 메세지 : ", receivedMessage);
 
@@ -380,8 +379,8 @@ export default function MessagePage() {
       });
 
       // 메시지 전송 직후 즉시 상태 업데이트
-      setRealTimeMessages((prevMessages) => [...prevMessages, chatMessage]);
-      console.log("업데이트, 메세지 ㄴ", chatMessage);
+      // setRealTimeMessages((prevMessages) => [...prevMessages, chatMessage]);
+
       // 채팅방 목록에서 해당 방의 마지막 메시지 업데이트
       setChatRooms((prevRooms) =>
         prevRooms.map((room) =>
