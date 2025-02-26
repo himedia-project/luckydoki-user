@@ -33,7 +33,7 @@
   font-size: 16px;
   color: #333;
   outline: none;
-  margin: 20px 0 30px;
+  margin: 10px 0 30px;
 }
 
 .input_area {
@@ -47,7 +47,7 @@
   margin: 20px 0 30px;
 }
 .inputTitle {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .upload_container {
@@ -123,7 +123,7 @@
   background-color: #00de90;
   color: #333;
   font-weight: 500;
-  margin-top: 100px;
+  margin-top: 60px;
   cursor: pointer;
 }
 
@@ -133,11 +133,11 @@
   padding: 10px;
   font-size: 14px;
   outline: none;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .tag_section {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .tag_list {

@@ -15,21 +15,6 @@
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 } */
-/* 기본 테마 (라이트 모드) */
-:root {
-  --bg-color: #ffffff;
-  --text-color: #333;
-  --primary-color: #00de90;
-  --input-accent: #00de90;
-}
-
-/* 다크 모드 */
-[data-theme="dark"] {
-  --bg-color: #121212;
-  --text-color: #f1f1f1;
-  --primary-color: #bb86fc;
-  --input-accent: #bb86fc;
-}
 
 @font-face {
   font-family: "Pretendard-Regular";
