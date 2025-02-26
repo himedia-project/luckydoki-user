@@ -38,9 +38,7 @@ export default function RecentSearchDropdown({
     setRecentSearches([]);
     localStorage.removeItem("recentSearches");
   };
-  useEffect(() => {
-    console.log("Dropdown open 상태:", isDropdownOpen);
-  }, [isDropdownOpen]);
+  useEffect(() => {}, [isDropdownOpen]);
 
   return (
     <div className={styles.dropdownContainer}>
@@ -49,7 +47,7 @@ export default function RecentSearchDropdown({
           <div className={styles.header}>
             <span>최근 검색어</span>
             <button className={styles.delete} onClick={handleClearAll}>
-              <MdDeleteOutline size={20} /> {/* 🔥 아이콘 사용 */}
+              <MdDeleteOutline size={20} />
             </button>
           </div>
           <ul className={styles.list}>
