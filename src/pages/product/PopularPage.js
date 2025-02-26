@@ -29,7 +29,7 @@ const PopularPage = () => {
       } catch (error) {
         console.error("인기 상품 불러오기 실패:", error);
       } finally {
-        setIsLoading(false);
+        setTimeout(() => setIsLoading(false), 500);
       }
     };
 
