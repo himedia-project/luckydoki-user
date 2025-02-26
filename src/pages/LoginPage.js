@@ -2,11 +2,8 @@ import React, { useState } from "react";
 import styles from "../styles/LoginPage.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { getKakaoLoginLink } from "../api/kakaoApi";
-import axios from "axios"; // ✅ 기본 axios 사용
 import { useDispatch } from "react-redux";
-import { login, setAccessToken } from "../api/redux/loginSlice";
-import Cookies from "js-cookie";
-import { API_URL } from "../config/apiConfig"; // ✅ API 경로 사용
+import { login } from "../api/redux/loginSlice";
 import { setCartEmail } from "../api/redux/cartSlice";
 import { setNotificationEmail } from "../api/redux/notificationSlice";
 import { loginPost } from "../api/loginApi";
@@ -20,6 +17,7 @@ import { setNotificationItems } from "../api/redux/notificationSlice";
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
@@ -44,6 +42,10 @@ const LoginPage = () => {
   const handleGoogleLogin = () => {
     window.location.href =
       "https://accounts.google.com/o/oauth2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=email profile";
+  };
+
+  const handleHomeClick = () => {
+    navigate("/");
   };
 
   const handleLogin = async () => {
@@ -87,6 +89,9 @@ const LoginPage = () => {
 
   return (
     <div className={styles.container}>
+      <button className={styles.homeButton} onClick={handleHomeClick}>
+        <img src="home.png" alt="홈버튼" />
+      </button>
       <h1 className={styles.title}>로그인</h1>
       <button className={styles.kakaoButton} onClick={handleKakaoLogin}>
         <span className={styles.icon}>
