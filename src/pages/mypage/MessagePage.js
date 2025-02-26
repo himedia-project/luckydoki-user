@@ -3,15 +3,16 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import styles from "../styles/MessagePage.module.css";
+import styles from "../../styles/MessagePage.module.css";
+
 import {
   createChattingRoom,
   getMessageHistory,
   getChatRooms,
-} from "../api/chatApi";
-import { API_URL } from "../config/apiConfig";
-import MessageDropdown from "../components/dropdown/MessageDropdown";
-import axiosInstance from "../api/axiosInstance";
+} from "../../api/chatApi";
+import { API_URL } from "../../config/apiConfig";
+import MessageDropdown from "../../components/dropdown/MessageDropdown";
+import axiosInstance from "../../api/axiosInstance";
 
 export default function MessagePage() {
   const location = useLocation();
