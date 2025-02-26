@@ -69,14 +69,13 @@ export default function UserInfo() {
 
   const handleSave = async () => {
     try {
-      // const updateData = {
-      //   nickName: userInfo.nickname,
-      //   phone: userInfo.phone,
-      // };
       const formData = new FormData();
       formData.append("nickName", userInfo.nickname);
       formData.append("phone", userInfo.phone);
-      formData.append("file", file);
+
+      if (file && image !== userInfo.profileImage) {
+        formData.append("file", file);
+      }
 
       const response = await updateMyProfile(formData);
       Swal.fire({

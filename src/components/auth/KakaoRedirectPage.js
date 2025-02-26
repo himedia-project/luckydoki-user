@@ -75,7 +75,7 @@ const KakaoRedirectPage = () => {
 
   return (
     <div>
-      <div>Kakao Login Redirect</div>
+      <div></div>
     </div>
   );
 };
