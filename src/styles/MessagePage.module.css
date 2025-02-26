@@ -28,7 +28,8 @@
 }
 
 .chatRoomItem.selected {
-  background-color: #f8f9fa;
+  background-color: rgba(0, 222, 144, 0.1);
+  border-left: 3px solid #00de90;
 }
 
 .shopImage {
@@ -140,7 +141,7 @@
 }
 
 .messageSent {
-  background-color: #ff6b6b;
+  background-color: #00de90;
   color: white;
 }
 
@@ -182,7 +183,7 @@
 }
 
 .messageInput:focus {
-  border-color: #ff6b6b;
+  border-color: #00de90;
   background-color: #fff;
 }
 
@@ -191,7 +192,7 @@
   height: 60px; /* 높이 증가 */
   border: none;
   border-radius: 30px;
-  background-color: #ff6b6b;
+  background-color: #00de90;
   color: white;
   font-size: 16px;
   font-weight: 500;
@@ -200,18 +201,16 @@
 }
 
 .sendButton:hover {
-  background-color: #fa5252;
+  background-color: #00c580;
 }
 
 .sendButton:disabled {
-  background-color: #dee2e6;
-  color: #adb5bd;
-  cursor: not-allowed;
+  background-color: rgba(0, 222, 144, 0.5);
 }
 
 /* 읽지 않은 메시지 카운트 */
 .unreadCount {
-  background-color: #ff6b6b;
+  background-color: #00de90;
   color: white;
   font-size: 13px;
   font-weight: 500;
@@ -259,7 +258,7 @@
   padding: 12px 24px;
   border: none;
   border-radius: 30px;
-  background-color: #ff6b6b;
+  background-color: #00de90;
   color: white;
   font-size: 14px;
   font-weight: 500;
@@ -268,7 +267,8 @@
 }
 
 .leaveButton:hover {
-  background-color: #fa5252;
+  background-color: #00c580;
+  color: white;
 }
 
 .partnerDetails {

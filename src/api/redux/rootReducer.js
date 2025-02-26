@@ -11,7 +11,6 @@ const rootReducer = combineReducers({
   // loginSlice,
   infoSlice,
   notificationSlice,
-  messageSlice,
 });
 
 export default rootReducer;

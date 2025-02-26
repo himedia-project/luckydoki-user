@@ -467,7 +467,13 @@ export default function MessagePage() {
                     </p>
                     <span className={styles.messageTime}>
                       {room.lastMessageTime
-                        ? new Date(room.lastMessageTime).toLocaleString()
+                        ? new Date(room.lastMessageTime).toLocaleTimeString(
+                            [],
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )
                         : ""}
                     </span>
                     <span className={styles.unreadCount}>
@@ -526,7 +532,10 @@ export default function MessagePage() {
                     >
                       <p>{msg.message}</p>
                       <small className={styles.messageTime}>
-                        {new Date(msg.sendTime).toLocaleTimeString()}
+                        {new Date(msg.lastMessageTime).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </small>
                     </div>
                   </div>
