@@ -271,11 +271,11 @@ export default function ProductDetail() {
             />
             {/* 썸네일 이미지 리스트 */}
             <div className={style.thumbnailContainer}>
-              {product?.uploadFileNames?.map((img, index) => (
+              {product?.uploadFileNames?.map((img) => (
                 <ImageLoader
-                  key={index}
+                  key={img}
                   imagePath={img}
-                  alt={`상품 이미지 ${index + 1}`}
+                  alt={`상품 이미지`}
                   className={`${style.thumbnail} ${
                     img === mainImage ? style.activeThumbnail : ""
                   }`}
@@ -349,8 +349,11 @@ export default function ProductDetail() {
             </div>
             {reviews.length > 0 ? (
               <div className={style.reviewList}>
-                {reviews.map((review) => (
-                  <ReviewCard key={review?.id} review={review} />
+                {reviews.map((review, index) => (
+                  <ReviewCard
+                    key={review?.id || `review-${index}`}
+                    review={review}
+                  />
                 ))}
               </div>
             ) : (
@@ -361,8 +364,11 @@ export default function ProductDetail() {
           <div className={style.tagSection}>
             <h3>작품 키워드</h3>
             <div className={style.tagList}>
-              {product?.tagList?.map((tag) => (
-                <span key={tag?.id} className={style.tag}>
+              {product?.tagList?.map((tag, index) => (
+                <span
+                  key={tag?.id || `tag-${tag?.name || index}`}
+                  className={style.tag}
+                >
                   #{tag?.name}
                 </span>
               ))}
