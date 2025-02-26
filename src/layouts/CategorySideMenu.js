@@ -7,7 +7,6 @@ import {
   setExpandedCategory,
 } from "../api/redux/categorySlice";
 import style from "../styles/CategorySideMenu.module.css";
-import CategorySkeleton from "../components/skeleton/CategorySkeleton";
 
 const CategorySideMenu = () => {
   const { categoryId } = useParams();
@@ -42,7 +41,6 @@ const CategorySideMenu = () => {
     }
   }, [activeChildInfo, dispatch]);
 
-  if (status === "loading") return <CategorySkeleton />;
   if (status === "failed")
     return <p>카테고리 데이터를 불러오는 데 실패했습니다.</p>;
   if (!parentCategory) return <p>카테고리 데이터가 없습니다.</p>;
