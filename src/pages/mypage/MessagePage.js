@@ -201,19 +201,19 @@ export default function MessagePage() {
 
     setUnreadMessages((prev) => ({
       ...prev,
-      [room.id]: 0, // 해당 채팅방의 읽지 않은 메시지 초기화
+      [room.id]: 0,
     }));
 
-    ///////채팅메세지 기록 불러오는 api/////////
     try {
       const historyResponse = await getMessageHistory(room.id);
       setRealTimeMessages(historyResponse.data);
       console.log("채팅기록 response:", historyResponse.data);
-      const event = {
-        preventDefault: () => {
-          // TODO webSocket 연결 ->
-        },
-      };
+
+      // 빈 preventDefault 대신 실제 이벤트 객체 생성
+      const event = new Event("connect");
+      event.preventDefault = () => {}; // 기본 동작 방지 함수 추가
+
+      // WebSocket 연결 실행
       connect(event);
     } catch (error) {
       console.error("채팅 기록 불러오기 실패:", error);
