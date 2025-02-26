@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initState = {
   email: "",
-  notificationItems: [],
+  messageItems: [],
 };
 
 const messageSlice = createSlice({
@@ -16,7 +16,7 @@ const messageSlice = createSlice({
       if (typeof action.payload === "function") {
         state.messageItems = action.payload(state.messageItems);
       } else {
-        state.notificationItems = action.payload;
+        state.messageItems = action.payload;
       }
     },
     clearMessageItems: (state) => {

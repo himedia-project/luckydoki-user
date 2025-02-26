@@ -19,6 +19,7 @@ import { clearInfo } from "../api/redux/infoSlice";
 import { logoutPost } from "../api/loginApi";
 import EventBanner from "../components/EventBanner";
 import DarkModeToggle from "../components/button/DarkModeToggle";
+import { setMessageEmail } from "../api/redux/messageSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ const Header = () => {
 
   // 현재 로그인한 사용자의 데이터만 표시
   const currentUserNotifications = notifications;
+  const currentUserMessages = messages;
   const currentUserCartItems = email === cartEmail ? cartItems : [];
 
   console.log("email: ", email);
@@ -50,7 +52,6 @@ const Header = () => {
   console.log("currentUserNotifications: ", currentUserNotifications);
   console.log("currentUserCartItems: ", currentUserCartItems);
 
-  const currentUserMessages = messages;
   console.log("currentUserMessages: ", currentUserMessages);
 
   useEffect(() => {
@@ -164,6 +165,7 @@ const Header = () => {
         dispatch(logout());
         dispatch(setCartEmail(""));
         dispatch(setNotificationEmail(""));
+        dispatch(setMessageEmail(""));
         dispatch(clearCartItems());
         dispatch(clearNotificationItems());
         dispatch(clearInfo());
@@ -251,9 +253,9 @@ const Header = () => {
               <img src="/chat.png" alt="메시지" />
               <Link>
                 메시지
-                {email && currentUserMessages.length > 0 && (
+                {email && currentUserMessages?.length > 0 && (
                   <span className={style.message_count}>
-                    {currentUserMessages.length}
+                    {currentUserMessages?.length}
                   </span>
                 )}
               </Link>

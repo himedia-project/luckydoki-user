@@ -15,6 +15,16 @@ const MessageDropdown = ({ messages = [] }) => {
   console.log("MessageDropdown messages: ", safeMessages);
 
   const email = useSelector((state) => state.loginSlice.email);
+
+  const formatTime = (timestamp) => {
+    // 2025-02-21 12:00:00 -> 2025-02-21
+    const date = new Date(timestamp);
+    return date.toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
   // 메시지 목록 갱신을 위한 상태
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -48,10 +58,10 @@ const MessageDropdown = ({ messages = [] }) => {
   if (!email) {
     return (
       <div className={styles.dropdown}>
-        <h3 className={styles.title}>메시지</h3>
+        <div className={styles.title}>알림</div>
         <div className={styles.empty}>
-          <img src="/clover.png" alt="비어 있음" className={styles.emptyIcon} />
-          <p>로그인이 필요합니다.</p>
+          <img src="/clover.png" alt="알림 없음" className={styles.emptyIcon} />
+          <div>로그인이 필요합니다.</div>
         </div>
       </div>
     );
@@ -59,34 +69,43 @@ const MessageDropdown = ({ messages = [] }) => {
 
   return (
     <div className={styles.dropdown}>
-      <h3 className={styles.title}>메시지</h3>
-      {safeMessages.length > 0 ? (
+      <div className={styles.title}>
+        메시지
+        {safeMessages.length > 0 && (
+          <button onClick={handleClear} className={styles.clearButton}>
+            모두 지우기
+          </button>
+        )}
+      </div>
+
+      {safeMessages.length === 0 ? (
+        <div className={styles.empty}>
+          <img src="/clover.png" alt="알림 없음" className={styles.emptyIcon} />
+          <div className={styles.notNotice}>새로운 메시지가 없습니다.</div>
+        </div>
+      ) : (
         <div className={styles.notificationList}>
           {safeMessages.map((message, index) => (
             <div key={index} className={styles.item}>
               <img
                 src="/profile.png"
                 alt="알림 아이콘"
-                className={styles.messageIcon}
+                className={styles.icon}
               />
               <div className={styles.textBox}>
                 <div className={styles.text}>
-                  <span className={styles.sender}>{message.sender}</span>
+                  <span className={styles.category}>{message.title}</span>
                   <span className={styles.date}>
-                    {new Date(message.timestamp).toLocaleDateString()}
+                    {formatTime(message.timestamp)}
                   </span>
                 </div>
-                <p className={styles.content}>{message.lastMessage}</p>
+                <div className={styles.content}>{message.body}</div>
               </div>
             </div>
           ))}
         </div>
-      ) : (
-        <div className={styles.empty}>
-          <img src="/clover.png" alt="비어 있음" className={styles.emptyIcon} />
-          <p>메시지가 없습니다.</p>
-        </div>
       )}
+
       <button className={styles.viewAll} onClick={handleViewAllClick}>
         모두 보기
       </button>

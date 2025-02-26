@@ -114,7 +114,9 @@ export default function MessagePage() {
             setRoomId(newRoom.id);
             setSelectedRoom(newRoom);
             setRealTimeMessages([]);
-            setChatRooms((prev) => [...prev, newRoom]);
+            setChatRooms((prev) =>
+              Array.isArray(prev) ? [...prev, newRoom] : [newRoom]
+            );
           }
 
           // routeShopData가 있는 경우에만 자동 연결
@@ -353,7 +355,9 @@ export default function MessagePage() {
           const newRoom = newRoomResponse.data;
           setRoomId(newRoom.id);
           setSelectedRoom(newRoom);
-          setChatRooms((prev) => [...prev, newRoom]);
+          setChatRooms((prev) =>
+            Array.isArray(prev) ? [...prev, newRoom] : [newRoom]
+          );
         }
       }
 

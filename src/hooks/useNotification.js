@@ -38,15 +38,22 @@ export const useNotification = () => {
       // 메시지 알림 추가
       if (currentUserEmail === messageEmail) {
         const newMessage = event.data;
-        dispatch(setMessageItems((prev) => [newMessage, ...prev]));
+        dispatch(
+          setMessageItems((prev) =>
+            Array.isArray(prev) ? [newMessage, ...prev] : [newMessage]
+          )
+        );
       }
     };
 
     // 포그라운드 메시지 처리
     const unsubscribe = onMessage(messaging, (payload) => {
       // 현재 로그인한 사용자의 알림만 추가
-      if (currentUserEmail === notificationEmail) {
-        console.log("Foreground message received:", payload);
+      if (
+        // currentUserEmail === notificationEmail &&
+        payload.notification?.type != "NEW_MESSAGE"
+      ) {
+        console.log("Foreground notification received:", payload);
         const newNotification = {
           title: payload.notification?.title || payload.data?.title,
           body: payload.notification?.body || payload.data?.body,
@@ -55,7 +62,10 @@ export const useNotification = () => {
         };
         dispatch(setNotificationItems((prev) => [newNotification, ...prev]));
       }
-      if (currentUserEmail === messageEmail) {
+      if (
+        // currentUserEmail === messageEmail &&
+        payload.data?.type == "NEW_MESSAGE"
+      ) {
         console.log("Foreground message received:", payload);
         const newMessage = {
           title: payload.notification?.title || payload.data?.title,
@@ -63,7 +73,11 @@ export const useNotification = () => {
           type: payload.data?.type,
           timestamp: payload.data?.timestamp || new Date().toISOString(),
         };
-        dispatch(setMessageItems((prev) => [newMessage, ...prev]));
+        dispatch(
+          setMessageItems((prev) =>
+            Array.isArray(prev) ? [newMessage, ...prev] : [newMessage]
+          )
+        );
       }
     });
 
@@ -76,7 +90,8 @@ export const useNotification = () => {
   return {
     notifications: currentUserNotifications,
     clearNotifications: () => dispatch(clearNotificationItems()),
-    notificationCount: currentUserNotifications.length || 0,
+    notificationCount: currentUserNotifications?.length || 0,
+
     messages: currentUserMessages,
     clearMessages: () => dispatch(clearMessageItems()),
     messageCount: currentUserMessages?.length || 0,
