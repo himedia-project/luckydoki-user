@@ -274,7 +274,6 @@ export default function MessagePage() {
       return;
     }
 
-    // 확인용용
     try {
       // roomId가 없는 경우, 채팅방 생성 필요
       if (!roomId) {
@@ -321,14 +320,14 @@ export default function MessagePage() {
         }
       }
 
-      /////전송 메세지 폼 //////
+      const currentTime = new Date().toISOString();
       const chatMessage = {
         roomId: roomId || selectedRoom?.id,
-        sender: null, //보내는 사람의 이메일
+        sender: null,
         email: userEmail,
         shopId: selectedShopId,
         message: message.trim(),
-        sendTime: new Date().toISOString(),
+        sendTime: currentTime,
       };
 
       console.log("전송 메세지:", chatMessage);
@@ -347,6 +346,22 @@ export default function MessagePage() {
         },
         body: JSON.stringify(chatMessage),
       });
+
+      // 메시지 전송 직후 즉시 상태 업데이트
+      setRealTimeMessages((prevMessages) => [...prevMessages, chatMessage]);
+
+      // 채팅방 목록에서 해당 방의 마지막 메시지 업데이트
+      setChatRooms((prevRooms) =>
+        prevRooms.map((room) =>
+          room.id === (roomId || selectedRoom?.id)
+            ? {
+                ...room,
+                lastMessage: message.trim(),
+                lastMessageTime: currentTime,
+              }
+            : room
+        )
+      );
 
       setMessage("");
     } catch (error) {
