@@ -4,6 +4,7 @@ import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import ImageLoader from "../card/ImageLoader";
 import { getChatbotResponse } from "../../api/chatbot";
+import { deleteChatRooms } from "../../api/chatbot";
 
 const ChatWindow = styled.div`
   position: fixed;
@@ -42,6 +43,14 @@ const CloseButton = styled.button`
   font-size: 20px;
   display: flex;
   align-items: center;
+  padding: 8px;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+  }
 `;
 
 const ChatMessages = styled.div`
@@ -446,11 +455,27 @@ const ChatbotWindow = ({ onClose }) => {
     );
   };
 
+  const handleClose = async () => {
+    try {
+      if (roomId) {
+        // 채팅방 나가기 API 호출
+        await deleteChatRooms(roomId);
+        console.log("채팅방 나가기 성공");
+      }
+      // 채팅방 창 닫기
+      onClose();
+    } catch (error) {
+      console.error("채팅방 나가기 실패:", error);
+      // 에러가 발생해도 창은 닫기
+      onClose();
+    }
+  };
+
   return (
     <ChatWindow>
       <ChatHeader>
         <h3>Luckydoki AI 챗봇</h3>
-        <CloseButton onClick={onClose}>
+        <CloseButton onClick={handleClose}>
           <IoClose />
         </CloseButton>
       </ChatHeader>

@@ -9,6 +9,7 @@ import {
   createChattingRoom,
   getMessageHistory,
   getChatRooms,
+  deleteChatRooms,
 } from "../../api/chatApi";
 import { API_URL } from "../../config/apiConfig";
 import MessageDropdown from "../../components/dropdown/MessageDropdown";
@@ -401,6 +402,32 @@ export default function MessagePage() {
     }
   };
 
+  // handleLeaveRoom 함수 추가
+  const handleLeaveRoom = async () => {
+    if (!selectedRoom) return;
+
+    try {
+      await deleteChatRooms(selectedRoom.id);
+      // 채팅방 목록에서 제거
+      setChatRooms((prev) =>
+        prev.filter((room) => room.id !== selectedRoom.id)
+      );
+      // 선택된 채팅방 초기화
+      setSelectedRoom(null);
+      setRoomId(null);
+      setRealTimeMessages([]);
+
+      // WebSocket 연결 해제
+      if (stompClient) {
+        stompClient.deactivate();
+        setStompClient(null);
+        setConnected(false);
+      }
+    } catch (error) {
+      console.error("채팅방 나가기 실패:", error);
+    }
+  };
+
   return (
     <div className={styles.messagePageContainer}>
       {/* MessageDropdown 컴포넌트 추가 */}
@@ -453,6 +480,25 @@ export default function MessagePage() {
         <div className={styles.chatArea}>
           {selectedRoom || (routeShopData && roomId) ? (
             <>
+              <div className={styles.chatHeader}>
+                <div className={styles.partnerInfo}>
+                  <div className={styles.partnerImage}>
+                    <ImageLoader
+                      imagePath={selectedRoom?.shopImage}
+                      className={styles.partnerImage}
+                    />
+                  </div>
+                  <div className={styles.partnerDetails}>
+                    <h3>{selectedRoom?.shopName}</h3>
+                  </div>
+                  <button
+                    className={styles.leaveButton}
+                    onClick={handleLeaveRoom}
+                  >
+                    나가기
+                  </button>
+                </div>
+              </div>
               <div className={styles.messagesContainer}>
                 {realTimeMessages.map((msg, index) => (
                   <div

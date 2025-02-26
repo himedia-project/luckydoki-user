@@ -253,3 +253,24 @@
 .chatRoomList::-webkit-scrollbar-track {
   background-color: transparent;
 }
+
+.leaveButton {
+  margin-left: auto;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 30px;
+  background-color: #ff6b6b;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.leaveButton:hover {
+  background-color: #fa5252;
+}
+
+.partnerDetails {
+  flex: 1;
+}
