@@ -34,6 +34,11 @@ const Header = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isBannerVisible, setIsBannerVisible] = useState(true);
+
+  const { messageItems, email: messageEmail } = useSelector(
+    (state) => state.messageSlice
+  );
+
   const { cartItems, email: cartEmail } = useSelector(
     (state) => state.cartSlice
   );
@@ -47,12 +52,13 @@ const Header = () => {
   const currentUserNotifications = notifications;
   const currentUserCartItems = email === cartEmail ? cartItems : [];
 
-  const currentUserMessages = messages;
+  const currentUserMessages = messageItems;
 
   console.log("email: ", email);
   console.log("cartEmail: ", cartEmail);
   console.log("currentUserNotifications: ", currentUserNotifications);
   console.log("currentUserCartItems: ", currentUserCartItems);
+  console.log("Header currentUserMessages: ", currentUserMessages);
 
   useEffect(() => {
     const fetchMainCategories = async () => {
@@ -237,9 +243,9 @@ const Header = () => {
               <img src="/notification.png" alt="알림" />
               <Link>
                 알림
-                {email && currentUserNotifications.length > 0 && (
+                {email && currentUserNotifications?.length > 0 && (
                   <span className={style.notification_count}>
-                    {currentUserNotifications.length}
+                    {currentUserNotifications?.length}
                   </span>
                 )}
               </Link>

@@ -29,8 +29,14 @@ export const useNotification = () => {
   useEffect(() => {
     // 브로드캐스트 채널 수신 설정
     const channel = new BroadcastChannel("notifications");
+
+    console.log("currentUserEmail", currentUserEmail);
+    console.log("notificationEmail", notificationEmail);
+    console.log("messageEmail", messageEmail);
+
     channel.onmessage = (event) => {
       // 현재 로그인한 사용자의 알림만 추가
+      console.log("event.data", event.data);
       if (
         currentUserEmail === notificationEmail &&
         event.data.type !== "NEW_MESSAGE"
@@ -56,6 +62,9 @@ export const useNotification = () => {
     // 포그라운드 메시지 처리
     const unsubscribe = onMessage(messaging, (payload) => {
       console.log("Foreground notification received:", payload);
+      console.log("notification received currentUserEmail", currentUserEmail);
+      console.log("notification received notificationEmail", notificationEmail);
+      console.log("notification received messageEmail", messageEmail);
 
       // NEW_MESSAGE가 아닌 일반 알림만 처리
       if (
@@ -77,6 +86,9 @@ export const useNotification = () => {
         payload.data?.targetEmail === currentUserEmail
       ) {
         console.log("Foreground message received:", payload);
+        console.log("message received currentUserEmail", currentUserEmail);
+        console.log("message received notificationEmail", notificationEmail);
+        console.log("message received messageEmail", messageEmail);
         const newMessage = {
           title: payload.data?.title,
           body: payload.data?.body,
