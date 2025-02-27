@@ -20,6 +20,12 @@ const RegisterPage = () => {
   const [timerActive, setTimerActive] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(null);
   const [emailExists, setEmailExists] = useState(false);
+  const [emailError, setEmailError] = useState("");
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
   const navigate = useNavigate();
 
   const REQUIRED_TEXT = (field) =>
@@ -31,10 +37,19 @@ const RegisterPage = () => {
     const { name, value } = e.target;
 
     setSignupForm((prev) => {
-      let updatedValue = value.replace(/\s+/g, ""); // ✅ 공백 제거
+      let updatedValue = value.replace(/\s+/g, "");
+
+      if (name === "email") {
+        if (!validateEmail(updatedValue)) {
+          setEmailError("올바른 이메일 형식을 입력해주세요.");
+        } else {
+          setEmailError("");
+        }
+      }
 
       const updatedForm = { ...prev, [name]: updatedValue };
 
+      // ✅ 비밀번호 일치 여부 즉시 반영 (비어있으면 메시지 숨김)
       if (name === "password" || name === "confirmPassword") {
         setPasswordMatch(
           updatedForm.confirmPassword === ""
@@ -43,9 +58,8 @@ const RegisterPage = () => {
         );
       }
 
-      // ✅ 전화번호 입력 처리
       if (name === "phone") {
-        let formattedValue = updatedValue.replace(/[^0-9]/g, ""); // 숫자 이외의 문자 제거
+        let formattedValue = updatedValue.replace(/[^0-9]/g, "");
 
         if (formattedValue.length > 3 && formattedValue.length <= 7) {
           formattedValue = `${formattedValue.slice(
@@ -67,13 +81,17 @@ const RegisterPage = () => {
   };
 
   const checkEmailExists = async () => {
-    if (!signupForm.email) return;
+    if (!signupForm.email.trim() || emailError) return;
+
+    setSignupForm((prev) => ({
+      ...prev,
+      email: prev.email.replace(/\s+/g, ""),
+    }));
 
     try {
       const response = await axios.get(
         `${API_URL}/api/member/check-email/${signupForm.email}`
       );
-
       if (response.data) {
         setEmailExists(true);
         Swal.fire({
@@ -235,6 +253,7 @@ const RegisterPage = () => {
           className={styles.inputField}
           required
         />
+        {emailError && <p className={styles.errorText}>{emailError}</p>}
       </div>
       <div className={styles.inputGroup}>
         <label className={styles.label}>
