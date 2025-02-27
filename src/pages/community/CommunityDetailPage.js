@@ -65,6 +65,11 @@ export default function CommunityDetailPage() {
     navigate(`/shop/${shopId}`);
   };
 
+  // 태그 클릭 핸들러 추가
+  const handleTagClick = (tagName) => {
+    navigate(`/search?searchKeyword=${encodeURIComponent(tagName)}`);
+  };
+
   return (
     <div className={styles.detailContainer}>
       <div className={styles.userInfoBox}>
@@ -158,7 +163,12 @@ export default function CommunityDetailPage() {
       <div className={styles.tagSection}>
         <div className={styles.tagList}>
           {postInfo?.tagList?.map((tag) => (
-            <span key={tag?.id} className={styles.tag}>
+            <span
+              key={tag?.id}
+              className={styles.tag}
+              onClick={() => handleTagClick(tag?.name)}
+              style={{ cursor: "pointer" }}
+            >
               #{tag?.name}
             </span>
           ))}
