@@ -13,13 +13,13 @@ const ProductCard = ({
   discountPrice,
   discountRate,
   productImageUrl,
+  likes,
   isNew,
   event,
   best,
+  onUnlike,
   reviewAverage,
   reviewCount,
-  isLiked,
-  onLikeChange,
 }) => {
   const navigate = useNavigate();
 
@@ -38,11 +38,15 @@ const ProductCard = ({
           />
           {/* ✅ 하트(찜) 아이콘 */}
           <LikeButton
-            initialLikeState={isLiked} // ✅ API 값 없이도 전역 상태로 반영
+            initialLikeState={likes}
             itemId={id}
             isShop={false}
             className={styles.likeButton}
-            onLikeChange={(newState) => onLikeChange(id, newState)}
+            onLikeChange={(newState) => {
+              if (!newState && onUnlike) {
+                onUnlike(id);
+              }
+            }}
           />
         </div>
 
