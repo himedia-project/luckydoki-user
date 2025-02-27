@@ -23,7 +23,11 @@ export default function SearchPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!searchParams.get("searchKeyword")) {
+    const searchKeywordParam = searchParams.get("searchKeyword");
+    if (searchKeywordParam) {
+      setKeyword(searchKeywordParam);
+      handleSearch(searchKeywordParam);
+    } else {
       setKeyword("");
       setProductResults([]);
       setCommunityResults([]);

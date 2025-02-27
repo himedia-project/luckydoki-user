@@ -257,6 +257,11 @@ export default function ProductDetail() {
     navigate(`/shop/${product?.shopId}`);
   };
 
+  // 태그 클릭 핸들러 수정
+  const handleTagClick = (tagName) => {
+    navigate(`/search?searchKeyword=${encodeURIComponent(tagName)}`);
+  };
+
   return (
     <div className={style.detailContainer}>
       <div className={style.container}>
@@ -368,6 +373,8 @@ export default function ProductDetail() {
                 <span
                   key={tag?.id || `tag-${tag?.name || index}`}
                   className={style.tag}
+                  onClick={() => handleTagClick(tag?.name)}
+                  style={{ cursor: "pointer" }}
                 >
                   #{tag?.name}
                 </span>
