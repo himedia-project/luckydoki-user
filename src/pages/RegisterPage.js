@@ -9,6 +9,7 @@ const RegisterPage = () => {
   const [signupForm, setSignupForm] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
     nickName: "",
     phone: "",
     verificationCode: "",
@@ -17,39 +18,121 @@ const RegisterPage = () => {
   const [showVerification, setShowVerification] = useState(false);
   const [timer, setTimer] = useState(300);
   const [timerActive, setTimerActive] = useState(false);
+  const [passwordMatch, setPasswordMatch] = useState(null);
+  const [emailExists, setEmailExists] = useState(false);
+  const [emailError, setEmailError] = useState("");
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
   const navigate = useNavigate();
 
-  const REQUIRED_TEXT = <span className={styles.requiredText}>(필수)</span>;
+  const REQUIRED_TEXT = (field) =>
+    signupForm[field] === "" ? (
+      <span className={styles.requiredText}>(필수)</span>
+    ) : null;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "phone") {
-      let formattedValue = value.replace(/[^0-9]/g, "");
-      if (formattedValue.length > 3 && formattedValue.length <= 7) {
-        formattedValue = `${formattedValue.slice(0, 3)}-${formattedValue.slice(
-          3
-        )}`;
-      } else if (formattedValue.length > 7) {
-        formattedValue = `${formattedValue.slice(0, 3)}-${formattedValue.slice(
-          3,
-          7
-        )}-${formattedValue.slice(7, 11)}`;
+    setSignupForm((prev) => {
+      let updatedValue = value.replace(/\s+/g, "");
+
+      if (name === "email") {
+        if (!validateEmail(updatedValue)) {
+          setEmailError("올바른 이메일 형식을 입력해주세요.");
+        } else {
+          setEmailError("");
+        }
       }
-      setSignupForm((prev) => ({
-        ...prev,
-        [name]: formattedValue,
-      }));
-      return;
-    }
+
+      const updatedForm = { ...prev, [name]: updatedValue };
+
+      // ✅ 비밀번호 일치 여부 즉시 반영 (비어있으면 메시지 숨김)
+      if (name === "password" || name === "confirmPassword") {
+        setPasswordMatch(
+          updatedForm.confirmPassword === ""
+            ? null
+            : updatedForm.password === updatedForm.confirmPassword
+        );
+      }
+
+      if (name === "phone") {
+        let formattedValue = updatedValue.replace(/[^0-9]/g, "");
+
+        if (formattedValue.length > 3 && formattedValue.length <= 7) {
+          formattedValue = `${formattedValue.slice(
+            0,
+            3
+          )}-${formattedValue.slice(3)}`;
+        } else if (formattedValue.length > 7) {
+          formattedValue = `${formattedValue.slice(
+            0,
+            3
+          )}-${formattedValue.slice(3, 7)}-${formattedValue.slice(7, 11)}`;
+        }
+
+        return { ...prev, [name]: formattedValue };
+      }
+
+      return updatedForm;
+    });
+  };
+
+  const checkEmailExists = async () => {
+    if (!signupForm.email.trim() || emailError) return;
 
     setSignupForm((prev) => ({
       ...prev,
-      [name]: value,
+      email: prev.email.replace(/\s+/g, ""),
     }));
+
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/member/check-email/${signupForm.email}`
+      );
+      if (response.data) {
+        setEmailExists(true);
+        Swal.fire({
+          toast: true,
+          position: "top",
+          icon: "warning",
+          title: "이미 가입된 이메일입니다.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        setEmailExists(false);
+      }
+    } catch (error) {
+      Swal.fire("오류", "이메일 중복 확인에 실패했습니다.", "error");
+    }
   };
 
   const handleSendVerificationCode = async () => {
+    if (emailExists) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "이미 가입된 이메일입니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+    if (!passwordMatch) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "비밀번호가 일치하지 않습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
     try {
       await axios.post(
         `${API_URL}/api/phone/send`,
@@ -91,7 +174,14 @@ const RegisterPage = () => {
 
   const handleSignup = async () => {
     if (signupForm.password !== signupForm.confirmPassword) {
-      Swal.fire("오류", "비밀번호가 일치하지 않습니다.", "error");
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "비밀번호가 일치하지 않습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
     if (!isVerified) {
@@ -152,19 +242,23 @@ const RegisterPage = () => {
       </button>
       <h1 className={styles.title}>회원가입</h1>
       <div className={styles.inputGroup}>
-        <label className={styles.label}>이메일 {REQUIRED_TEXT}</label>
+        <label className={styles.label}>이메일 {REQUIRED_TEXT("email")}</label>
         <input
           type="email"
           name="email"
           placeholder="abcde@abcde.com"
           value={signupForm.email}
           onChange={handleChange}
+          onBlur={checkEmailExists} // ✅ 이메일 입력 후 중복 확인
           className={styles.inputField}
           required
         />
+        {emailError && <p className={styles.errorText}>{emailError}</p>}
       </div>
       <div className={styles.inputGroup}>
-        <label className={styles.label}>비밀번호 {REQUIRED_TEXT}</label>
+        <label className={styles.label}>
+          비밀번호 {REQUIRED_TEXT("password")}
+        </label>
         <input
           type="password"
           name="password"
@@ -175,8 +269,11 @@ const RegisterPage = () => {
           required
         />
       </div>
+
       <div className={styles.inputGroup}>
-        <label className={styles.label}>비밀번호 확인 {REQUIRED_TEXT}</label>
+        <label className={styles.label}>
+          비밀번호 확인 {REQUIRED_TEXT("confirmPassword")}
+        </label>
         <input
           type="password"
           name="confirmPassword"
@@ -186,9 +283,17 @@ const RegisterPage = () => {
           className={styles.inputField}
           required
         />
+        {passwordMatch === false && signupForm.confirmPassword !== "" && (
+          <p className={styles.errorText}>비밀번호가 일치하지 않습니다.</p>
+        )}
+        {passwordMatch === true && signupForm.confirmPassword !== "" && (
+          <p className={styles.successText}>비밀번호가 일치합니다.</p>
+        )}
       </div>
       <div className={styles.inputGroup}>
-        <label className={styles.label}>닉네임 {REQUIRED_TEXT}</label>
+        <label className={styles.label}>
+          닉네임 {REQUIRED_TEXT("nickName")}
+        </label>
         <input
           type="text"
           name="nickName"
@@ -200,7 +305,9 @@ const RegisterPage = () => {
         />
       </div>
       <div className={styles.phoneGroup}>
-        <label className={styles.label}>전화번호 {REQUIRED_TEXT}</label>
+        <label className={styles.label}>
+          전화번호 {REQUIRED_TEXT("phone")}
+        </label>
         <div className={styles.phoneInputGroup}>
           <input
             type="text"

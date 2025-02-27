@@ -45,7 +45,7 @@ export default function RecentSearchDropdown({
       {isDropdownOpen && recentSearches.length > 0 && (
         <div className={styles.dropdown}>
           <div className={styles.header}>
-            <span>최근 검색어</span>
+            <span className={styles.title}>최근 검색어</span>
             <button className={styles.delete} onClick={handleClearAll}>
               <MdDeleteOutline size={20} />
             </button>

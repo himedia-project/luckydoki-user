@@ -20,9 +20,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
+  padding: 8px;
   border-bottom: 1px solid #eee;
-  font-size: 13px;
+  font-size: 12px;
+}
+
+.title {
+  margin-left: 7px;
 }
 
 .list {
@@ -32,16 +36,15 @@
   list-style: none;
   font-size: 12px;
   margin: 0;
-  padding: 5px;
-  padding-right: 11px;
+  padding: 8px;
   gap: 5px;
 }
 
 .searchItem {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
   cursor: pointer;
+  padding: 7px;
 }
 
 .searchItem:hover {
