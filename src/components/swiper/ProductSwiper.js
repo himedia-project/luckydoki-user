@@ -7,7 +7,7 @@ import "swiper/css/pagination";
 import styles from "../../styles/ProductSwiper.module.css";
 import ProductCard from "../card/ProductCard";
 
-const ProductSwiper = ({ title, items }) => {
+const ProductSwiper = ({ title, items, likedProducts, onLikeChange }) => {
   const swiperRef = useRef(null);
   const [swiperId] = useState(
     () => `swiper-${Math.random().toString(36).substr(2, 9)}`
@@ -95,6 +95,8 @@ const ProductSwiper = ({ title, items }) => {
                     best={item.best}
                     reviewAverage={item.reviewAverage}
                     reviewCount={item.reviewCount}
+                    isLiked={likedProducts.has(item.id)}
+                    onLikeChange={onLikeChange}
                   />
                 ) : (
                   <div
