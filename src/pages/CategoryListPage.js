@@ -39,11 +39,10 @@ const CategoryListPage = () => {
     fetchProducts();
   }, [categoryId]);
 
-  // ✅ 스켈레톤을 부드럽게 사라지도록 setTimeout 추가
   useEffect(() => {
     if (!isLoading) {
       setTimeout(() => {
-        setShowSkeleton(false); // 🔥 스켈레톤이 즉시 사라지지 않도록 200ms 유지
+        setShowSkeleton(false); 
       }, 200);
     }
   }, [isLoading]);

@@ -26,6 +26,19 @@
   cursor: pointer;
 }
 
+.errorText {
+  color: #ff6a56;
+  font-size: 10px;
+  margin: 0;
+  padding: 0;
+}
+.successText {
+  color: #00de90;
+  font-size: 10px;
+  margin: 0;
+  padding: 0;
+}
+
 .inputGroup {
   display: flex;
   flex-direction: column;

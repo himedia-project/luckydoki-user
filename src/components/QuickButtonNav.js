@@ -34,8 +34,6 @@ export default function QuickButtonNav() {
     fetchCategoriesAndSubs();
   }, []);
 
-  console.log(categories);
-
   const handleCategoryClick = (subCategoryId) => {
     navigate(`/category/${subCategoryId}`);
   };
