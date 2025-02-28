@@ -3,7 +3,6 @@
   display: flex;
   flex-direction: column;
   padding: 20px 0;
-  border-bottom: 1px solid #e5e7eb;
 }
 
 .user_info {
