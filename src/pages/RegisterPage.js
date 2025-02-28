@@ -33,11 +33,79 @@ const RegisterPage = () => {
       <span className={styles.requiredText}>(필수)</span>
     ) : null;
 
+  const handleSendVerificationCode = async () => {
+    if (!signupForm.phone.trim()) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "전화번호를 입력해주세요.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
+    if (emailExists) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "이미 가입된 이메일입니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
+    if (emailError !== "") {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "이메일 형식이 잘못되었습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
+    if (!passwordMatch) {
+      Swal.fire({
+        toast: true,
+        position: "top",
+        icon: "warning",
+        title: "비밀번호가 일치하지 않습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
+    try {
+      await axios.post(
+        `${API_URL}/api/phone/send`,
+        { phone: signupForm.phone },
+        { withCredentials: true }
+      );
+      setTimer(300);
+      setTimerActive(true);
+      setShowVerification(true);
+      Swal.fire(
+        "인증번호 전송",
+        "입력한 번호로 인증번호가 발송되었습니다.",
+        "success"
+      );
+    } catch (error) {
+      Swal.fire("오류", "인증번호 전송에 실패했습니다.", "error");
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     setSignupForm((prev) => {
-      let updatedValue = value.replace(/\s+/g, "");
+      let updatedValue = value.replace(/\s+/g, ""); // 모든 공백 제거
 
       if (name === "email") {
         if (!validateEmail(updatedValue)) {
@@ -47,15 +115,12 @@ const RegisterPage = () => {
         }
       }
 
-      const updatedForm = { ...prev, [name]: updatedValue };
+      if (name === "nickName") {
+        updatedValue = value; // 닉네임은 공백 제거하지 않음
+      }
 
-      // ✅ 비밀번호 일치 여부 즉시 반영 (비어있으면 메시지 숨김)
       if (name === "password" || name === "confirmPassword") {
-        setPasswordMatch(
-          updatedForm.confirmPassword === ""
-            ? null
-            : updatedForm.password === updatedForm.confirmPassword
-        );
+        setPasswordMatch(updatedValue === prev.password);
       }
 
       if (name === "phone") {
@@ -76,7 +141,7 @@ const RegisterPage = () => {
         return { ...prev, [name]: formattedValue };
       }
 
-      return updatedForm;
+      return { ...prev, [name]: updatedValue };
     });
   };
 
@@ -94,63 +159,13 @@ const RegisterPage = () => {
       );
       if (response.data) {
         setEmailExists(true);
-        Swal.fire({
-          toast: true,
-          position: "top",
-          icon: "warning",
-          title: "이미 가입된 이메일입니다.",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        setEmailError("이미 가입된 이메일입니다.");
       } else {
         setEmailExists(false);
+        setEmailError(""); // 이메일 사용 가능하면 에러 메시지 제거
       }
     } catch (error) {
-      Swal.fire("오류", "이메일 중복 확인에 실패했습니다.", "error");
-    }
-  };
-
-  const handleSendVerificationCode = async () => {
-    if (emailExists) {
-      Swal.fire({
-        toast: true,
-        position: "top",
-        icon: "warning",
-        title: "이미 가입된 이메일입니다.",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      return;
-    }
-    if (!passwordMatch) {
-      Swal.fire({
-        toast: true,
-        position: "top",
-        icon: "warning",
-        title: "비밀번호가 일치하지 않습니다.",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      return;
-    }
-    try {
-      await axios.post(
-        `${API_URL}/api/phone/send`,
-        {
-          phone: signupForm.phone,
-        },
-        { withCredentials: true }
-      );
-      setTimer(300);
-      setTimerActive(true);
-      setShowVerification(true);
-      Swal.fire(
-        "인증번호 전송",
-        "입력한 번호로 인증번호가 발송되었습니다.",
-        "success"
-      );
-    } catch (error) {
-      Swal.fire("오류", "인증번호 전송에 실패했습니다.", "error");
+      setEmailError("이메일 중복확인 실패(서버에러)");
     }
   };
 
@@ -283,10 +298,10 @@ const RegisterPage = () => {
           className={styles.inputField}
           required
         />
-        {passwordMatch === false && signupForm.confirmPassword !== "" && (
+        {passwordMatch === false && signupForm.confirmPassword.length > 0 && (
           <p className={styles.errorText}>비밀번호가 일치하지 않습니다.</p>
         )}
-        {passwordMatch === true && signupForm.confirmPassword !== "" && (
+        {passwordMatch === true && signupForm.confirmPassword.length > 0 && (
           <p className={styles.successText}>비밀번호가 일치합니다.</p>
         )}
       </div>
