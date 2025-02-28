@@ -60,48 +60,70 @@ export const useNotification = () => {
     };
 
     // 포그라운드 메시지 처리
-    const unsubscribe = onMessage(messaging, (payload) => {
-      console.log("Foreground notification received:", payload);
-      console.log("notification received currentUserEmail", currentUserEmail);
-      console.log("notification received notificationEmail", notificationEmail);
-      console.log("notification received messageEmail", messageEmail);
+    let unsubscribe = () => {};
 
-      // NEW_MESSAGE가 아닌 일반 알림만 처리
-      if (
-        currentUserEmail === notificationEmail &&
-        payload.data?.type !== "NEW_MESSAGE"
-      ) {
-        const newNotification = {
-          title: payload.data?.title,
-          body: payload.data?.body,
-          type: payload.data?.type,
-          timestamp: payload.data?.timestamp || new Date().toISOString(),
-        };
-        dispatch(setNotificationItems((prev) => [newNotification, ...prev]));
-      }
+    // messaging이 존재하는지 확인 후 onMessage 설정
+    if (messaging) {
+      try {
+        unsubscribe = onMessage(messaging, (payload) => {
+          console.log("Foreground notification received:", payload);
+          console.log(
+            "notification received currentUserEmail",
+            currentUserEmail
+          );
+          console.log(
+            "notification received notificationEmail",
+            notificationEmail
+          );
+          console.log("notification received messageEmail", messageEmail);
 
-      // NEW_MESSAGE 타입의 메시지만 처리 - targetEmail이 현재 사용자인 경우만
-      if (
-        payload.data?.type === "NEW_MESSAGE" &&
-        payload.data?.targetEmail === currentUserEmail
-      ) {
-        console.log("Foreground message received:", payload);
-        console.log("message received currentUserEmail", currentUserEmail);
-        console.log("message received notificationEmail", notificationEmail);
-        console.log("message received messageEmail", messageEmail);
-        const newMessage = {
-          title: payload.data?.title,
-          body: payload.data?.body,
-          type: payload.data?.type,
-          timestamp: payload.data?.timestamp || new Date().toISOString(),
-        };
-        dispatch(
-          setMessageItems((prev) =>
-            Array.isArray(prev) ? [newMessage, ...prev] : [newMessage]
-          )
-        );
+          // NEW_MESSAGE가 아닌 일반 알림만 처리
+          if (
+            currentUserEmail === notificationEmail &&
+            payload.data?.type !== "NEW_MESSAGE"
+          ) {
+            const newNotification = {
+              title: payload.data?.title,
+              body: payload.data?.body,
+              type: payload.data?.type,
+              timestamp: payload.data?.timestamp || new Date().toISOString(),
+            };
+            dispatch(
+              setNotificationItems((prev) => [newNotification, ...prev])
+            );
+          }
+
+          // NEW_MESSAGE 타입의 메시지만 처리 - targetEmail이 현재 사용자인 경우만
+          if (
+            payload.data?.type === "NEW_MESSAGE" &&
+            payload.data?.targetEmail === currentUserEmail
+          ) {
+            console.log("Foreground message received:", payload);
+            console.log("message received currentUserEmail", currentUserEmail);
+            console.log(
+              "message received notificationEmail",
+              notificationEmail
+            );
+            console.log("message received messageEmail", messageEmail);
+            const newMessage = {
+              title: payload.data?.title,
+              body: payload.data?.body,
+              type: payload.data?.type,
+              timestamp: payload.data?.timestamp || new Date().toISOString(),
+            };
+            dispatch(
+              setMessageItems((prev) =>
+                Array.isArray(prev) ? [newMessage, ...prev] : [newMessage]
+              )
+            );
+          }
+        });
+      } catch (error) {
+        console.error("Firebase 메시징 설정 중 오류 발생:", error);
       }
-    });
+    } else {
+      console.warn("이 환경에서는 Firebase 메시징을 사용할 수 없습니다");
+    }
 
     return () => {
       unsubscribe();
