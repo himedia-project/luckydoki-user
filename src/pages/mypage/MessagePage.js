@@ -269,7 +269,7 @@ export default function MessagePage() {
     if (userEmail && !stompClient) {
       console.log("소켓 연결 시작");
       const client = new Client({
-        webSocketFactory: () => new SockJS(`${API_URL}/ws-stomp`),
+        webSocketFactory: () => new SockJS(`${API_URL}/wss-stomp`),
         connectHeaders: {
           "X-Authorization": `Bearer ${accessToken}`,
         },
