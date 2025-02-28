@@ -361,7 +361,9 @@ export default function MessagePage() {
         }
       }
 
-      const currentTime = new Date().toISOString();
+      // const currentTime = new Date().toISOString();
+      // "2025-02-28 11:35:34"
+      const currentTime = new Date().toLocaleString();
       const chatMessage = {
         roomId: roomId || selectedRoom?.id,
         sender: null,
