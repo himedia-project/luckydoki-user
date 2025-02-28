@@ -51,7 +51,7 @@ const RegisterPage = () => {
         toast: true,
         position: "top",
         icon: "warning",
-        title: "이미 가입된 이메일입니다.",
+        title: "이메일을 확인해주세요.",
         showConfirmButton: false,
         timer: 1500,
       });

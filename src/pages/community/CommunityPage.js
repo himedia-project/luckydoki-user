@@ -39,7 +39,7 @@ export default function CommunityPage() {
                   nickName={post?.nickName}
                   uploadFileNames={post?.uploadFileNames}
                   productDTOs={post?.productDTOs}
-                  sellerImage={post?.shopImage}
+                  sellerImage={post?.authorImage}
                   shopId={post?.shopId}
                 />
               ))}
@@ -57,7 +57,7 @@ export default function CommunityPage() {
                   nickName={post?.nickName}
                   uploadFileNames={post?.uploadFileNames}
                   productDTOs={post?.productDTOs}
-                  sellerImage={post?.shopImage}
+                  sellerImage={post?.authorImage}
                   hideSwiper={true}
                   shopId={post?.shopId}
                 />
