@@ -3,9 +3,11 @@ import { searchCommunity } from "../../api/searchApi";
 import PostAddButton from "../../components/button/PostAddButton";
 import CommunityCard from "../../components/card/CommunityCard";
 import style from "../../styles/CommunityPage.module.css";
+import { getMyProfile } from "../../api/memberApi";
 
 export default function CommunityPage() {
   const [posts, setPosts] = useState([]);
+  const [authorImage, setAuthorImage] = useState("");
 
   useEffect(() => {
     const fetchCommunityPosts = async () => {
@@ -18,6 +20,17 @@ export default function CommunityPage() {
     };
 
     fetchCommunityPosts();
+  }, []);
+
+  useEffect(() => {
+    getMyProfile()
+      .then((response) => {
+        const { profileImage } = response.data;
+        setAuthorImage(profileImage);
+      })
+      .catch((error) => {
+        console.error("내 정보 불러오기 실패:", error);
+      });
   }, []);
 
   return (
@@ -39,7 +52,9 @@ export default function CommunityPage() {
                   nickName={post?.nickName}
                   uploadFileNames={post?.uploadFileNames}
                   productDTOs={post?.productDTOs}
-                  sellerImage={post?.shopImage}
+                  sellerImage={
+                    post?.shopImage !== null ? post?.shopImage : authorImage
+                  }
                   shopId={post?.shopId}
                 />
               ))}
