@@ -74,7 +74,7 @@ export default function CommunityDetailPage() {
     <div className={styles.detailContainer}>
       <div className={styles.userInfoBox}>
         <ImageLoader
-          imagePath={postInfo?.shopImage}
+          imagePath={postInfo?.authorImage}
           className={styles.shopImage}
           onClick={(event) => handleShopClick(event, postInfo?.shopId)}
         />
