@@ -195,7 +195,7 @@
   background-color: #00de90;
   color: white;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -261,7 +261,7 @@
   background-color: #00de90;
   color: white;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
 }

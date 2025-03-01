@@ -1,24 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
 import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import SockJS from "sockjs-client";
 import styles from "../../styles/MessagePage.module.css";
 
 import {
-  createChattingRoom,
-  getMessageHistory,
-  getChatRooms,
-  deleteChatRooms,
   changeIsRead,
+  createChattingRoom,
+  deleteChatRooms,
+  getChatRooms,
+  getMessageHistory,
 } from "../../api/chatApi";
-import { API_URL } from "../../config/apiConfig";
-import MessageDropdown from "../../components/dropdown/MessageDropdown";
-import axiosInstance from "../../api/axiosInstance";
 import ImageLoader from "../../components/card/ImageLoader";
+import { API_URL } from "../../config/apiConfig";
 
 export default function MessagePage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const routeShopData = location.state;
 
   const [selectedShopId, setSelectedShopId] = useState(
@@ -36,8 +35,6 @@ export default function MessagePage() {
   const [chatRooms, setChatRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [unreadMessages, setUnreadMessages] = useState({}); // 읽지 않은 메시지 수 관리
-
-  const [dropdownMessages, setDropdownMessages] = useState([]);
 
   // 날짜 포맷팅 함수
   // 2025-02-28 11:35:34
@@ -58,28 +55,6 @@ export default function MessagePage() {
       Notification.requestPermission();
     }
   }, []);
-
-  // 드롭다운 메시지 생성 useEffect 추가,
-  // useEffect(() => {
-  //   // 읽지 않은 메시지가 있는 채팅방을 기반으로 드롭다운 메시지 생성
-  //   const newDropdownMessages = Object.entries(unreadMessages)
-  //     .filter(([roomId, count]) => count > 0)
-  //     .map(([roomId, count]) => {
-  //       // 해당 roomId의 채팅방 찾기
-  //       const room = chatRooms.find((r) => r.id === parseInt(roomId));
-
-  //       return {
-  //         sender: room ? room.shopName : "알 수 없는 상점",
-  //         date: new Date().toLocaleDateString(),
-  //         content: `${count}개의 새 메시지가 있습니다.`,
-  //         lastMessage: room ? room.lastMessage : "새 메시지",
-  //       };
-  //     });
-
-  //   setDropdownMessages(newDropdownMessages);
-  // }, [unreadMessages, chatRooms]);
-
-  // 기존의 다른 useEffect, 함수들은 그대로 유지
 
   useEffect(() => {
     const initializeChat = async () => {
@@ -451,6 +426,13 @@ export default function MessagePage() {
     }
   };
 
+  // 샵 페이지로 이동하는 함수 추가
+  const navigateToShop = () => {
+    if (selectedRoom?.shopId) {
+      navigate(`/shop/${selectedRoom.shopId}`);
+    }
+  };
+
   return (
     <div className={styles.messagePageContainer}>
       {/* MessageDropdown 컴포넌트 추가 */}
@@ -476,7 +458,7 @@ export default function MessagePage() {
                     />
                   </div>
                   <div className={styles.roomInfo}>
-                    <h3>{room.sender}</h3>
+                    <h3>{room.shopName}</h3>
                     <p className={styles.lastMessage}>
                       {room.lastMessage || "메시지가 없습니다"}
                     </p>
@@ -510,7 +492,11 @@ export default function MessagePage() {
           {selectedRoom || (routeShopData && roomId) ? (
             <>
               <div className={styles.chatHeader}>
-                <div className={styles.partnerInfo}>
+                <div
+                  className={styles.partnerInfo}
+                  onClick={navigateToShop}
+                  style={{ cursor: "pointer" }}
+                >
                   <div className={styles.partnerImage}>
                     <ImageLoader
                       imagePath={selectedRoom?.shopImage}
@@ -518,11 +504,22 @@ export default function MessagePage() {
                     />
                   </div>
                   <div className={styles.partnerDetails}>
-                    <h3>{selectedRoom?.shopName}</h3>
+                    <h3>
+                      {selectedRoom?.shopName}
+                      <span
+                        className={styles.shopIcon}
+                        style={{ marginLeft: "5px" }}
+                      >
+                        🏠
+                      </span>
+                    </h3>
                   </div>
                   <button
                     className={styles.leaveButton}
-                    onClick={handleLeaveRoom}
+                    onClick={(e) => {
+                      e.stopPropagation(); // 이벤트 버블링 방지
+                      handleLeaveRoom();
+                    }}
                   >
                     나가기
                   </button>
