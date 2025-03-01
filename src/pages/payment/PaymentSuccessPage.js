@@ -32,6 +32,15 @@ const PaymentSuccessPage = () => {
     }
   }, [email, accessToken, navigate]);
 
+  // 페이지 로드 시 즉시 폭죽 효과 실행
+  useEffect(() => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  }, []);
+
   // 결제 확인 및 폭죽 효과
   useEffect(() => {
     const confirmPayment = async () => {
@@ -55,12 +64,12 @@ const PaymentSuccessPage = () => {
           const cartResponse = await getCartItemList();
           dispatch(setCartItems(cartResponse));
 
-          // 성공적으로 결제가 완료되면 폭죽 효과
-          confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-          });
+          // // 성공적으로 결제가 완료되면 추가 폭죽 효과
+          // confetti({
+          //   particleCount: 100,
+          //   spread: 70,
+          //   origin: { y: 0.6 },
+          // });
         } catch (error) {
           console.error("장바구니 정보 업데이트 실패:", error);
           // 장바구니 업데이트 실패는 크리티컬한 에러가 아니므로 사용자에게 알리지 않음
