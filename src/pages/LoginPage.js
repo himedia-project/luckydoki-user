@@ -10,7 +10,10 @@ import { loginPost } from "../api/loginApi";
 import { clearCartItems } from "../api/redux/cartSlice";
 import { clearNotificationItems } from "../api/redux/notificationSlice";
 import { getCartItemList } from "../api/cartApi";
-import { getNotificationList } from "../api/notificationApi";
+import {
+  getMessageNotificationList,
+  getNotificationList,
+} from "../api/notificationApi";
 import { setCartItems } from "../api/redux/cartSlice";
 import { setNotificationItems } from "../api/redux/notificationSlice";
 import {
@@ -81,18 +84,11 @@ const LoginPage = () => {
         const cartResponse = await getCartItemList();
         dispatch(setCartItems(cartResponse));
 
-        // type이 NEW_MESSAGE인거는 제외한 알림만 받기
         const notificationResponse = await getNotificationList();
-        const filteredNotificationResponse = notificationResponse.filter(
-          (notification) => notification.type !== "NEW_MESSAGE"
-        );
-        dispatch(setNotificationItems(filteredNotificationResponse));
+        dispatch(setNotificationItems(notificationResponse));
 
-        // type이 NEW_MESSAGE인거 메시지 받기
-        const filteredMessageResponse = notificationResponse.filter(
-          (notification) => notification.type === "NEW_MESSAGE"
-        );
-        dispatch(setMessageItems(filteredMessageResponse));
+        const messageResponse = await getMessageNotificationList();
+        dispatch(setMessageItems(messageResponse));
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }

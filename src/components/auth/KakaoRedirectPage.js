@@ -11,7 +11,11 @@ import {
   setNotificationItems,
 } from "../../api/redux/notificationSlice";
 import { getCartItemList } from "../../api/cartApi";
-import { getNotificationList } from "../../api/notificationApi";
+import {
+  getMessageNotificationList,
+  getNotificationList,
+} from "../../api/notificationApi";
+import { setMessageEmail, setMessageItems } from "../../api/redux/messageSlice";
 
 const KakaoRedirectPage = () => {
   const [searchParams] = useSearchParams();
@@ -34,6 +38,7 @@ const KakaoRedirectPage = () => {
           dispatch(login(memberInfo));
           dispatch(setCartEmail(memberInfo.email));
           dispatch(setNotificationEmail(memberInfo.email));
+          dispatch(setMessageEmail(memberInfo.email));
 
           // 해당 사용자의 데이터 가져오기
           try {
@@ -42,6 +47,9 @@ const KakaoRedirectPage = () => {
 
             const notificationResponse = await getNotificationList();
             dispatch(setNotificationItems(notificationResponse));
+
+            const messageResponse = await getMessageNotificationList();
+            dispatch(setMessageItems(messageResponse));
           } catch (error) {
             console.error("Failed to fetch user data:", error);
           }
