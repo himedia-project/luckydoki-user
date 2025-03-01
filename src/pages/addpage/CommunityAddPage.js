@@ -150,7 +150,7 @@ export default function CommunityAddPage() {
     try {
       await createPost(formData);
       Swal.fire({
-        title: "상품 등록이 완료되었습니다.",
+        title: "게시글 등록이 완료되었습니다.",
         icon: "success",
         confirmButtonText: "확인",
       }).then(() => {
