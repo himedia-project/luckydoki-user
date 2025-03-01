@@ -32,15 +32,6 @@ const PaymentSuccessPage = () => {
     }
   }, [email, accessToken, navigate]);
 
-  // 페이지 로드 시 즉시 폭죽 효과 실행
-  useEffect(() => {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
-  }, []);
-
   // 결제 확인 및 폭죽 효과
   useEffect(() => {
     const confirmPayment = async () => {
@@ -64,7 +55,7 @@ const PaymentSuccessPage = () => {
           const cartResponse = await getCartItemList();
           dispatch(setCartItems(cartResponse));
 
-          // 성공적으로 결제가 완료되면 추가 폭죽 효과
+          // 성공적으로 결제가 완료되면 폭죽 효과
           confetti({
             particleCount: 100,
             spread: 70,
