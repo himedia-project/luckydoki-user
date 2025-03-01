@@ -1,26 +1,30 @@
 import React, { useState } from "react";
-import styles from "../styles/LoginPage.module.css";
-import { Link, useNavigate } from "react-router-dom";
-import { getKakaoLoginLink } from "../api/kakaoApi";
 import { useDispatch } from "react-redux";
-import { login } from "../api/redux/loginSlice";
-import { setCartEmail } from "../api/redux/cartSlice";
-import { setNotificationEmail } from "../api/redux/notificationSlice";
-import { loginPost } from "../api/loginApi";
-import { clearCartItems } from "../api/redux/cartSlice";
-import { clearNotificationItems } from "../api/redux/notificationSlice";
+import { Link, useNavigate } from "react-router-dom";
 import { getCartItemList } from "../api/cartApi";
+import { getKakaoLoginLink } from "../api/kakaoApi";
+import { loginPost } from "../api/loginApi";
 import {
   getMessageNotificationList,
-  getNotificationList,
+  getNotificationExceptMessageList,
 } from "../api/notificationApi";
-import { setCartItems } from "../api/redux/cartSlice";
-import { setNotificationItems } from "../api/redux/notificationSlice";
+import {
+  clearCartItems,
+  setCartEmail,
+  setCartItems,
+} from "../api/redux/cartSlice";
+import { login } from "../api/redux/loginSlice";
 import {
   clearMessageItems,
   setMessageEmail,
   setMessageItems,
 } from "../api/redux/messageSlice";
+import {
+  clearNotificationItems,
+  setNotificationEmail,
+  setNotificationItems,
+} from "../api/redux/notificationSlice";
+import styles from "../styles/LoginPage.module.css";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -84,7 +88,7 @@ const LoginPage = () => {
         const cartResponse = await getCartItemList();
         dispatch(setCartItems(cartResponse));
 
-        const notificationResponse = await getNotificationList();
+        const notificationResponse = await getNotificationExceptMessageList();
         dispatch(setNotificationItems(notificationResponse));
 
         const messageResponse = await getMessageNotificationList();

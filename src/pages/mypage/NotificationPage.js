@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getNotificationList } from "../../api/notificationApi";
+import { getNotificationExceptMessageList } from "../../api/notificationApi";
 import style from "../../styles/Notification.module.css";
 
 export default function NotificationPage() {
@@ -8,7 +8,7 @@ export default function NotificationPage() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const data = await getNotificationList();
+        const data = await getNotificationExceptMessageList();
         console.log(data);
         setNotifications(data);
       } catch (error) {
