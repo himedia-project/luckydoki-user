@@ -13,7 +13,11 @@ import { getCartItemList } from "../api/cartApi";
 import { getNotificationList } from "../api/notificationApi";
 import { setCartItems } from "../api/redux/cartSlice";
 import { setNotificationItems } from "../api/redux/notificationSlice";
-import { setMessageEmail } from "../api/redux/messageSlice";
+import {
+  clearMessageItems,
+  setMessageEmail,
+  setMessageItems,
+} from "../api/redux/messageSlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -62,6 +66,7 @@ const LoginPage = () => {
       // 먼저 이전 데이터 초기화
       dispatch(clearCartItems());
       dispatch(clearNotificationItems());
+      dispatch(clearMessageItems());
 
       // 로그인 처리
       dispatch(login(response.data));
@@ -76,8 +81,18 @@ const LoginPage = () => {
         const cartResponse = await getCartItemList();
         dispatch(setCartItems(cartResponse));
 
+        // type이 NEW_MESSAGE인거는 제외한 알림만 받기
         const notificationResponse = await getNotificationList();
-        dispatch(setNotificationItems(notificationResponse));
+        const filteredNotificationResponse = notificationResponse.filter(
+          (notification) => notification.type !== "NEW_MESSAGE"
+        );
+        dispatch(setNotificationItems(filteredNotificationResponse));
+
+        // type이 NEW_MESSAGE인거 메시지 받기
+        const filteredMessageResponse = notificationResponse.filter(
+          (notification) => notification.type === "NEW_MESSAGE"
+        );
+        dispatch(setMessageItems(filteredMessageResponse));
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
