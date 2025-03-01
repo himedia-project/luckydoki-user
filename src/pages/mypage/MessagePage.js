@@ -458,7 +458,7 @@ export default function MessagePage() {
                     />
                   </div>
                   <div className={styles.roomInfo}>
-                    <h3>{room.shopName}</h3>
+                    <h3>{room.sender}</h3>
                     <p className={styles.lastMessage}>
                       {room.lastMessage || "메시지가 없습니다"}
                     </p>
