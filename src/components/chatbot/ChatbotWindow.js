@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { IoClose } from "react-icons/io5";
+import { IoMdImage } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import ImageLoader from "../card/ImageLoader";
 import { getChatbotResponse } from "../../api/chatbot";
+import { analyzeImage } from "../../api/searchApi";
 
 const ChatWindow = styled.div`
   position: fixed;
@@ -79,6 +81,43 @@ const Input = styled.input`
   &:focus {
     border-color: #00de90;
   }
+`;
+
+const ImageUploadButton = styled.button`
+  background-color: #f0f0f0;
+  color: #555;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #e0e0e0;
+    color: #00de90;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const HiddenFileInput = styled.input`
+  display: none;
+`;
+
+const UploadingIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #00de90;
+  font-size: 12px;
+  margin-right: 10px;
 `;
 
 const SendButton = styled.button`
@@ -220,7 +259,6 @@ const StyledText = styled.div`
   }
 `;
 
-// 기존 LoadingDots 대신 새로운 로딩 인디케이터
 const LoadingIndicator = styled.div`
   display: flex;
   gap: 4px;
@@ -278,7 +316,9 @@ const ChatbotWindow = ({ onClose }) => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   const scrollToBottom = () => {
@@ -324,6 +364,73 @@ const ChatbotWindow = ({ onClose }) => {
       setIsLoading(false);
       setInput("");
     }
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.match("image.*")) {
+      alert("이미지 파일만 업로드 가능합니다.");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: "이미지를 분석 중입니다...",
+          isUser: true,
+          isImage: true,
+        },
+      ]);
+
+      const response = await analyzeImage(file);
+
+      if (response && response.data) {
+        const analysisResult = response.data;
+        console.log("분석 결과:", analysisResult);
+        setIsLoading(true);
+
+        const mainKeyword = analysisResult[0];
+
+        const chatResponse = await getChatbotResponse(
+          `이미지 분석 결과: ${mainKeyword}`
+        );
+
+        if (chatResponse && chatResponse.data) {
+          const processedResponse = processAIResponse(chatResponse.data);
+          setMessages((prev) => [
+            ...prev,
+            {
+              text: processedResponse,
+              isUser: false,
+            },
+          ]);
+        }
+      }
+    } catch (error) {
+      console.error("이미지 분석 에러:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: "이미지 분석 중 오류가 발생했습니다. 다시 시도해주세요.",
+          isUser: false,
+        },
+      ]);
+    } finally {
+      setIsUploading(false);
+      setIsLoading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleImageButtonClick = () => {
+    fileInputRef.current.click();
   };
 
   const processAIResponse = (response) => {
@@ -394,6 +501,9 @@ const ChatbotWindow = ({ onClose }) => {
 
   const renderMessage = (message) => {
     if (message.isUser) {
+      if (message.isImage) {
+        return <Message isUser={true}>📷 {message.text}</Message>;
+      }
       return <Message isUser={true}>{message.text}</Message>;
     }
 
@@ -476,12 +586,25 @@ const ChatbotWindow = ({ onClose }) => {
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="메시지를 입력하세요..."
-          disabled={isLoading}
+          disabled={isLoading || isUploading}
         />
+        <HiddenFileInput
+          type="file"
+          ref={fileInputRef}
+          accept="image/*"
+          onChange={handleImageUpload}
+        />
+        <ImageUploadButton
+          onClick={handleImageButtonClick}
+          disabled={isLoading || isUploading}
+          title="이미지 업로드"
+        >
+          <IoMdImage size={20} />
+        </ImageUploadButton>
         <SendButton
           onClick={handleSend}
-          disabled={isLoading}
-          style={{ opacity: isLoading ? 0.6 : 1 }}
+          disabled={isLoading || isUploading}
+          style={{ opacity: isLoading || isUploading ? 0.6 : 1 }}
         >
           전송
         </SendButton>
