@@ -148,10 +148,8 @@ export default function MessagePage() {
 
             const newMessages = [...prevMessages, receivedMessage];
 
-            // 메시지가 추가된 후 스크롤 조정
-            setTimeout(() => {
-              messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-            }, 50);
+            // 메시지가 추가된 후 스크롤 조정 코드 제거
+            // 자동 스크롤 없이 메시지만 추가
 
             return newMessages;
           });
@@ -221,6 +219,8 @@ export default function MessagePage() {
 
       // WebSocket 연결 실행
       connect(event);
+
+      // 자동 스크롤 제거 - 채팅방 선택 시 스크롤 동작 없음
     } catch (error) {
       console.error("채팅 기록 불러오기 실패:", error);
     }
@@ -228,12 +228,27 @@ export default function MessagePage() {
 
   ////////스크롤 이벤트 (좀 과하게 내려감)//////
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      // scrollIntoView 대신 부모 컨테이너의 scrollTop 속성 사용
+      const messagesContainer = document.querySelector(
+        `.${styles.messagesContainer}`
+      );
+      if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    }
   };
 
+  // 메시지 수신 시 스크롤 처리
   useEffect(() => {
-    scrollToBottom();
-  }, [realTimeMessages]);
+    if (realTimeMessages.length > 0) {
+      const lastMessage = realTimeMessages[realTimeMessages.length - 1];
+      // 내가 보낸 메시지일 경우에만 스크롤 다운
+      if (lastMessage.email === userEmail) {
+        scrollToBottom();
+      }
+    }
+  }, [realTimeMessages, userEmail]);
 
   useEffect(() => {
     return () => {
@@ -303,27 +318,16 @@ export default function MessagePage() {
 
     try {
       // roomId가 없는 경우, 채팅방 생성 필요
-      if (!roomId) {
+      let currentRoomId = roomId;
+
+      if (!currentRoomId) {
         // 먼저 기존 채팅방이 있는지 확인
         const existingRoom = chatRooms.find((room) => {
-          console.log(
-            "room.shopId 타입:",
-            typeof room.shopId,
-            "값:",
-            room.shopId
-          );
-          console.log(
-            "routeShopData.shopId 타입:",
-            typeof routeShopData.shopId,
-            "값:",
-            routeShopData.shopId
-          );
-
-          // 문자열로 변환 후 비교
-          return String(room.shopId) === String(routeShopData.shopId);
+          return String(room.shopId) === String(selectedShopId);
         });
 
         if (existingRoom) {
+          currentRoomId = existingRoom.id;
           setRoomId(existingRoom.id);
           setSelectedRoom(existingRoom);
         } else {
@@ -341,6 +345,7 @@ export default function MessagePage() {
 
           const newRoomResponse = await createChattingRoom(chatRoomData);
           const newRoom = newRoomResponse.data;
+          currentRoomId = newRoom.id;
           setRoomId(newRoom.id);
           setSelectedRoom(newRoom);
           setChatRooms((prev) =>
@@ -353,7 +358,7 @@ export default function MessagePage() {
       // "2025-02-28 11:35:34"
       const currentTime = formatData(new Date());
       const chatMessage = {
-        roomId: roomId || selectedRoom?.id,
+        roomId: currentRoomId,
         sender: null,
         email: userEmail,
         shopId: selectedShopId,
@@ -365,7 +370,7 @@ export default function MessagePage() {
 
       if (!stompClient.connected) {
         console.error("STOMP 연결이 끊어졌습니다. 재연결을 시도합니다.");
-        connect(e);
+        connect({ preventDefault: () => {} });
         return;
       }
 
@@ -378,13 +383,10 @@ export default function MessagePage() {
         body: JSON.stringify(chatMessage),
       });
 
-      // 메시지 전송 직후 즉시 상태 업데이트
-      // setRealTimeMessages((prevMessages) => [...prevMessages, chatMessage]);
-
       // 채팅방 목록에서 해당 방의 마지막 메시지 업데이트
       setChatRooms((prevRooms) =>
         prevRooms.map((room) =>
-          room.id === (roomId || selectedRoom?.id)
+          room.id === currentRoomId
             ? {
                 ...room,
                 lastMessage: message.trim(),
@@ -395,6 +397,12 @@ export default function MessagePage() {
       );
 
       setMessage("");
+
+      // 메시지 전송 후 채팅창 내부만 스크롤 다운
+      // setTimeout을 사용하여 메시지가 DOM에 추가된 후 스크롤
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
     } catch (error) {
       console.error("메시지 전송 중 에러 발생:", error);
     }
