@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import styles from "../styles/SearchPage.module.css";
-import { searchProduct, searchCommunity } from "../api/searchApi";
-import ProductCard from "../components/card/ProductCard";
-import CommunityCard from "../components/card/CommunityCard";
+import React, { useEffect, useRef, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
-import RecentSearchDropdown from "../components/dropdown/RecentSearchDropdown"; // 추가
+import { useSearchParams } from "react-router-dom";
 import { getProductList } from "../api/productApi";
-import ProductSwiper from "../components/swiper/ProductSwiper";
+import { analyzeImage, searchCommunity, searchProduct } from "../api/searchApi";
+import CommunityCard from "../components/card/CommunityCard";
+import ProductCard from "../components/card/ProductCard";
+import RecentSearchDropdown from "../components/dropdown/RecentSearchDropdown"; // 추가
 import SkeletonSwiper from "../components/skeleton/SkeletonSwiper";
+import ProductSwiper from "../components/swiper/ProductSwiper";
+import styles from "../styles/SearchPage.module.css";
 
 export default function SearchPage() {
   const [keyword, setKeyword] = useState("");
@@ -21,6 +21,8 @@ export default function SearchPage() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [randomProducts, setRandomProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const searchKeywordParam = searchParams.get("searchKeyword");
@@ -145,6 +147,36 @@ export default function SearchPage() {
     }
   };
 
+  const handleImageUpload = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsAnalyzing(true);
+    try {
+      const response = await analyzeImage(file);
+      const keywords = response.data;
+
+      if (keywords && keywords.length > 0) {
+        // 첫 번째 키워드를 주요 검색어로 사용
+        const mainKeyword = keywords[0];
+        setKeyword(mainKeyword);
+        handleSearch(mainKeyword);
+      } else {
+        console.error("이미지 분석 결과가 없습니다.");
+      }
+    } catch (error) {
+      console.error("이미지 분석 실패:", error);
+    } finally {
+      setIsAnalyzing(false);
+      // 파일 입력 초기화
+      e.target.value = null;
+    }
+  };
+
   return (
     <div
       tabIndex={0}
@@ -170,6 +202,35 @@ export default function SearchPage() {
           className={styles.searchInput}
         />
         <IoSearchSharp className={styles.searchIcon} />
+
+        {/* 이미지 검색 버튼 추가 - 디자인 개선 */}
+        <button
+          onClick={handleImageUpload}
+          className={styles.imageSearchButton}
+          disabled={isAnalyzing}
+        >
+          {isAnalyzing ? (
+            <span className={styles.analyzingText}>분석 중...</span>
+          ) : (
+            <>
+              <img
+                src="/ailogo.png"
+                alt="AI 이미지 검색"
+                className={styles.aiLogo}
+              />
+              <span>이미지 검색</span>
+            </>
+          )}
+        </button>
+
+        {/* 숨겨진 파일 입력 */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleImageChange}
+          accept="image/*"
+          style={{ display: "none" }}
+        />
 
         {/* 최근 검색어 드롭다운 */}
         {isDropdownOpen && (
