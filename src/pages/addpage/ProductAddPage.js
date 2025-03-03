@@ -203,7 +203,7 @@ export default function ProductAddPage() {
     try {
       const response = await createProduct(multipartFormData);
       Swal.fire({
-        title: "상품 등록이 완료되었습니다.",
+        title: "상품 등록 신청이 완료되었습니다.",
         icon: "success",
         confirmButtonText: "확인",
       }).then(() => {
@@ -417,7 +417,7 @@ export default function ProductAddPage() {
 
       {/* 등록 버튼 */}
       <button className={style.register_button} onClick={handleSubmit}>
-        등록하기
+        등록 신청하기
       </button>
     </div>
   );
