@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getNotificationExceptMessageList } from "../../api/notificationApi";
 import style from "../../styles/Notification.module.css";
+import { FcApprove } from "react-icons/fc";
+import { FcSoundRecordingCopyright } from "react-icons/fc";
+import { RiCoupon2Fill } from "react-icons/ri";
 
 export default function NotificationPage() {
   const [notifications, setNotifications] = useState([]);
@@ -40,6 +43,14 @@ export default function NotificationPage() {
               <div className={style.notification_content}>
                 <div className={style.notification_header}>
                   <span className={style.notification_title}>
+                    {notification.type === "SELLER_APPROVAL" && <FcApprove />}
+                    {notification.type === "PRODUCT_APPROVAL" && (
+                      <FcSoundRecordingCopyright />
+                    )}
+                    {(notification.type === "COUPON" ||
+                      notification.type === "WELCOME") && (
+                      <RiCoupon2Fill />
+                    )}{" "}
                     {notification.title}
                   </span>
                   <span className={style.notification_time}>

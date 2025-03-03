@@ -3,6 +3,8 @@ import styles from "../../styles/NotificationDropdown.module.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { clearNotificationItems } from "../../api/redux/notificationSlice";
+import { FcApprove, FcSoundRecordingCopyright } from "react-icons/fc";
+import { RiCoupon2Fill } from "react-icons/ri";
 
 const NotificationDropdown = () => {
   const navigate = useNavigate();
@@ -72,7 +74,17 @@ const NotificationDropdown = () => {
               />
               <div className={styles.textBox}>
                 <div className={styles.text}>
-                  <span className={styles.category}>{notification.title}</span>
+                  <span className={styles.category}>
+                    {notification.type === "SELLER_APPROVAL" && <FcApprove />}
+                    {notification.type === "PRODUCT_APPROVAL" && (
+                      <FcSoundRecordingCopyright />
+                    )}
+                    {(notification.type === "COUPON" ||
+                      notification.type === "WELCOME") && (
+                      <RiCoupon2Fill />
+                    )}{" "}
+                    {notification.title}
+                  </span>
                   <span className={styles.date}>
                     {formatTime(notification.timestamp)}
                   </span>
