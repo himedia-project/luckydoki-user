@@ -24,6 +24,7 @@ messaging.onBackgroundMessage(function (payload) {
   console.log("Received background message ", payload);
 
   const newNotification = {
+    shopId: payload.data?.shopId,
     title: payload.notification?.title || payload.data?.title,
     body: payload.notification?.body || payload.data?.body,
     type: payload.data?.type,

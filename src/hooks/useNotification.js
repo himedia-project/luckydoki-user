@@ -8,6 +8,7 @@ import {
 } from "../api/redux/notificationSlice";
 import { clearMessageItems, setMessageItems } from "../api/redux/messageSlice";
 import { setRoles } from "../api/redux/loginSlice";
+import { setShopId } from "../api/redux/infoSlice";
 
 export const useNotification = () => {
   const dispatch = useDispatch();
@@ -44,6 +45,12 @@ export const useNotification = () => {
       ) {
         const newNotification = event.data;
         dispatch(setNotificationItems((prev) => [newNotification, ...prev]));
+
+        if (event.data.type === "SELLER_APPROVAL") {
+          dispatch(setRoles(["SELLER"]));
+          dispatch(setShopId(newNotification.shopId));
+          console.log("SELLER_APPROVAL 로 SELLER 권한 부여 성공!");
+        }
       }
       // 메시지 알림 추가 - targetEmail이 현재 사용자인 경우만
       if (
@@ -88,16 +95,14 @@ export const useNotification = () => {
               body: payload.data?.body,
               type: payload.data?.type,
               timestamp: payload.data?.timestamp || new Date().toISOString(),
+              shopId: payload.data?.shopId,
             };
+
+            console.log("newNotification", newNotification);
 
             dispatch(
               setNotificationItems((prev) => [newNotification, ...prev])
             );
-
-            if (newNotification.type === "SELLER_APPROVAL") {
-              dispatch(setRoles(["SELLER"]));
-              console.log("SELLER_APPROVAL 로 SELLER 권한 부여 성공!");
-            }
           }
 
           // NEW_MESSAGE 타입의 메시지만 처리 - targetEmail이 현재 사용자인 경우만
