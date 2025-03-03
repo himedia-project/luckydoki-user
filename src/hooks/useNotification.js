@@ -46,6 +46,8 @@ export const useNotification = () => {
         const newNotification = event.data;
         dispatch(setNotificationItems((prev) => [newNotification, ...prev]));
 
+        console.log("channel.onmessage newNotification", newNotification);
+
         if (event.data.type === "SELLER_APPROVAL") {
           dispatch(setRoles(["SELLER"]));
           dispatch(setShopId(newNotification.shopId));
@@ -90,12 +92,6 @@ export const useNotification = () => {
             currentUserEmail === notificationEmail &&
             payload.data?.type !== "NEW_MESSAGE"
           ) {
-            if (payload.data?.type === "SELLER_APPROVAL") {
-              dispatch(setRoles(["SELLER"]));
-              dispatch(setShopId(payload.data?.shopId));
-              console.log("SELLER_APPROVAL 로 SELLER 권한 부여 성공!");
-            }
-
             const newNotification = {
               title: payload.data?.title,
               body: payload.data?.body,
@@ -109,6 +105,16 @@ export const useNotification = () => {
             dispatch(
               setNotificationItems((prev) => [newNotification, ...prev])
             );
+
+            console.log("payload.data?.type", payload.data?.type);
+            // SELLER_APPROVAL 타입일 때 shopId 저장 및 roles 설정
+            if (payload.data?.type === "SELLER_APPROVAL") {
+              dispatch(setShopId(payload.data?.shopId));
+              dispatch(setRoles(["SELLER"]));
+              console.log(
+                "SELLER_APPROVAL로 SELLER 권한 부여 및 shopId 설정 성공!"
+              );
+            }
           }
 
           // NEW_MESSAGE 타입의 메시지만 처리 - targetEmail이 현재 사용자인 경우만
