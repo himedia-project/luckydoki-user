@@ -180,3 +180,11 @@
     transform: rotate(360deg);
   }
 }
+
+.dropdownWrapper {
+  position: absolute;
+  top: 50px;
+  left: 0px;
+  width: 400px;
+  z-index: 10;
+}

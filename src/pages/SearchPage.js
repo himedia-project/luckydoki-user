@@ -232,16 +232,18 @@ export default function SearchPage() {
           style={{ display: "none" }}
         />
 
-        {/* 최근 검색어 드롭다운 */}
-        {isDropdownOpen && (
-          <RecentSearchDropdown
-            keyword={keyword}
-            setKeyword={setKeyword}
-            onSearch={handleSearch}
-            isDropdownOpen={isDropdownOpen}
-            setIsDropdownOpen={setIsDropdownOpen}
-          />
-        )}
+        {/* 최근 검색어 드롭다운 - 위치 수정 */}
+        <div className={styles.dropdownWrapper}>
+          {isDropdownOpen && (
+            <RecentSearchDropdown
+              keyword={keyword}
+              setKeyword={setKeyword}
+              onSearch={handleSearch}
+              isDropdownOpen={isDropdownOpen}
+              setIsDropdownOpen={setIsDropdownOpen}
+            />
+          )}
+        </div>
       </div>
 
       {/* 검색 전 상태 */}
