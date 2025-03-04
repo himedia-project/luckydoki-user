@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { searchCommunity } from "../../api/searchApi";
+import { communityPage } from "../../api/searchApi";
 import PostAddButton from "../../components/button/PostAddButton";
 import CommunityCard from "../../components/card/CommunityCard";
 import style from "../../styles/CommunityPage.module.css";
@@ -36,7 +36,7 @@ export default function CommunityPage() {
     const fetchCommunityPosts = async () => {
       try {
         setLoading(true);
-        const response = await searchCommunity(null, 1, 10);
+        const response = await communityPage(null, 1, 10);
         setPosts(response.data.dtoList || []);
         setHasMore(response.data.current < response.data.totalPage);
         setLoading(false);
@@ -56,7 +56,7 @@ export default function CommunityPage() {
     try {
       setLoading(true);
       const nextPage = page + 1;
-      const response = await searchCommunity(null, nextPage, 10);
+      const response = await communityPage(null, nextPage, 10);
 
       if (response.data.dtoList && response.data.dtoList.length > 0) {
         setPosts((prevPosts) => [...prevPosts, ...response.data.dtoList]);

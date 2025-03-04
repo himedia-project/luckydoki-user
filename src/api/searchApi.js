@@ -11,7 +11,16 @@ export const searchProduct = async (searchKeyword) => {
 };
 
 // 커뮤니티 검색 결과 리스트트
-export const searchCommunity = async (searchKeyword, page = 1, size = 10) => {
+export const searchCommunity = async (searchKeyword) => {
+  const params = {};
+  if (searchKeyword) {
+    params.searchKeyword = searchKeyword;
+  }
+  return await axiosInstance.get("/community/list", { params });
+};
+
+// 커뮤니티 검색 결과 리스트트
+export const communityPage = async (searchKeyword, page = 1, size = 10) => {
   const params = {
     page,
     size,
@@ -19,7 +28,7 @@ export const searchCommunity = async (searchKeyword, page = 1, size = 10) => {
   if (searchKeyword) {
     params.searchKeyword = searchKeyword;
   }
-  return await axiosInstance.get("/community/list", { params });
+  return await axiosInstance.get("/community/list/page", { params });
 };
 
 // 이미지 분석 결과 문자열 리스트
