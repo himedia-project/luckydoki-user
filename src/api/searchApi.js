@@ -11,8 +11,11 @@ export const searchProduct = async (searchKeyword) => {
 };
 
 // 커뮤니티 검색 결과 리스트트
-export const searchCommunity = async (searchKeyword) => {
-  const params = {};
+export const searchCommunity = async (searchKeyword, page = 1, size = 10) => {
+  const params = {
+    page,
+    size,
+  };
   if (searchKeyword) {
     params.searchKeyword = searchKeyword;
   }
