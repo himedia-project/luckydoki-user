@@ -2,7 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import { useSearchParams } from "react-router-dom";
 import { getProductList } from "../api/productApi";
-import { analyzeImage, searchCommunity, searchProduct } from "../api/searchApi";
+import {
+  analyzeImage,
+  searchCommunity,
+  searchProduct,
+  getPopularKeywords,
+} from "../api/searchApi";
 import CommunityCard from "../components/card/CommunityCard";
 import ProductCard from "../components/card/ProductCard";
 import RecentSearchDropdown from "../components/dropdown/RecentSearchDropdown"; // 추가
@@ -23,6 +28,7 @@ export default function SearchPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef(null);
+  const [popularKeywords, setPopularKeywords] = useState([]);
 
   useEffect(() => {
     const searchKeywordParam = searchParams.get("searchKeyword");
@@ -36,6 +42,9 @@ export default function SearchPage() {
       setHasSearched(false);
       setActiveTab("product");
     }
+
+    // 인기 검색어 가져오기
+    fetchPopularKeywords();
   }, [searchParams]);
 
   const handleKeyDown = async (e) => {
@@ -177,6 +186,16 @@ export default function SearchPage() {
     }
   };
 
+  // 인기 검색어 가져오는 함수
+  const fetchPopularKeywords = async () => {
+    try {
+      const response = await getPopularKeywords(5);
+      setPopularKeywords(response.data);
+    } catch (error) {
+      console.error("인기 검색어 가져오기 실패:", error);
+    }
+  };
+
   return (
     <div
       tabIndex={0}
@@ -241,10 +260,31 @@ export default function SearchPage() {
               onSearch={handleSearch}
               isDropdownOpen={isDropdownOpen}
               setIsDropdownOpen={setIsDropdownOpen}
+              popularKeywords={popularKeywords}
             />
           )}
         </div>
       </div>
+
+      {/* 인기 검색어 표시 영역 */}
+      {!hasSearched && (
+        <div className={styles.popularKeywords}>
+          <h3>실시간 인기 검색어</h3>
+          <div className={styles.keywordGrid}>
+            {popularKeywords.map((keyword, index) => (
+              <button
+                key={index}
+                className={styles.keywordItem}
+                onClick={() => handleSearch(keyword)}
+              >
+                <span className={styles.rank}>{index + 1}</span>
+                <span className={styles.keyword}>{keyword}</span>
+                {index < 3 && <span className={styles.hot}>HOT</span>}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 검색 전 상태 */}
       {!hasSearched && <div className={styles.beforeSearch}></div>}

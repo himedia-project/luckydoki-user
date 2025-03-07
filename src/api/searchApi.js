@@ -43,3 +43,10 @@ export const analyzeImage = async (image) => {
     formData
   );
 };
+
+// 인기 검색어 가져오기
+export const getPopularKeywords = async (limit = 5) => {
+  return await axiosInstance.get("/search/popular-keywords", {
+    params: { limit },
+  });
+};
