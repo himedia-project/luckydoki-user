@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { getCartItemList } from "../api/cartApi";
 import { getKakaoLoginLink } from "../api/kakaoApi";
+import { getGoogleLoginLink } from "../api/googleApi";
 import { loginPost } from "../api/loginApi";
 import {
   getMessageNotificationList,
@@ -51,10 +52,11 @@ const LoginPage = () => {
     window.location.href = link;
   };
 
-  // const handleGoogleLogin = () => {
-  //   window.location.href =
-  //     "https://accounts.google.com/o/oauth2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=email profile";
-  // };
+  const handleGoogleLogin = () => {
+    const link = getGoogleLoginLink();
+    console.log("handleGoogleLogin link: ", link);
+    window.location.href = link;
+  };
 
   const handleHomeClick = () => {
     navigate("/");
@@ -118,12 +120,12 @@ const LoginPage = () => {
         </span>
         카카오 로그인
       </button>
-      {/* <button className={styles.googleButton} onClick={handleGoogleLogin}>
+      <button className={styles.googleButton} onClick={handleGoogleLogin}>
         <span className={styles.icon}>
           <img src="google_icon.png" alt="구글 로고" />
         </span>
         구글 로그인
-      </button> */}
+      </button>
       <hr className={styles.divider} />
       {!showEmailForm ? (
         <button

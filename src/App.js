@@ -34,6 +34,7 @@ import ShopPage from "./pages/ShopPage";
 import AiSuggestPage from "./pages/AiSuggestPage";
 import ChatbotContainer from "./components/chatbot/ChatbotContainer";
 import MessagePage from "./pages/mypage/MessagePage";
+import GoogleRedirectPage from "./components/auth/GoogleRedirectPage";
 
 function App() {
   const location = useLocation();
@@ -65,6 +66,7 @@ function App() {
 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/member/kakao" element={<KakaoRedirectPage />} />
+        <Route path="/member/google" element={<GoogleRedirectPage />} />
         <Route path="/join" element={<RegisterPage />} />
 
         <Route element={<MyPageLayout />}>
