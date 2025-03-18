@@ -4,19 +4,19 @@ import axios from "axios";
 import { AI_API_SERVER_URL } from "../config/apiConfig";
 
 // 상품 검색 결과 리스트
+// localhost:8080/api/search/products?keyword=강아지
 export const searchProduct = async (searchKeyword) => {
-  return await axiosInstance.get("/product/list", {
-    params: { searchKeyword: searchKeyword },
+  return await axiosInstance.get("/search/products", {
+    params: { keyword: searchKeyword },
   });
 };
 
 // 커뮤니티 검색 결과 리스트트
+// localhost:8080/api/search/communities?keyword=강아지
 export const searchCommunity = async (searchKeyword) => {
-  const params = {};
-  if (searchKeyword) {
-    params.searchKeyword = searchKeyword;
-  }
-  return await axiosInstance.get("/community/list", { params });
+  return await axiosInstance.get("/search/communities", {
+    params: { keyword: searchKeyword },
+  });
 };
 
 // 커뮤니티 검색 결과 리스트트
