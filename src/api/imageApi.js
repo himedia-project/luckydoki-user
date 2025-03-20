@@ -9,7 +9,7 @@ export const getImageUrl = async (fileUrl) => {
   }
 
   try {
-    const response = await axios.get(`${API_URL}/api/image/view/${fileUrl}`, {
+    const response = await axios.get(`${API_URL}/api/image/view2/${fileUrl}`, {
       responseType: "blob",
     });
     const imageUrl = URL.createObjectURL(response.data);
