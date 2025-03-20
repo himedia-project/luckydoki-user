@@ -35,3 +35,8 @@ export const validateCount = async (productId, count) => {
     params: { count },
   });
 };
+
+// 최근 본 상품 리스트 가져오기
+export const getRecentlyViewedProducts = async () => {
+  return await axiosInstance.get(`/product/recently-viewed/list`);
+};

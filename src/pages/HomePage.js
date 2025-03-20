@@ -5,7 +5,7 @@ import QuickButtonNav from "../components/QuickButtonNav";
 import EventSwiper from "../components/swiper/EventSwiper";
 import ProductSwiper from "../components/swiper/ProductSwiper";
 import styles from "../styles/HomePage.module.css";
-import { getProductList } from "../api/productApi";
+import { getProductList, getRecentlyViewedProducts } from "../api/productApi";
 import SkeletonSwiper from "../components/skeleton/SkeletonSwiper";
 import SkeletonEventSwiper from "../components/skeleton/SkeletonEventSwiper";
 
@@ -16,6 +16,7 @@ const HomePage = () => {
   const [newProducts, setNewProducts] = useState([]);
   const [bestProducts, setBestProducts] = useState([]);
   const [discountedProducts, setDiscountedProducts] = useState([]);
+  const [recentlyViewedProducts, setRecentlyViewedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState();
 
   const accessToken = useSelector((state) => state.loginSlice.accessToken);
@@ -41,6 +42,11 @@ const HomePage = () => {
         setDiscountedProducts(
           allProducts.filter((product) => product.discountRate >= 50)
         );
+
+        // 최근 본 상품 데이터 가져오기
+        const recentlyViewedRes = await getRecentlyViewedProducts();
+        console.log("🚨 최근 본 상품 데이터:", recentlyViewedRes.data);
+        setRecentlyViewedProducts(recentlyViewedRes.data);
       } catch (error) {
         console.error("🚨 데이터 가져오기 실패:", error);
       } finally {
@@ -90,6 +96,14 @@ const HomePage = () => {
             title="사장님이 미쳤어요! 대폭 할인 상품"
             items={discountedProducts}
           />
+        )}
+      </section>
+
+      <section className={styles.section}>
+        {isLoading ? (
+          <SkeletonSwiper title="최근 본 상품" />
+        ) : (
+          <ProductSwiper title="최근 본 상품" items={recentlyViewedProducts} />
         )}
       </section>
     </div>
