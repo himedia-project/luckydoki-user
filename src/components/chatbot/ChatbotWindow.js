@@ -307,6 +307,20 @@ const LoadingMessage = styled(Message)`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 `;
 
+const UserImagePreview = styled.div`
+  max-width: 200px;
+  max-height: 200px;
+  margin-top: 5px;
+  border-radius: 10px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
 const ChatbotWindow = ({ onClose }) => {
   const [messages, setMessages] = useState([
     {
@@ -317,6 +331,7 @@ const ChatbotWindow = ({ onClose }) => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState(null);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -378,12 +393,17 @@ const ChatbotWindow = ({ onClose }) => {
     setIsUploading(true);
 
     try {
+      // 이미지 파일 미리보기 URL 생성
+      const imageUrl = URL.createObjectURL(file);
+
+      // 이미지 포함한 사용자 메시지 추가
       setMessages((prev) => [
         ...prev,
         {
           text: "이미지를 분석 중입니다...",
           isUser: true,
           isImage: true,
+          imageUrl: imageUrl,
         },
       ]);
 
@@ -423,6 +443,7 @@ const ChatbotWindow = ({ onClose }) => {
     } finally {
       setIsUploading(false);
       setIsLoading(false);
+      setUploadedImage(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -502,7 +523,16 @@ const ChatbotWindow = ({ onClose }) => {
   const renderMessage = (message) => {
     if (message.isUser) {
       if (message.isImage) {
-        return <Message isUser={true}>📷 {message.text}</Message>;
+        return (
+          <Message isUser={true}>
+            <div>📷 {message.text}</div>
+            {message.imageUrl && (
+              <UserImagePreview>
+                <img src={message.imageUrl} alt="업로드한 이미지" />
+              </UserImagePreview>
+            )}
+          </Message>
+        );
       }
       return <Message isUser={true}>{message.text}</Message>;
     }
