@@ -41,3 +41,66 @@
   flex-wrap: wrap;
   gap: 10px;
 }
+
+.coupon_register {
+  margin-bottom: 1rem;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  max-width: 400px;
+}
+
+.input_group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input_group input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.input_group input:focus {
+  border-color: #666;
+  outline: none;
+}
+
+.register_btn {
+  background-color: #3182ce;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  min-width: 60px;
+}
+
+.register_btn:hover {
+  background-color: #2c5282;
+}
+
+.register_btn:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.message {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.success {
+  color: #38a169;
+}
+
+.error {
+  color: #e53e3e;
+}
