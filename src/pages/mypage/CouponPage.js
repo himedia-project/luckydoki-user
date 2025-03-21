@@ -10,16 +10,16 @@ export default function CouponPage() {
   const [message, setMessage] = useState({ text: "", type: "" });
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchCoupons = async () => {
-      try {
-        const response = await getCoupons();
-        setCoupons(response.data);
-      } catch (error) {
-        console.error("쿠폰 목록 가져오기 실패:", error);
-      }
-    };
+  const fetchCoupons = async () => {
+    try {
+      const response = await getCoupons();
+      setCoupons(response.data);
+    } catch (error) {
+      console.error("쿠폰 목록 가져오기 실패:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchCoupons();
   }, []);
 
@@ -34,10 +34,10 @@ export default function CouponPage() {
     setMessage({ text: "", type: "" });
 
     try {
-      const response = await registerCoupon(couponCode);
-      setCoupons([...coupons, response.data]);
+      await registerCoupon(couponCode);
       setMessage({ text: "쿠폰이 성공적으로 등록되었습니다", type: "success" });
       setCouponCode("");
+      fetchCoupons();
     } catch (error) {
       setMessage({
         text: error.response?.data?.message || "쿠폰 등록에 실패했습니다",
