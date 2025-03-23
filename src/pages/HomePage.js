@@ -99,13 +99,19 @@ const HomePage = () => {
         )}
       </section>
 
-      <section className={styles.section}>
-        {isLoading ? (
-          <SkeletonSwiper title="최근 본 상품" />
-        ) : (
-          <ProductSwiper title="최근 본 상품" items={recentlyViewedProducts} />
-        )}
-      </section>
+      {/* 최근 본 상품 섹션 - 데이터가 있을 때만 표시 */}
+      {recentlyViewedProducts && recentlyViewedProducts.length > 0 && (
+        <section className={styles.section}>
+          {isLoading ? (
+            <SkeletonSwiper title="최근 본 상품" />
+          ) : (
+            <ProductSwiper
+              title="최근 본 상품"
+              items={recentlyViewedProducts}
+            />
+          )}
+        </section>
+      )}
     </div>
   );
 };
