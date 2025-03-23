@@ -1,325 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import styled from "styled-components";
 import { IoClose } from "react-icons/io5";
 import { IoMdImage } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import ImageLoader from "../card/ImageLoader";
 import { getChatbotResponse } from "../../api/chatbot";
 import { analyzeImage } from "../../api/searchApi";
-
-const ChatWindow = styled.div`
-  position: fixed;
-  bottom: 100px;
-  right: 30px;
-  width: 350px;
-  height: 500px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  z-index: 1000;
-  overflow: hidden;
-`;
-
-const ChatHeader = styled.div`
-  background-color: #00de90;
-  color: white;
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  h3 {
-    margin: 0;
-    font-size: 16px;
-  }
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-`;
-
-const ChatMessages = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-`;
-
-const Message = styled.div`
-  max-width: 80%;
-  padding: 10px 15px;
-  border-radius: 15px;
-  margin: ${(props) => (props.isUser ? "0 0 0 auto" : "0")};
-  background-color: ${(props) => (props.isUser ? "#00DE90" : "#f0f0f0")};
-  color: ${(props) => (props.isUser ? "white" : "black")};
-`;
-
-const InputArea = styled.div`
-  padding: 15px;
-  border-top: 1px solid #eee;
-  display: flex;
-  gap: 10px;
-`;
-
-const Input = styled.input`
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  outline: none;
-
-  &:focus {
-    border-color: #00de90;
-  }
-`;
-
-const ImageUploadButton = styled.button`
-  background-color: #f0f0f0;
-  color: #555;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: #e0e0e0;
-    color: #00de90;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
-
-const HiddenFileInput = styled.input`
-  display: none;
-`;
-
-const UploadingIndicator = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #00de90;
-  font-size: 12px;
-  margin-right: 10px;
-`;
-
-const SendButton = styled.button`
-  background-color: #00de90;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 0 20px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #00c580;
-  }
-`;
-
-const ProductLink = styled.div`
-  cursor: pointer;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 8px;
-  background: #f8f9fa;
-  transition: all 0.2s ease;
-  width: 200px;
-
-  &:hover {
-    background: #f1f3f5;
-    transform: translateY(-2px);
-  }
-
-  .link-text {
-    color: #00de90;
-    font-weight: 500;
-    text-align: center;
-    padding: 5px 0;
-    font-size: 13px;
-  }
-`;
-
-const ImageContainer = styled.div`
-  width: 100%;
-  height: 150px;
-  overflow: hidden;
-  border-radius: 8px;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
-
-const StyledText = styled.div`
-  line-height: 1.6;
-  white-space: pre-line;
-
-  h3 {
-    color: #00de90;
-    margin: 15px 0 10px 0;
-    font-size: 16px;
-  }
-
-  strong {
-    color: #333;
-    font-weight: 600;
-  }
-
-  ul {
-    margin: 10px 0;
-    padding-left: 20px;
-  }
-
-  li {
-    margin: 5px 0;
-  }
-
-  .product-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #00de90;
-    margin: 10px 0;
-  }
-
-  .product-info {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 20px 0;
-
-    p {
-      margin: 8px 0;
-    }
-
-    p:has(+ p:first-of-type:before) {
-      margin-bottom: 16px;
-    }
-
-    p:before {
-      content: "";
-      margin-right: 8px;
-    }
-  }
-
-  p + .product-info {
-    margin-top: 20px;
-  }
-
-  .badge + strong,
-  strong + .badge {
-    margin-left: 8px;
-  }
-
-  .highlight {
-    color: #ff6b6b;
-    font-weight: 600;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    margin: 0 5px;
-
-    &.best {
-      background: #ffd43b;
-      color: #e67700;
-    }
-
-    &.new {
-      background: #d3f9d8;
-      color: #2b8a3e;
-    }
-
-    &.event {
-      background: #fff5f5;
-      color: #e03131;
-    }
-  }
-`;
-
-const LoadingIndicator = styled.div`
-  display: flex;
-  gap: 4px;
-  padding: 2px;
-
-  span {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #00de90;
-    opacity: 0.3;
-    animation: pulse 1s infinite;
-
-    &:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    &:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 0.3;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 1;
-      transform: scale(1.2);
-    }
-  }
-`;
-
-const LoadingMessage = styled(Message)`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
-  color: #666;
-  background-color: #f8f9fa;
-  max-width: 200px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-`;
-
-const UserImagePreview = styled.div`
-  max-width: 200px;
-  max-height: 200px;
-  margin-top: 5px;
-  border-radius: 10px;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
+import styles from "../../styles/ChatbotWindow.module.css";
 
 const ChatbotWindow = ({ onClose }) => {
   const [messages, setMessages] = useState([
@@ -524,17 +210,21 @@ const ChatbotWindow = ({ onClose }) => {
     if (message.isUser) {
       if (message.isImage) {
         return (
-          <Message isUser={true}>
+          <div className={`${styles.message} ${styles.userMessage}`}>
             <div>📷 {message.text}</div>
             {message.imageUrl && (
-              <UserImagePreview>
+              <div className={styles.userImagePreview}>
                 <img src={message.imageUrl} alt="업로드한 이미지" />
-              </UserImagePreview>
+              </div>
             )}
-          </Message>
+          </div>
         );
       }
-      return <Message isUser={true}>{message.text}</Message>;
+      return (
+        <div className={`${styles.message} ${styles.userMessage}`}>
+          {message.text}
+        </div>
+      );
     }
 
     const messageContainer = document.createElement("div");
@@ -551,9 +241,12 @@ const ChatbotWindow = ({ onClose }) => {
       .replace(/👉 \[.*?\]\(.*?\)/g, "");
 
     return (
-      <Message isUser={false}>
+      <div className={`${styles.message} ${styles.botMessage}`}>
         {/* 텍스트 렌더링 */}
-        <StyledText dangerouslySetInnerHTML={{ __html: textContent }} />
+        <div
+          className={styles.styledText}
+          dangerouslySetInnerHTML={{ __html: textContent }}
+        />
 
         {/* 이미지와 링크 렌더링 */}
         {Array.from(images).map((img, index) => {
@@ -571,75 +264,83 @@ const ChatbotWindow = ({ onClose }) => {
           };
 
           return (
-            <ProductLink key={`product-${index}`} onClick={handleClick}>
-              <ImageContainer>
+            <div
+              key={`product-${index}`}
+              className={styles.productLink}
+              onClick={handleClick}
+            >
+              <div className={styles.imageContainer}>
                 <ImageLoader
                   imagePath={img.dataset.image}
                   alt={img.dataset.alt}
                 />
-              </ImageContainer>
-              <div className="link-text">{link.dataset.text}</div>
-            </ProductLink>
+              </div>
+              <div className={styles.linkText}>{link.dataset.text}</div>
+            </div>
           );
         })}
-      </Message>
+      </div>
     );
   };
 
   return (
-    <ChatWindow>
-      <ChatHeader>
+    <div className={styles.chatWindow}>
+      <div className={styles.chatHeader}>
         <h3>Luckydoki AI 챗봇</h3>
-        <CloseButton onClick={onClose}>
+        <button className={styles.closeButton} onClick={onClose}>
           <IoClose />
-        </CloseButton>
-      </ChatHeader>
-      <ChatMessages>
+        </button>
+      </div>
+      <div className={styles.chatMessages}>
         {messages.map((message, index) => (
           <div key={index}>{renderMessage(message)}</div>
         ))}
         {isLoading && (
-          <LoadingMessage>
+          <div className={styles.loadingMessage}>
             <span>AI 응답 생성중</span>
-            <LoadingIndicator>
+            <div className={styles.loadingIndicator}>
               <span />
               <span />
               <span />
-            </LoadingIndicator>
-          </LoadingMessage>
+            </div>
+          </div>
         )}
         <div ref={messagesEndRef} />
-      </ChatMessages>
-      <InputArea>
-        <Input
+      </div>
+      <div className={styles.inputArea}>
+        <input
+          className={styles.input}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="메시지를 입력하세요..."
           disabled={isLoading || isUploading}
         />
-        <HiddenFileInput
+        <input
+          className={styles.hiddenFileInput}
           type="file"
           ref={fileInputRef}
           accept="image/*"
           onChange={handleImageUpload}
         />
-        <ImageUploadButton
+        <button
+          className={styles.imageUploadButton}
           onClick={handleImageButtonClick}
           disabled={isLoading || isUploading}
           title="이미지 업로드"
         >
           <IoMdImage size={20} />
-        </ImageUploadButton>
-        <SendButton
+        </button>
+        <button
+          className={styles.sendButton}
           onClick={handleSend}
           disabled={isLoading || isUploading}
           style={{ opacity: isLoading || isUploading ? 0.6 : 1 }}
         >
           전송
-        </SendButton>
-      </InputArea>
-    </ChatWindow>
+        </button>
+      </div>
+    </div>
   );
 };
 

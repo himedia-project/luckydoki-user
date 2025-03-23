@@ -1,0 +1,304 @@
+.chatWindow {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  width: 350px;
+  height: 500px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.chatHeader {
+  background-color: #00de90;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatHeader h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.chatMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.message {
+  max-width: 80%;
+  padding: 10px 15px;
+  border-radius: 15px;
+}
+
+.userMessage {
+  margin: 0 0 0 auto;
+  background-color: #00de90;
+  color: white;
+}
+
+.botMessage {
+  margin: 0;
+  background-color: #f0f0f0;
+  color: black;
+}
+
+.inputArea {
+  padding: 15px;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 10px;
+}
+
+.input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #00de90;
+}
+
+.imageUploadButton {
+  background-color: #f0f0f0;
+  color: #555;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.imageUploadButton:hover {
+  background-color: #e0e0e0;
+  color: #00de90;
+}
+
+.imageUploadButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+.uploadingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #00de90;
+  font-size: 12px;
+  margin-right: 10px;
+}
+
+.sendButton {
+  background-color: #00de90;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0 20px;
+  cursor: pointer;
+}
+
+.sendButton:hover {
+  background-color: #00c580;
+}
+
+.productLink {
+  cursor: pointer;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f8f9fa;
+  transition: all 0.2s ease;
+  width: 200px;
+}
+
+.productLink:hover {
+  background: #f1f3f5;
+  transform: translateY(-2px);
+}
+
+.linkText {
+  color: #00de90;
+  font-weight: 500;
+  text-align: center;
+  padding: 5px 0;
+  font-size: 13px;
+}
+
+.imageContainer {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.imageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.styledText {
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.styledText h3 {
+  color: #00de90;
+  margin: 15px 0 10px 0;
+  font-size: 16px;
+}
+
+.styledText strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.styledText ul {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.styledText li {
+  margin: 5px 0;
+}
+
+.styledText .productTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #00de90;
+  margin: 10px 0;
+}
+
+.styledText .productInfo {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.styledText .productInfo p {
+  margin: 8px 0;
+}
+
+.styledText .highlight {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.styledText .badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 5px;
+}
+
+.styledText .badge.best {
+  background: #ffd43b;
+  color: #e67700;
+}
+
+.styledText .badge.new {
+  background: #d3f9d8;
+  color: #2b8a3e;
+}
+
+.styledText .badge.event {
+  background: #fff5f5;
+  color: #e03131;
+}
+
+.loadingIndicator {
+  display: flex;
+  gap: 4px;
+  padding: 2px;
+}
+
+.loadingIndicator span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #00de90;
+  opacity: 0.3;
+  animation: pulse 1s infinite;
+}
+
+.loadingIndicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loadingIndicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.loadingMessage {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #666;
+  background-color: #f8f9fa;
+  max-width: 200px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.userImagePreview {
+  max-width: 200px;
+  max-height: 200px;
+  margin-top: 5px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.userImagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
