@@ -269,25 +269,45 @@ export default function MessagePage() {
   // 2. 소켓 연결 함수, 계속 유지 언제?
   const connect = (e) => {
     e.preventDefault();
-    if (userEmail && !stompClient) {
+    if (userEmail && !connected) {
       console.log("소켓 연결 시작");
+      console.log("API_URL:", API_URL); // URL 확인
+      console.log("토큰 존재 여부:", !!accessToken); // 토큰 존재 확인
+
       const client = new Client({
         webSocketFactory: () => new SockJS(`${API_URL}/wss-stomp`),
         connectHeaders: {
+          // 서버의 WebSocketAuthChannelInterceptor와 일치하도록 헤더 수정
           "X-Authorization": `Bearer ${accessToken}`,
         },
-        reconnectDelay: 5000,
-        heartbeatIncoming: 4000,
+        debug: (str) => {
+          console.log("STOMP Debug:", str); // 디버그 로그 추가
+        },
+        reconnectDelay: 5000, // 5초 후 재연결
+        heartbeatIncoming: 4000, //
         heartbeatOutgoing: 4000,
         onConnect: () => {
-          console.log("socket 연결 완료 ");
+          console.log("socket 연결 완료");
           setConnected(true);
           setStompClient(client);
+        },
+        onWebSocketError: (error) => {
+          console.error("WebSocket 에러:", error);
+          if (!userEmail) {
+            console.log("로그인이 필요합니다. 재연결을 중단합니다.");
+            client.deactivate();
+          }
         },
         onDisconnect: () => {
           console.log("Disconnected from STOMP");
           setConnected(false);
           setStompClient(null);
+
+          if (userEmail) {
+            console.log("재연결 시도...");
+          } else {
+            console.log("로그인이 필요하여 재연결을 중단합니다.");
+          }
         },
         onStompError: (frame) => {
           console.error("Broker reported error:", frame.headers["message"]);
@@ -296,10 +316,12 @@ export default function MessagePage() {
       });
 
       try {
+        console.log("연결 시도 중...");
         client.activate();
-        console.log("Attempting to connect...");
       } catch (error) {
-        console.error("Error activating STOMP client:", error);
+        console.error("연결 에러:", error);
+        setConnected(false);
+        setStompClient(null);
       }
     }
   };
@@ -307,8 +329,10 @@ export default function MessagePage() {
   const sendMessage = async (e) => {
     e.preventDefault();
 
-    if (!stompClient || !selectedShopId) {
-      console.error("STOMP 클라이언트 또는 ShopId가 없습니다.");
+    if (!connected || !stompClient || !selectedShopId) {
+      console.error("연결 상태:", connected);
+      console.error("STOMP 클라이언트 존재:", !!stompClient);
+      console.error("선택된 상점:", selectedShopId);
       return;
     }
 
@@ -378,7 +402,7 @@ export default function MessagePage() {
       stompClient.publish({
         destination: "/app/message",
         headers: {
-          "X-Authorization": `Bearer ${accessToken}`,
+          "X-Authorization": `Bearer ${accessToken}`, // 헤더 이름 수정
         },
         body: JSON.stringify(chatMessage),
       });
@@ -578,6 +602,7 @@ export default function MessagePage() {
                     type="submit"
                     className={styles.sendButton}
                     disabled={!connected}
+                    onClick={sendMessage}
                   >
                     전송
                   </button>
