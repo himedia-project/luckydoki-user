@@ -3,11 +3,18 @@ import { IoClose } from "react-icons/io5";
 import { IoMdImage } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import ImageLoader from "../card/ImageLoader";
-import { getChatbotResponse } from "../../api/chatbot";
+import {
+  getChatbotResponse,
+  createChatRoom,
+  closeChatRoom,
+} from "../../api/chatbot";
 import { analyzeImage } from "../../api/searchApi";
 import styles from "../../styles/ChatbotWindow.module.css";
+import { useSelector } from "react-redux";
 
 const ChatbotWindow = ({ onClose }) => {
+  const userEmail = useSelector((state) => state.loginSlice.email);
+  const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([
     {
       text: "안녕하세요! Lukydoki 쇼핑몰 AI 상담사입니다. 무엇을 도와드릴까요?",
@@ -32,6 +39,20 @@ const ChatbotWindow = ({ onClose }) => {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    const initChatRoom = async () => {
+      try {
+        const sessionId = await createChatRoom(userEmail);
+        console.log("채팅방 생성됨 sessionId:", sessionId);
+        setSessionId(sessionId);
+      } catch (error) {
+        console.error("채팅방 생성 실패:", error);
+      }
+    };
+
+    initChatRoom();
+  }, [userEmail]);
+
   const formatTime = (date) => {
     const hours = date.getHours();
     const minutes = date.getMinutes();
@@ -48,8 +69,22 @@ const ChatbotWindow = ({ onClose }) => {
     return `${month}월 ${day}일 ${time}에 시작함`;
   };
 
+  const handleClose = async () => {
+    console.log("채팅방 종료 시도 sessionId:", sessionId);
+    try {
+      if (sessionId) {
+        const chatRoomId = await closeChatRoom(sessionId, userEmail);
+        console.log("채팅방 종료됨:", chatRoomId);
+      }
+      onClose();
+    } catch (error) {
+      console.error("채팅방 종료 실패:", error);
+      onClose();
+    }
+  };
+
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+    if (!input.trim()) return;
 
     const currentTime = new Date();
     setMessages((prev) => [
@@ -63,7 +98,7 @@ const ChatbotWindow = ({ onClose }) => {
     setIsLoading(true);
 
     try {
-      const response = await getChatbotResponse(input);
+      const response = await getChatbotResponse(input, userEmail);
       if (response && response.data) {
         const processedResponse = processAIResponse(response.data);
         setMessages((prev) => [
@@ -94,6 +129,7 @@ const ChatbotWindow = ({ onClose }) => {
   };
 
   const handleImageUpload = async (event) => {
+    if (!sessionId) return;
     const file = event.target.files[0];
     if (!file) return;
 
@@ -130,7 +166,8 @@ const ChatbotWindow = ({ onClose }) => {
         const mainKeyword = analysisResult[0];
 
         const chatResponse = await getChatbotResponse(
-          `이미지 분석 결과: ${mainKeyword}`
+          `이미지 분석 결과: ${mainKeyword}`,
+          userEmail
         );
 
         if (chatResponse && chatResponse.data) {
@@ -323,7 +360,7 @@ const ChatbotWindow = ({ onClose }) => {
           <h3>Luckydoki AI 챗봇</h3>
           <span className={styles.startTime}>{formatDate(startTime)}</span>
         </div>
-        <button className={styles.closeButton} onClick={onClose}>
+        <button className={styles.closeButton} onClick={handleClose}>
           <IoClose />
         </button>
       </div>
