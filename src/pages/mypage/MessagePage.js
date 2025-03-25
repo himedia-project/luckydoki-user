@@ -5,49 +5,41 @@ import { useLocation, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import styles from "../../styles/MessagePage.module.css";
 
-import {
-  changeIsRead,
-  createChattingRoom,
-  deleteChatRooms,
-  getChatRooms,
-  getMessageHistory,
-} from "../../api/chatApi";
 import ImageLoader from "../../components/card/ImageLoader";
 import { API_URL } from "../../config/apiConfig";
+import { formatDateTime, formatTimeOnly } from "../../utils/dateUtils";
+import useChatRoom from "../../hooks/useChatRoom";
 
 export default function MessagePage() {
   const location = useLocation();
   const navigate = useNavigate();
   const routeShopData = location.state;
+  const userEmail = useSelector((state) => state.loginSlice.email);
+  const accessToken = useSelector((state) => state.loginSlice.accessToken);
 
-  const [selectedShopId, setSelectedShopId] = useState(
-    routeShopData?.shopId || null
-  );
-  const [realTimeMessages, setRealTimeMessages] = useState([]);
+  // useChatRoom 훅 사용
+  const {
+    selectedShopId,
+    setSelectedShopId,
+    realTimeMessages,
+    setRealTimeMessages,
+    roomId,
+    setRoomId,
+    chatRooms,
+    setChatRooms,
+    selectedRoom,
+    setSelectedRoom,
+    unreadMessages,
+    setUnreadMessages,
+    initializeChat,
+    handleRoomSelect,
+    handleLeaveRoom,
+  } = useChatRoom(userEmail, routeShopData);
+
   const [stompClient, setStompClient] = useState(null);
   const [message, setMessage] = useState("");
   const [connected, setConnected] = useState(false);
-  const [roomId, setRoomId] = useState(null);
   const messagesEndRef = useRef(null);
-
-  const userEmail = useSelector((state) => state.loginSlice.email);
-  const accessToken = useSelector((state) => state.loginSlice.accessToken);
-  const [chatRooms, setChatRooms] = useState([]);
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [unreadMessages, setUnreadMessages] = useState({}); // 읽지 않은 메시지 수 관리
-
-  // 날짜 포맷팅 함수
-  // 2025-02-28 11:35:34
-  const formatData = (date) => {
-    const year = date.getFullYear();
-    const month = ("0" + (date.getMonth() + 1)).slice(-2);
-    const day = ("0" + date.getDate()).slice(-2);
-    const hours = ("0" + date.getHours()).slice(-2);
-    const minutes = ("0" + date.getMinutes()).slice(-2);
-    const seconds = ("0" + date.getSeconds()).slice(-2);
-
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  };
 
   // 알림 권한 요청 useEffect
   useEffect(() => {
@@ -56,69 +48,18 @@ export default function MessagePage() {
     }
   }, []);
 
+  // 초기화 useEffect 수정
   useEffect(() => {
-    const initializeChat = async () => {
-      try {
-        // 먼저 모든 채팅방 목록을 가져옴
-        // 1.
-        console.log("routeShopData:", routeShopData); // 데이터 확인
-        console.log("shopId:", routeShopData?.shopId); // shopId 확인
-
-        const response = await getChatRooms();
-        console.log("채팅방 목록:", response.data); // 채팅방 목록 확인
-        setChatRooms(response.data);
-
-        // route로 shopId를 전달받은 경우만 채팅방 생성/조회 로직 실행
-        if (routeShopData?.shopId) {
-          setSelectedShopId(routeShopData.shopId);
-          // 이미 존재하는 채팅방인지 채팅방 목록에서 확인
-          const existingRoom = response.data.find((room) => {
-            console.log("비교:", room.shopId, routeShopData.shopId); // 비교 값 확인
-            return parseInt(room.shopId) === parseInt(routeShopData.shopId);
-          });
-
-          console.log("찾은 채팅방:", existingRoom); // 찾은 채팅방 확인
-
-          if (existingRoom) {
-            // 기존 채팅방이 있는 경우
-            setRoomId(existingRoom.id);
-            setSelectedRoom(existingRoom);
-            const historyResponse = await getMessageHistory(existingRoom.id);
-            setRealTimeMessages(historyResponse.data);
-          } else {
-            // 새로운 채팅방 생성
-            const chatRoomData = {
-              id: null,
-              member: userEmail,
-              shopId: routeShopData.shopId,
-              shopImage: routeShopData.shopImage,
-              shopName: routeShopData.shopName,
-              lastMessage: null,
-              createdAt: new Date().toISOString(),
-            };
-
-            const newRoomResponse = await createChattingRoom(chatRoomData);
-            const newRoom = newRoomResponse.data;
-            setRoomId(newRoom.id);
-            setSelectedRoom(newRoom);
-            setRealTimeMessages([]);
-            setChatRooms((prev) =>
-              Array.isArray(prev) ? [...prev, newRoom] : [newRoom]
-            );
-          }
-
-          // routeShopData가 있는 경우에만 자동 연결
-          const event = { preventDefault: () => {} };
-          connect(event);
-        }
-        // routeShopData가 없는 경우(마이페이지에서 진입)는
-        // 채팅방 목록만 표시하고 사용자가 선택하기를 기다림
-      } catch (error) {
-        console.error("채팅방 초기화 실패:", error);
+    const init = async () => {
+      await initializeChat();
+      if (routeShopData?.shopId) {
+        // routeShopData가 있는 경우에만 자동 연결
+        const event = { preventDefault: () => {} };
+        connect(event);
       }
     };
 
-    initializeChat();
+    init();
   }, [routeShopData, userEmail]);
 
   //////////구독시저ㅁ///// 그방을 선택해서 들어갈 때 연결(구독)
@@ -194,37 +135,6 @@ export default function MessagePage() {
     }
   }, [roomId, stompClient, userEmail]);
   /////////채팅방 선택/////////////
-
-  const handleRoomSelect = async (room) => {
-    setSelectedRoom(room);
-    setSelectedShopId(room.shopId);
-    setRoomId(room.id);
-
-    setUnreadMessages((prev) => ({
-      ...prev,
-      [room.id]: 0,
-    }));
-
-    try {
-      const historyResponse = await getMessageHistory(room.id);
-      setRealTimeMessages(historyResponse.data);
-      console.log("채팅기록 response:", historyResponse.data);
-
-      // 읽기로 바꾸기
-      await changeIsRead(room.id);
-
-      // 빈 preventDefault 대신 실제 이벤트 객체 생성
-      const event = new Event("connect");
-      event.preventDefault = () => {}; // 기본 동작 방지 함수 추가
-
-      // WebSocket 연결 실행
-      connect(event);
-
-      // 자동 스크롤 제거 - 채팅방 선택 시 스크롤 동작 없음
-    } catch (error) {
-      console.error("채팅 기록 불러오기 실패:", error);
-    }
-  };
 
   ////////스크롤 이벤트 (좀 과하게 내려감)//////
   const scrollToBottom = () => {
@@ -341,48 +251,9 @@ export default function MessagePage() {
     }
 
     try {
-      // roomId가 없는 경우, 채팅방 생성 필요
-      let currentRoomId = roomId;
-
-      if (!currentRoomId) {
-        // 먼저 기존 채팅방이 있는지 확인
-        const existingRoom = chatRooms.find((room) => {
-          return String(room.shopId) === String(selectedShopId);
-        });
-
-        if (existingRoom) {
-          currentRoomId = existingRoom.id;
-          setRoomId(existingRoom.id);
-          setSelectedRoom(existingRoom);
-        } else {
-          // 채팅룸이 없으면 selectedShopId 로 채팅룸 생성
-          const chatRoomData = {
-            id: null,
-            sender: userEmail,
-            shopId: selectedShopId,
-            shopImage: routeShopData?.shopImage,
-            shopName: routeShopData?.shopName,
-            lastMessage: null,
-            lastMessageTime: new Date().toISOString(),
-            createdAt: new Date().toISOString(),
-          };
-
-          const newRoomResponse = await createChattingRoom(chatRoomData);
-          const newRoom = newRoomResponse.data;
-          currentRoomId = newRoom.id;
-          setRoomId(newRoom.id);
-          setSelectedRoom(newRoom);
-          setChatRooms((prev) =>
-            Array.isArray(prev) ? [...prev, newRoom] : [newRoom]
-          );
-        }
-      }
-
-      // const currentTime = new Date().toISOString();
-      // "2025-02-28 11:35:34"
-      const currentTime = formatData(new Date());
+      const currentTime = formatDateTime(new Date());
       const chatMessage = {
-        roomId: currentRoomId,
+        roomId: roomId,
         sender: null,
         email: userEmail,
         shopId: selectedShopId,
@@ -410,7 +281,7 @@ export default function MessagePage() {
       // 채팅방 목록에서 해당 방의 마지막 메시지 업데이트
       setChatRooms((prevRooms) =>
         prevRooms.map((room) =>
-          room.id === currentRoomId
+          room.id === roomId
             ? {
                 ...room,
                 lastMessage: message.trim(),
@@ -432,37 +303,20 @@ export default function MessagePage() {
     }
   };
 
-  // handleLeaveRoom 함수 추가
-  const handleLeaveRoom = async () => {
-    if (!selectedRoom) return;
-
-    try {
-      await deleteChatRooms(selectedRoom.id);
-      // 채팅방 목록에서 제거
-      setChatRooms((prev) =>
-        prev.filter((room) => room.id !== selectedRoom.id)
-      );
-      // 선택된 채팅방 초기화
-      setSelectedRoom(null);
-      setRoomId(null);
-      setRealTimeMessages([]);
-
-      // WebSocket 연결 해제
-      if (stompClient) {
-        stompClient.deactivate();
-        setStompClient(null);
-        setConnected(false);
-      }
-    } catch (error) {
-      console.error("채팅방 나가기 실패:", error);
-    }
-  };
-
   // 샵 페이지로 이동하는 함수 추가
   const navigateToShop = () => {
     if (selectedRoom?.shopId) {
       navigate(`/shop/${selectedRoom.shopId}`);
     }
+  };
+
+  // handleRoomSelect 함수 수정
+  const handleRoomSelectWithConnect = async (room) => {
+    await handleRoomSelect(room);
+
+    // WebSocket 연결 실행
+    const event = { preventDefault: () => {} };
+    connect(event);
   };
 
   return (
@@ -475,13 +329,13 @@ export default function MessagePage() {
         <div className={styles.chatRoomList}>
           {chatRooms && chatRooms.length > 0 ? (
             chatRooms.map((room) =>
-              room && room.id ? ( // room과 room.id가 있는지 확인
+              room && room.id ? (
                 <div
                   key={room.id}
                   className={`${styles.chatRoomItem} ${
                     selectedRoom?.id === room.id ? styles.selected : ""
                   }`}
-                  onClick={() => handleRoomSelect(room)}
+                  onClick={() => handleRoomSelectWithConnect(room)}
                 >
                   <div className={styles.shopImage}>
                     <ImageLoader
@@ -496,13 +350,7 @@ export default function MessagePage() {
                     </p>
                     <span className={styles.messageTime}>
                       {room.lastMessageTime
-                        ? new Date(room.lastMessageTime).toLocaleTimeString(
-                            [],
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
-                          )
+                        ? formatTimeOnly(room.lastMessageTime)
                         : ""}
                     </span>
                     <span className={styles.unreadCount}>
@@ -549,8 +397,8 @@ export default function MessagePage() {
                   <button
                     className={styles.leaveButton}
                     onClick={(e) => {
-                      e.stopPropagation(); // 이벤트 버블링 방지
-                      handleLeaveRoom();
+                      e.stopPropagation();
+                      handleLeaveRoom(selectedRoom.id);
                     }}
                   >
                     나가기
@@ -576,10 +424,7 @@ export default function MessagePage() {
                     >
                       <p>{msg.message}</p>
                       <small className={styles.messageTime}>
-                        {new Date(msg.sendTime).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        {formatTimeOnly(msg.sendTime)}
                       </small>
                     </div>
                   </div>
