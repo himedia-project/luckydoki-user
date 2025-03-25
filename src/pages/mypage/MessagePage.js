@@ -576,7 +576,7 @@ export default function MessagePage() {
                     >
                       <p>{msg.message}</p>
                       <small className={styles.messageTime}>
-                        {new Date(msg.lastMessageTime).toLocaleTimeString([], {
+                        {new Date(msg.sendTime).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
