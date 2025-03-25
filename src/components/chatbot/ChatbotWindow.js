@@ -12,6 +12,7 @@ const ChatbotWindow = ({ onClose }) => {
     {
       text: "안녕하세요! Lukydoki 쇼핑몰 AI 상담사입니다. 무엇을 도와드릴까요?",
       isUser: false,
+      timestamp: new Date(),
     },
   ]);
   const [input, setInput] = useState("");
@@ -21,6 +22,7 @@ const ChatbotWindow = ({ onClose }) => {
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
+  const [startTime] = useState(new Date());
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -30,24 +32,47 @@ const ChatbotWindow = ({ onClose }) => {
     scrollToBottom();
   }, [messages]);
 
+  const formatTime = (date) => {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "오후" : "오전";
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = minutes.toString().padStart(2, "0");
+    return `${ampm} ${formattedHours}:${formattedMinutes}`;
+  };
+
+  const formatDate = (date) => {
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const time = formatTime(date);
+    return `${month}월 ${day}일 ${time}에 시작함`;
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
-    // 사용자 메시지 추가
-    setMessages((prev) => [...prev, { text: input, isUser: true }]);
+    const currentTime = new Date();
+    setMessages((prev) => [
+      ...prev,
+      {
+        text: input,
+        isUser: true,
+        timestamp: currentTime,
+      },
+    ]);
     setIsLoading(true);
 
     try {
-      // AI 응답 요청
       const response = await getChatbotResponse(input);
-
-      // 응답 데이터가 있는지 확인
       if (response && response.data) {
-        // AI 응답 처리 및 링크/이미지 변환
         const processedResponse = processAIResponse(response.data);
         setMessages((prev) => [
           ...prev,
-          { text: processedResponse, isUser: false },
+          {
+            text: processedResponse,
+            isUser: false,
+            timestamp: new Date(),
+          },
         ]);
       } else {
         throw new Error("Invalid response format");
@@ -59,6 +84,7 @@ const ChatbotWindow = ({ onClose }) => {
         {
           text: "죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
           isUser: false,
+          timestamp: new Date(),
         },
       ]);
     } finally {
@@ -82,7 +108,7 @@ const ChatbotWindow = ({ onClose }) => {
       // 이미지 파일 미리보기 URL 생성
       const imageUrl = URL.createObjectURL(file);
 
-      // 이미지 포함한 사용자 메시지 추가
+      const currentTime = new Date();
       setMessages((prev) => [
         ...prev,
         {
@@ -90,6 +116,7 @@ const ChatbotWindow = ({ onClose }) => {
           isUser: true,
           isImage: true,
           imageUrl: imageUrl,
+          timestamp: currentTime,
         },
       ]);
 
@@ -113,6 +140,7 @@ const ChatbotWindow = ({ onClose }) => {
             {
               text: processedResponse,
               isUser: false,
+              timestamp: new Date(),
             },
           ]);
         }
@@ -124,6 +152,7 @@ const ChatbotWindow = ({ onClose }) => {
         {
           text: "이미지 분석 중 오류가 발생했습니다. 다시 시도해주세요.",
           isUser: false,
+          timestamp: new Date(),
         },
       ]);
     } finally {
@@ -207,33 +236,37 @@ const ChatbotWindow = ({ onClose }) => {
   };
 
   const renderMessage = (message) => {
+    const messageTime = formatTime(message.timestamp);
+
     if (message.isUser) {
-      if (message.isImage) {
-        return (
+      return (
+        <div className={styles.messageContainer}>
           <div className={`${styles.message} ${styles.userMessage}`}>
-            <div>📷 {message.text}</div>
-            {message.imageUrl && (
-              <div className={styles.userImagePreview}>
-                <img src={message.imageUrl} alt="업로드한 이미지" />
-              </div>
+            {message.isImage ? (
+              <>
+                <div>📷 {message.text}</div>
+                {message.imageUrl && (
+                  <div className={styles.userImagePreview}>
+                    <img src={message.imageUrl} alt="업로드한 이미지" />
+                  </div>
+                )}
+              </>
+            ) : (
+              message.text
             )}
           </div>
-        );
-      }
-      return (
-        <div className={`${styles.message} ${styles.userMessage}`}>
-          {message.text}
+          <div className={styles.messageTime}>{messageTime}</div>
         </div>
       );
     }
 
+    // 챗봇 메시지 처리
     const messageContainer = document.createElement("div");
     messageContainer.innerHTML = message.text;
 
     const images = messageContainer.getElementsByClassName("product-image");
     const links = messageContainer.getElementsByClassName("product-link");
 
-    // 일반 텍스트 추출 (이미지와 링크 태그 제외)
     const textContent = message.text
       .replace(/<div class="product-image".*?<\/div>/g, "")
       .replace(/<div class="product-link".*?<\/div>/g, "")
@@ -241,44 +274,44 @@ const ChatbotWindow = ({ onClose }) => {
       .replace(/👉 \[.*?\]\(.*?\)/g, "");
 
     return (
-      <div className={`${styles.message} ${styles.botMessage}`}>
-        {/* 텍스트 렌더링 */}
-        <div
-          className={styles.styledText}
-          dangerouslySetInnerHTML={{ __html: textContent }}
-        />
+      <div className={styles.messageContainer}>
+        <div className={`${styles.message} ${styles.botMessage}`}>
+          <div
+            className={styles.styledText}
+            dangerouslySetInnerHTML={{ __html: textContent }}
+          />
+          {Array.from(images).map((img, index) => {
+            const link = links[index];
+            if (!link) return null;
 
-        {/* 이미지와 링크 렌더링 */}
-        {Array.from(images).map((img, index) => {
-          const link = links[index];
-          if (!link) return null;
+            const url = link.dataset.url;
+            // 상품 또는 셀러 페이지로 이동하는 링크 처리
+            const handleClick = () => {
+              if (url.startsWith("/product/")) {
+                navigate(`/product/${url.split("/").pop()}`);
+              } else if (url.startsWith("/shop/")) {
+                navigate(`/shop/${url.split("/").pop()}`);
+              }
+            };
 
-          const url = link.dataset.url;
-          // 상품 또는 셀러 페이지로 이동하는 링크 처리
-          const handleClick = () => {
-            if (url.startsWith("/product/")) {
-              navigate(`/product/${url.split("/").pop()}`);
-            } else if (url.startsWith("/shop/")) {
-              navigate(`/shop/${url.split("/").pop()}`);
-            }
-          };
-
-          return (
-            <div
-              key={`product-${index}`}
-              className={styles.productLink}
-              onClick={handleClick}
-            >
-              <div className={styles.imageContainer}>
-                <ImageLoader
-                  imagePath={img.dataset.image}
-                  alt={img.dataset.alt}
-                />
+            return (
+              <div
+                key={`product-${index}`}
+                className={styles.productLink}
+                onClick={handleClick}
+              >
+                <div className={styles.imageContainer}>
+                  <ImageLoader
+                    imagePath={img.dataset.image}
+                    alt={img.dataset.alt}
+                  />
+                </div>
+                <div className={styles.linkText}>{link.dataset.text}</div>
               </div>
-              <div className={styles.linkText}>{link.dataset.text}</div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
+        <div className={styles.messageTime}>{messageTime}</div>
       </div>
     );
   };
@@ -286,7 +319,10 @@ const ChatbotWindow = ({ onClose }) => {
   return (
     <div className={styles.chatWindow}>
       <div className={styles.chatHeader}>
-        <h3>Luckydoki AI 챗봇</h3>
+        <div className={styles.headerContent}>
+          <h3>Luckydoki AI 챗봇</h3>
+          <span className={styles.startTime}>{formatDate(startTime)}</span>
+        </div>
         <button className={styles.closeButton} onClick={onClose}>
           <IoClose />
         </button>
