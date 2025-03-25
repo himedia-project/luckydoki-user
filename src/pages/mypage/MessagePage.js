@@ -5,10 +5,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import styles from "../../styles/MessagePage.module.css";
 
-import ImageLoader from "../../components/card/ImageLoader";
 import { API_URL } from "../../config/apiConfig";
-import { formatDateTime, formatTimeOnly } from "../../utils/dateUtils";
+import { formatDateTime } from "../../utils/dateUtils";
 import useChatRoom from "../../hooks/useChatRoom";
+import ChatRoomList from "../../components/chat/ChatRoomList";
+import { ChatArea } from "../../components/chat/ChatArea";
 
 export default function MessagePage() {
   const location = useLocation();
@@ -321,143 +322,28 @@ export default function MessagePage() {
 
   return (
     <div className={styles.messagePageContainer}>
-      {/* MessageDropdown 컴포넌트 추가 */}
-      {/* <MessageDropdown messages={dropdownMessages} /> */}
-
       <div className={styles.messagePageContainer}>
-        {/* 왼쪽 사이드바 - 채팅방 목록 */}
-        <div className={styles.chatRoomList}>
-          {chatRooms && chatRooms.length > 0 ? (
-            chatRooms.map((room) =>
-              room && room.id ? (
-                <div
-                  key={room.id}
-                  className={`${styles.chatRoomItem} ${
-                    selectedRoom?.id === room.id ? styles.selected : ""
-                  }`}
-                  onClick={() => handleRoomSelectWithConnect(room)}
-                >
-                  <div className={styles.shopImage}>
-                    <ImageLoader
-                      imagePath={room.shopImage}
-                      className={styles.shopImage}
-                    />
-                  </div>
-                  <div className={styles.roomInfo}>
-                    <h3>{room.sender}</h3>
-                    <p className={styles.lastMessage}>
-                      {room.lastMessage || "메시지가 없습니다"}
-                    </p>
-                    <span className={styles.messageTime}>
-                      {room.lastMessageTime
-                        ? formatTimeOnly(room.lastMessageTime)
-                        : ""}
-                    </span>
-                    <span className={styles.unreadCount}>
-                      {unreadMessages[room.id] > 0
-                        ? `(${unreadMessages[room.id]} 새 메시지)`
-                        : 0}
-                    </span>
-                  </div>
-                </div>
-              ) : null
-            )
-          ) : (
-            <div className={styles.noChatRooms}>채팅방이 없습니다.</div>
-          )}
-        </div>
+        <ChatRoomList
+          chatRooms={chatRooms}
+          selectedRoom={selectedRoom}
+          unreadMessages={unreadMessages}
+          onRoomSelect={handleRoomSelectWithConnect}
+        />
 
-        {/* 오른쪽 - 채팅 영역 */}
-        <div className={styles.chatArea}>
-          {selectedRoom || (routeShopData && roomId) ? (
-            <>
-              <div className={styles.chatHeader}>
-                <div
-                  className={styles.partnerInfo}
-                  onClick={navigateToShop}
-                  style={{ cursor: "pointer" }}
-                >
-                  <div className={styles.partnerImage}>
-                    <ImageLoader
-                      imagePath={selectedRoom?.shopImage}
-                      className={styles.partnerImage}
-                    />
-                  </div>
-                  <div className={styles.partnerDetails}>
-                    <h3>
-                      {selectedRoom?.shopName}
-                      <span
-                        className={styles.shopIcon}
-                        style={{ marginLeft: "5px" }}
-                      >
-                        🏠
-                      </span>
-                    </h3>
-                  </div>
-                  <button
-                    className={styles.leaveButton}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleLeaveRoom(selectedRoom.id);
-                    }}
-                  >
-                    나가기
-                  </button>
-                </div>
-              </div>
-              <div className={styles.messagesContainer}>
-                {realTimeMessages.map((msg, index) => (
-                  <div
-                    key={`${msg.sendTime}-${index}`}
-                    className={`${styles.messageItem} ${
-                      msg.email === userEmail
-                        ? styles.messageItemRight
-                        : styles.messageItemLeft
-                    }`}
-                  >
-                    <div
-                      className={`${styles.messageContent} ${
-                        msg.email === userEmail
-                          ? styles.messageSent
-                          : styles.messageReceived
-                      }`}
-                    >
-                      <p>{msg.message}</p>
-                      <small className={styles.messageTime}>
-                        {formatTimeOnly(msg.sendTime)}
-                      </small>
-                    </div>
-                  </div>
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-              <div className={styles.messageForm}>
-                <form
-                  onSubmit={sendMessage}
-                  className={styles.messageInputContainer}
-                >
-                  <input
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    className={styles.messageInput}
-                    placeholder="메시지를 입력하세요..."
-                  />
-                  <button
-                    type="submit"
-                    className={styles.sendButton}
-                    disabled={!connected}
-                    onClick={sendMessage}
-                  >
-                    전송
-                  </button>
-                </form>
-              </div>
-            </>
-          ) : (
-            <div className={styles.noChatSelected}>채팅방을 선택해주세요</div>
-          )}
-        </div>
+        <ChatArea
+          selectedRoom={selectedRoom}
+          routeShopData={routeShopData}
+          roomId={roomId}
+          realTimeMessages={realTimeMessages}
+          userEmail={userEmail}
+          messagesEndRef={messagesEndRef}
+          message={message}
+          setMessage={setMessage}
+          connected={connected}
+          onNavigateToShop={navigateToShop}
+          onLeaveRoom={handleLeaveRoom}
+          onSendMessage={sendMessage}
+        />
       </div>
     </div>
   );
