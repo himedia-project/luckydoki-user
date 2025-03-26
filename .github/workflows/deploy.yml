@@ -1,4 +1,4 @@
-name: Deploy React App To EC2
+name: Deploy To S3
 
 on:
   push:
@@ -9,29 +9,22 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      REPOSITORY_NAME: luckydoki-user
-
+      S3_BUCKET_NAME: luckydoki-web
     steps:
       - name: Github Repository 파일 불러오기
         uses: actions/checkout@v4
 
-      - name: Create .env file (필요한 경우)
-        run: |
-          echo "${{ secrets.REACT_ENV_FILE }}" > .env
-
-      - name: SSH로 EC2에 접속하기
-        uses: appleboy/ssh-action@v1.0.3
+      - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          script_stop: true # 이전에 실행중인 스크립트 중지
-          script: |
-            cd /home/ubuntu/${{ env.REPOSITORY_NAME }}
-            sudo chown -R ubuntu:ubuntu .  # 현재 디렉토리 전체의 소유권을 ubuntu 사용자로 변경
-            git pull origin main
-            npm i --force
-            sudo rm -rf build
-            npm run build
-            pm2 delete user || true  # user라는 이름의 프로세스가 없어도 에러 없이 진행
-            pm2 serve build 3000 --name user
+          aws-region: ap-northeast-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+
+      - name: S3 기존 파일들 전체 삭제 후 새로 업로드
+        run: |
+          aws s3 rm --recursive s3://${{ env.S3_BUCKET_NAME }}
+          aws s3 cp ./ s3://${{ env.S3_BUCKET_NAME }}/ --recursive
+
+      - name: Cloudfront 캐시 무효화
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
