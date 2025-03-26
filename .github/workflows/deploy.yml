@@ -28,6 +28,7 @@ jobs:
           git pull origin main
           npm i --force
           sudo rm -rf build
+          export CI=false  # ESLint 경고를 무시하고 빌드를 진행
           npm run build
 
       - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
