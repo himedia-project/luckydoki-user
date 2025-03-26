@@ -14,6 +14,18 @@ jobs:
       - name: Github Repository 파일 불러오기
         uses: actions/checkout@v4
 
+      - name: Node.js 설치
+        uses: actions/setup-node@v4
+        with:
+          node-version: "19"
+
+      - name: 코드 업데이트, 의존성 설치 및 빌드
+        run: |
+          git pull origin main
+          npm i --force
+          sudo rm -rf build
+          npm run build
+
       - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -21,10 +33,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
 
-      - name: S3 기존 파일들 전체 삭제 후 새로 업로드
+      - name: S3 기존 파일들 전체 삭제 후 build 폴더 내용 업로드
         run: |
           aws s3 rm --recursive s3://${{ env.S3_BUCKET_NAME }}
-          aws s3 cp ./ s3://${{ env.S3_BUCKET_NAME }}/ --recursive
+          aws s3 cp ./build/ s3://${{ env.S3_BUCKET_NAME }}/ --recursive
 
       - name: Cloudfront 캐시 무효화
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
