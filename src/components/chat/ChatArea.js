@@ -82,31 +82,65 @@ const ChatHeader = ({ selectedRoom, onNavigateToShop, onLeaveRoom }) => {
 };
 
 const MessageList = ({ messages, userEmail, messagesEndRef }) => {
+  // 메시지 그룹화 함수
+  const groupMessagesByUser = (messages) => {
+    let groups = [];
+    let currentGroup = null;
+
+    messages.forEach((msg) => {
+      // 새 그룹 시작 (첫 메시지이거나 이전 발신자와 다를 때)
+      if (!currentGroup || currentGroup.email !== msg.email) {
+        currentGroup = {
+          email: msg.email,
+          messages: [msg],
+        };
+        groups.push(currentGroup);
+      } else {
+        // 같은 발신자의 메시지 그룹에 추가
+        currentGroup.messages.push(msg);
+      }
+    });
+
+    return groups;
+  };
+
+  const messageGroups = groupMessagesByUser(messages);
+
   return (
     <div className={styles.messagesContainer}>
-      {messages.map((msg, index) => (
-        <div
-          key={`${msg.sendTime}-${index}`}
-          className={`${styles.messageItem} ${
-            msg.email === userEmail
-              ? styles.messageItemRight
-              : styles.messageItemLeft
-          }`}
-        >
+      {messageGroups.map((group, groupIndex) => {
+        const isUserMessage = group.email === userEmail;
+        const lastMessage = group.messages[group.messages.length - 1];
+
+        return (
           <div
-            className={`${styles.messageContent} ${
-              msg.email === userEmail
-                ? styles.messageSent
-                : styles.messageReceived
+            key={`group-${groupIndex}`}
+            className={`${styles.messageGroup} ${
+              isUserMessage ? styles.userMessageGroup : styles.botMessageGroup
             }`}
           >
-            <p>{msg.message}</p>
-            <small className={styles.messageTime}>
-              {formatTimeOnly(msg.sendTime)}
-            </small>
+            {group.messages.map((msg, msgIndex) => (
+              <div
+                key={`${msg.sendTime}-${msgIndex}`}
+                className={styles.messageWrapper}
+              >
+                <div
+                  className={`${styles.message} ${
+                    isUserMessage ? styles.userMessage : styles.botMessage
+                  }`}
+                >
+                  <p>{msg.message}</p>
+                </div>
+              </div>
+            ))}
+
+            {/* 그룹의 마지막 메시지 아래에만 시간 표시 */}
+            <div className={styles.messageTime}>
+              {formatTimeOnly(lastMessage.sendTime)}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
       <div ref={messagesEndRef} />
     </div>
   );
