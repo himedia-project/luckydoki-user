@@ -62,8 +62,8 @@ LuckyDoki는 React 기반의 현대적이고 사용자 친화적인 이커머스
 
 - **REST API**: 백엔드 서버와의 데이터 통신
 - **토스페이먼츠 결제 API**: 안전한 결제 처리
-- **카카오 소셜 로그인 API**: 간편한 사용자 인증
-- **Google API**: 위치 기반 서비스 연동
+- **카카오/Goolge 소셜 로그인 API**: 간편한 사용자 인증
+- **AI 챗봇 API**: ai openai \* RAG 시스템 전용 백앤드 서버와 통신
 
 ## 설치 및 실행 방법
 
@@ -85,8 +85,6 @@ LuckyDoki는 React 기반의 현대적이고 사용자 친화적인 이커머스
 
    ```bash
    npm install
-   # 또는
-   yarn install
    ```
 
 3. 환경 변수 설정
@@ -117,8 +115,6 @@ LuckyDoki는 React 기반의 현대적이고 사용자 친화적인 이커머스
 5. 프로덕션 빌드
    ```bash
    npm run build
-   # 또는
-   yarn build
    ```
 
 ## 프로젝트 구조
