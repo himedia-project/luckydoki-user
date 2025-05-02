@@ -34,7 +34,7 @@ jobs:
         run: tar -czvf build.tar.gz build
 
       - name: 빌드 결과물 업로드
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifact
           path: build.tar.gz
@@ -48,9 +48,10 @@ jobs:
 
     steps:
       - name: 빌드 결과물 다운로드
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-artifact
+          path: .
 
       - name: SSH로 EC2에 접속하고 빌드 파일 전송
         uses: appleboy/scp-action@v0.1.4
