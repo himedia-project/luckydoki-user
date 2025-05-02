@@ -99,6 +99,12 @@ jobs:
             sudo rm build.zip
             sudo chown -R ubuntu:ubuntu build
 
+            # PM2 설치 확인 및 서버 재시작
+            if ! command -v pm2 &> /dev/null; then
+              echo "PM2가 설치되어 있지 않습니다. 설치를 진행합니다."
+              sudo npm install -g pm2
+            fi
+
             # PM2로 서버 재시작
-            sudo pm2 delete user || true  # user라는 이름의 프로세스가 없어도 에러 없이 진행
-            sudo pm2 serve build 3000 --name user
+            pm2 delete user || true  # user라는 이름의 프로세스가 없어도 에러 없이 진행
+            pm2 serve build 3000 --name user
