@@ -15,11 +15,36 @@ jobs:
       - name: Github Repository 파일 불러오기
         uses: actions/checkout@v4
 
+      - name: Node.js 설정
+        uses: actions/setup-node@v3
+        with:
+          node-version: "19"
+
       - name: Create .env file
         run: |
           echo "${{ secrets.REACT_ENV_FILE }}" > .env.production
 
-      - name: SSH로 EC2에 접속하기
+      - name: 의존성 설치
+        run: npm i --force
+
+      - name: 리액트 빌드
+        run: |
+          export CI=false  # ESLint 경고를 무시하고 빌드를 진행
+          npm run build
+
+      - name: 빌드 파일 압축
+        run: tar -czvf build.tar.gz build
+
+      - name: SSH로 EC2에 접속하고 빌드 파일 전송
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: "build.tar.gz"
+          target: "/home/ubuntu/${{ env.REPOSITORY_NAME }}"
+
+      - name: SSH로 EC2에 접속하고 배포 진행
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -29,10 +54,12 @@ jobs:
           script: |
             cd /home/ubuntu/${{ env.REPOSITORY_NAME }}
             sudo chown -R ubuntu:ubuntu .  # 현재 디렉토리 전체의 소유권을 ubuntu 사용자로 변경
-            git pull origin main
-            npm i --force
+
+            # 기존 빌드 디렉토리 삭제 및 압축 해제
             sudo rm -rf build
-            export CI=false  # ESLint 경고를 무시하고 빌드를 진행
-            npm run build
+            tar -xzvf build.tar.gz
+            rm build.tar.gz
+
+            # PM2로 서버 재시작
             pm2 delete user || true  # user라는 이름의 프로세스가 없어도 에러 없이 진행
             pm2 serve build 3000 --name user
