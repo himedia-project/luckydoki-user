@@ -6,10 +6,8 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    env:
-      REPOSITORY_NAME: luckydoki-user
 
     steps:
       - name: Github Repository 파일 불러오기
@@ -32,10 +30,27 @@ jobs:
           export CI=false  # ESLint 경고를 무시하고 빌드를 진행
           npm run build
 
-      - name: 빌드 파일 압축
-        run: |
-          sudo tar -czvf build.tar.gz build
-          sudo chmod 777 build.tar.gz
+      - name: 빌드 디렉토리 압축
+        run: tar -czvf build.tar.gz build
+
+      - name: 빌드 결과물 업로드
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: build.tar.gz
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      REPOSITORY_NAME: luckydoki-user
+
+    steps:
+      - name: 빌드 결과물 다운로드
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifact
 
       - name: SSH로 EC2에 접속하고 빌드 파일 전송
         uses: appleboy/scp-action@v0.1.4
