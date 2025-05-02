@@ -50,17 +50,16 @@ jobs:
           name: build-artifact
           path: build
 
-      - name: 빌드 디렉토리 압축
-        run: tar -czvf build.tar.gz build
+      - name: SSH 키 설정
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
-      - name: SSH로 EC2에 접속하고 빌드 파일 전송
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: "build.tar.gz"
-          target: "/home/ubuntu/${{ env.REPOSITORY_NAME }}"
+      - name: rsync로 빌드 디렉토리 전송
+        run: |
+          rsync -avz --delete build/ ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/ubuntu/${{ env.REPOSITORY_NAME }}/build/
 
       - name: SSH로 EC2에 접속하고 배포 진행
         uses: appleboy/ssh-action@v1.0.3
@@ -72,11 +71,6 @@ jobs:
           script: |
             cd /home/ubuntu/${{ env.REPOSITORY_NAME }}
             sudo chown -R ubuntu:ubuntu .  # 현재 디렉토리 전체의 소유권을 ubuntu 사용자로 변경
-
-            # 기존 빌드 디렉토리 삭제 및 압축 해제
-            sudo rm -rf build
-            tar -xzvf build.tar.gz
-            rm build.tar.gz
 
             # PM2로 서버 재시작
             pm2 delete user || true  # user라는 이름의 프로세스가 없어도 에러 없이 진행
