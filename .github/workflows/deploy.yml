@@ -33,7 +33,9 @@ jobs:
           npm run build
 
       - name: 빌드 파일 압축
-        run: tar -czvf build.tar.gz build
+        run: |
+          sudo tar -czvf build.tar.gz build
+          sudo chmod 777 build.tar.gz
 
       - name: SSH로 EC2에 접속하고 빌드 파일 전송
         uses: appleboy/scp-action@v0.1.4
