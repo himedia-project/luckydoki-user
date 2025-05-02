@@ -89,6 +89,10 @@ jobs:
             # 권한 재설정
             sudo chown -R ubuntu:ubuntu .
 
+            # unzip 설치
+            sudo apt-get update
+            sudo apt-get install -y unzip
+
             # 기존 빌드 디렉토리 삭제 및 압축 해제
             sudo rm -rf build
             sudo unzip -o build.zip
